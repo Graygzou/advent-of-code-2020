@@ -1,0 +1,4 @@
+﻿  ReportRepair.cpp
+D:\Git\C++Projects\AOC2020\advent-of-code-2020\Day1\ReportRepair\ReportRepair.cpp(46,26): warning C4018: '<': signed/unsigned mismatch
+D:\Git\C++Projects\AOC2020\advent-of-code-2020\Day1\ReportRepair\ReportRepair.cpp(49,30): warning C4018: '<': signed/unsigned mismatch
+  ReportRepair.vcxproj -> D:\Git\C++Projects\AOC2020\advent-of-code-2020\Day1\ReportRepair\Debug\ReportRepair.exe
