@@ -31,6 +31,40 @@ int CreateArrayFromInputFile(const char* fileName, int* intArray)
     return arrayLength;
 }
 
+void Part1(int arrayLength, int totalSum, int* array)
+{
+    for (size_t i = 0; i < arrayLength; i++)
+    {
+        int currentValue = abs(array[i] - totalSum);
+        for (size_t j = i+1; j < arrayLength; j++)
+        {
+            if (array[j] == currentValue)
+            {
+                cout << "found match for = " << array[i] << " + " << array[j] << " = " << totalSum << endl;
+                cout << "result is = " << array[i] * array[j] << endl;
+            }
+        }
+    }
+}
+
+void Part2(int arrayLength, int totalSum, int* array)
+{
+    for (size_t i = 0; i < arrayLength; i++)
+    {
+        int currentValue = abs(array[i] - totalSum);
+        for (size_t j = i+1; j < arrayLength; j++)
+        {
+            for (size_t k = j+1; k < arrayLength; k++)
+            {
+                if (array[j] + array[k] == currentValue)
+                {
+                    cout << "found match for = " << array[i] << " + " << array[j] << " + " << array[k] << " = " << totalSum << endl;
+                    cout << "result is = " << array[i] * array[j] * array[k] << endl;
+                }
+            }
+        }
+    }
+}
 
 int main()
 {
@@ -43,16 +77,10 @@ int main()
 
     int totalSum = 2020;
 
-    for (size_t i = 0; i < arrayLength; i++)
-    {
-        int currentValue = abs(array[i] - totalSum);
-        for (size_t j = 0; j < arrayLength; j++)
-        {
-            if (i != j && array[j] == currentValue)
-            {
-                cout << "found match for = " << array[i] << " + " << array[j] << " = " << totalSum << endl;
-                cout << "result is = " << array[i] * array[j] << endl;
-            }
-        }
-    }
+    // Part 1
+    Part1(arrayLength, totalSum, array);
+    Part2(arrayLength, totalSum, array);
+
+    array = NULL;
+    delete array;
 }
