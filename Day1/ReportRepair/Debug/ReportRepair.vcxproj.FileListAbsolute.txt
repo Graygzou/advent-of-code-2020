@@ -1,2 +1,0 @@
-D:\Git\C++Projects\AOC2020\advent-of-code-2020\Day1\ReportRepair\Debug\ReportRepair.exe
-D:\Git\C++Projects\AOC2020\advent-of-code-2020\Day1\ReportRepair\Debug\ReportRepair.pdb
