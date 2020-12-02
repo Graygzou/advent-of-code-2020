@@ -12,7 +12,7 @@ void Part1(int arrayLength, int totalSum, int* array)
 {
     for (size_t i = 0; i < arrayLength; i++)
     {
-        int currentValue = abs(array[i] - totalSum);
+        int currentValue = totalSum - array[i];
         for (size_t j = i+1; j < arrayLength; j++)
         {
             if (array[j] == currentValue)
@@ -28,7 +28,7 @@ void Part2(int arrayLength, int totalSum, int* array)
 {
     for (size_t i = 0; i < arrayLength; i++)
     {
-        int currentValue = abs(array[i] - totalSum);
+        int currentValue = totalSum - array[i];
         for (size_t j = i+1; j < arrayLength; j++)
         {
             for (size_t k = j+1; k < arrayLength; k++)
