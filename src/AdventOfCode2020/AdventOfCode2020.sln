@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PasswordPhilosophy", "PasswordPhilosophy\PasswordPhilosophy.vcxproj", "{9B523F46-095D-4170-9A52-54F5AE25B8DD}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ReportRepair", "Day1-ReportRepair\ReportRepair.vcxproj", "{D8ABF92A-1C1E-4D23-BEBF-C2B96F64D5A3}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Day1-ReportRepair", "Day1-ReportRepair\ReportRepair.vcxproj", "{D8ABF92A-1C1E-4D23-BEBF-C2B96F64D5A3}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Utils", "Utils\Utils.vcxproj", "{EB8B3AE1-C5BD-4A20-B329-608235C0AD5C}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TobogganTrajectory", "TobogganTrajectory\TobogganTrajectory.vcxproj", "{B9466117-7823-454C-ADDB-8C9106AB86F0}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Day2-PasswordPhilosophy", "Day2-PasswordPhilosophy\PasswordPhilosophy.vcxproj", "{9B523F46-095D-4170-9A52-54F5AE25B8DD}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Day3-TobogganTrajectory", "Day3-TobogganTrajectory\TobogganTrajectory.vcxproj", "{B9466117-7823-454C-ADDB-8C9106AB86F0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,14 +19,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9B523F46-095D-4170-9A52-54F5AE25B8DD}.Debug|x64.ActiveCfg = Debug|x64
-		{9B523F46-095D-4170-9A52-54F5AE25B8DD}.Debug|x64.Build.0 = Debug|x64
-		{9B523F46-095D-4170-9A52-54F5AE25B8DD}.Debug|x86.ActiveCfg = Debug|Win32
-		{9B523F46-095D-4170-9A52-54F5AE25B8DD}.Debug|x86.Build.0 = Debug|Win32
-		{9B523F46-095D-4170-9A52-54F5AE25B8DD}.Release|x64.ActiveCfg = Release|x64
-		{9B523F46-095D-4170-9A52-54F5AE25B8DD}.Release|x64.Build.0 = Release|x64
-		{9B523F46-095D-4170-9A52-54F5AE25B8DD}.Release|x86.ActiveCfg = Release|Win32
-		{9B523F46-095D-4170-9A52-54F5AE25B8DD}.Release|x86.Build.0 = Release|Win32
 		{D8ABF92A-1C1E-4D23-BEBF-C2B96F64D5A3}.Debug|x64.ActiveCfg = Debug|x64
 		{D8ABF92A-1C1E-4D23-BEBF-C2B96F64D5A3}.Debug|x64.Build.0 = Debug|x64
 		{D8ABF92A-1C1E-4D23-BEBF-C2B96F64D5A3}.Debug|x86.ActiveCfg = Debug|Win32
@@ -43,6 +35,14 @@ Global
 		{EB8B3AE1-C5BD-4A20-B329-608235C0AD5C}.Release|x64.Build.0 = Release|x64
 		{EB8B3AE1-C5BD-4A20-B329-608235C0AD5C}.Release|x86.ActiveCfg = Release|Win32
 		{EB8B3AE1-C5BD-4A20-B329-608235C0AD5C}.Release|x86.Build.0 = Release|Win32
+		{9B523F46-095D-4170-9A52-54F5AE25B8DD}.Debug|x64.ActiveCfg = Debug|x64
+		{9B523F46-095D-4170-9A52-54F5AE25B8DD}.Debug|x64.Build.0 = Debug|x64
+		{9B523F46-095D-4170-9A52-54F5AE25B8DD}.Debug|x86.ActiveCfg = Debug|Win32
+		{9B523F46-095D-4170-9A52-54F5AE25B8DD}.Debug|x86.Build.0 = Debug|Win32
+		{9B523F46-095D-4170-9A52-54F5AE25B8DD}.Release|x64.ActiveCfg = Release|x64
+		{9B523F46-095D-4170-9A52-54F5AE25B8DD}.Release|x64.Build.0 = Release|x64
+		{9B523F46-095D-4170-9A52-54F5AE25B8DD}.Release|x86.ActiveCfg = Release|Win32
+		{9B523F46-095D-4170-9A52-54F5AE25B8DD}.Release|x86.Build.0 = Release|Win32
 		{B9466117-7823-454C-ADDB-8C9106AB86F0}.Debug|x64.ActiveCfg = Debug|x64
 		{B9466117-7823-454C-ADDB-8C9106AB86F0}.Debug|x64.Build.0 = Debug|x64
 		{B9466117-7823-454C-ADDB-8C9106AB86F0}.Debug|x86.ActiveCfg = Debug|Win32
