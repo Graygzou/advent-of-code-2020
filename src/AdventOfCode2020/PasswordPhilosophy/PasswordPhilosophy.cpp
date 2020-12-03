@@ -35,10 +35,6 @@ bool IsPasswordLegitPart1(int minBound, int maxBound, int nbOccurences)
 
 bool IsPasswordLegitPart2(int index1, int index2, string password, const char& charToFind)
 {
-    cout << password << endl;
-    cout << charToFind << endl;
-    cout << password[index1 - 1] << endl;
-    cout << password[index2 - 1] << endl;
     return password[index1 - 1] == charToFind && password[index2 - 1] != charToFind;
 }
 

@@ -2,7 +2,7 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>D:\Git\C++Projects\AOC2020\advent-of-code-2020\src\AdventOfCode2020\Day1-ReportRepair\Debug\ReportRepair.exe</FullPath>
+      <FullPath>D:\Git\C++Projects\AOC2020\advent-of-code-2020\src\AdventOfCode2020\Debug\ReportRepair.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles />

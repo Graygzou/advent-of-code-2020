@@ -1,0 +1,3 @@
+﻿  TobogganTrajectory.cpp
+D:\Git\C++Projects\AOC2020\advent-of-code-2020\src\AdventOfCode2020\TobogganTrajectory\TobogganTrajectory.cpp(80,26): warning C4018: '<': signed/unsigned mismatch
+  TobogganTrajectory.vcxproj -> D:\Git\C++Projects\AOC2020\advent-of-code-2020\src\AdventOfCode2020\Debug\TobogganTrajectory.exe

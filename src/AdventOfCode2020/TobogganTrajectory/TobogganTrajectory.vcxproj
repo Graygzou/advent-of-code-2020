@@ -141,6 +141,9 @@
   <ItemGroup>
     <ClCompile Include="TobogganTrajectory.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="input" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
