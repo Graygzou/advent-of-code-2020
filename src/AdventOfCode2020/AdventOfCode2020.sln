@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ReportRepair", "Day1-Report
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Utils", "Utils\Utils.vcxproj", "{EB8B3AE1-C5BD-4A20-B329-608235C0AD5C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TobogganTrajectory", "TobogganTrajectory\TobogganTrajectory.vcxproj", "{B9466117-7823-454C-ADDB-8C9106AB86F0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -41,6 +43,14 @@ Global
 		{EB8B3AE1-C5BD-4A20-B329-608235C0AD5C}.Release|x64.Build.0 = Release|x64
 		{EB8B3AE1-C5BD-4A20-B329-608235C0AD5C}.Release|x86.ActiveCfg = Release|Win32
 		{EB8B3AE1-C5BD-4A20-B329-608235C0AD5C}.Release|x86.Build.0 = Release|Win32
+		{B9466117-7823-454C-ADDB-8C9106AB86F0}.Debug|x64.ActiveCfg = Debug|x64
+		{B9466117-7823-454C-ADDB-8C9106AB86F0}.Debug|x64.Build.0 = Debug|x64
+		{B9466117-7823-454C-ADDB-8C9106AB86F0}.Debug|x86.ActiveCfg = Debug|Win32
+		{B9466117-7823-454C-ADDB-8C9106AB86F0}.Debug|x86.Build.0 = Debug|Win32
+		{B9466117-7823-454C-ADDB-8C9106AB86F0}.Release|x64.ActiveCfg = Release|x64
+		{B9466117-7823-454C-ADDB-8C9106AB86F0}.Release|x64.Build.0 = Release|x64
+		{B9466117-7823-454C-ADDB-8C9106AB86F0}.Release|x86.ActiveCfg = Release|Win32
+		{B9466117-7823-454C-ADDB-8C9106AB86F0}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
