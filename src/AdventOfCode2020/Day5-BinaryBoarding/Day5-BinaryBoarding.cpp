@@ -35,14 +35,20 @@ int ComputeRowOrColumn(char lower, char higher, int initialMinBounds, int initia
     return minBounds;
 }
 
+/// <summary>
+/// Note: I could translate each string into binary digit and use the base 2 to compute the actual number.
+///       Doing this avoid to do a binary search at all. just string replace and base 2 from base 10 computation
+/// </summary>
 int ComputeSeatID(string binarySpaceRepart)
 {
+    
+
+    // 2^7 (size of the string) = 128 (which fit the min and max bounds)
     string rowRepartition = binarySpaceRepart.substr(0, 7);
-    //cout << rowRepartition << endl;
     int row = ComputeRowOrColumn('F', 'B', 0, 127, rowRepartition);
 
+    // 2^3 (size of the string) = 8 (which fit the min and max bounds)
     string columnRepartition = binarySpaceRepart.substr(7, 3);
-    //cout << columnRepartition << endl;
     int column = ComputeRowOrColumn('L', 'R', 0, 7, columnRepartition);
 
     return row * 8 + column;
