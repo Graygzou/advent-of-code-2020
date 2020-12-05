@@ -55,18 +55,39 @@ int main()
 
     int nbLines = Utils::CreateStringArrayFromInputFile("input.txt", lines);
     cout << nbLines << endl;
+
     int maxSeatIDFound = -1;
+    int minSeatIDFound = -1;
+    int sumOfSeatID = 0;
 
     for (size_t i = 0; i < nbLines; i++)
     {
         int seatID = ComputeSeatID(*lines);
-        if (maxSeatIDFound < seatID)
+
+        // Find the max for part 1 and 2
+        if (maxSeatIDFound == -1 || maxSeatIDFound < seatID)
         {
             maxSeatIDFound = seatID;
         }
+
+        // Find the min for part 2
+        if (minSeatIDFound == -1 || minSeatIDFound > seatID)
+        {
+            minSeatIDFound = seatID;
+        }
+
+        sumOfSeatID += seatID;
 
         lines++;
     }
 
     cout << "Resulat of part 1 is " << maxSeatIDFound << endl;
+
+    // We want to include the last seat in our calculation so we substract one.
+    minSeatIDFound -= 1;
+
+    // Use the triangular number to solve part 2
+    int computedSumOfAllSeatIDs = ((maxSeatIDFound*(maxSeatIDFound+1))/2) - ((minSeatIDFound*(minSeatIDFound+1))/2);
+    int part2Result = computedSumOfAllSeatIDs - sumOfSeatID;
+    cout << "Resulat of part 2 is " << part2Result << endl;
 }
