@@ -144,6 +144,7 @@
   <ItemGroup>
     <Text Include="input.txt" />
     <Text Include="example.txt" />
+    <Text Include="examplePart2.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

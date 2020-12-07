@@ -9,11 +9,156 @@
 
 using namespace std;
 
+void DisplayMap(map<string, vector<string>> structureToDisplay)
+{
+    for (std::map<string, vector<string>>::iterator it = structureToDisplay.begin(); it != structureToDisplay.end(); ++it)
+    {
+        std::cout << it->first << " => " << it->second.size() << " : ";
+
+        for (std::vector<string>::iterator it2 = it->second.begin(); it2 != it->second.end(); ++it2)
+        {
+            std::cout << it2->c_str() << ", ";
+        }
+
+        std::cout << endl;
+    }
+
+    system("pause");
+}
+
+#pragma region Part 1
+// Part 1
+int CountParentOfBagColor(string bagColor, map<string, vector<string>> bagColors)
+{
+    int result = 0;
+    vector<string> colorLeft({ bagColor });
+    vector<string> visitedColor = vector<string>();
+
+    while (!colorLeft.empty())
+    {
+        string lastColor = colorLeft[colorLeft.size() - 1];
+        cout << "Current color is " << lastColor << endl;
+
+        visitedColor.push_back(lastColor);
+        colorLeft.pop_back();
+
+        for (std::vector<string>::iterator it2 = bagColors[lastColor].begin(); it2 != bagColors[lastColor].end(); ++it2)
+        {
+            string nextColor = it2->c_str();
+            cout << "Next color is " << nextColor << endl;
+
+            bool alreadyVisitedColor = find(visitedColor.begin(), visitedColor.end(), nextColor) != visitedColor.end();
+            bool alreadyTagged = find(colorLeft.begin(), colorLeft.end(), nextColor) != colorLeft.end();
+
+            cout << "Add color " << (find(visitedColor.begin(), visitedColor.end(), nextColor) == visitedColor.end()) << endl;
+            cout << "Add color " << it2->c_str() << endl;
+
+            if (!alreadyVisitedColor && !alreadyTagged)
+            {
+                result++;
+                colorLeft.push_back(nextColor);
+            }
+        }
+
+        /*if (colorLeft.size() <= 0)
+        {
+            break;
+        }*/
+
+        /*for (std::vector<string>::iterator it8 = visitedColor.begin(); it8 != visitedColor.end(); ++it8)
+        {
+            std::cout << it8->c_str() << '\n';
+        }
+        cout << "===========" << endl;*/
+        for (std::vector<string>::iterator it8 = colorLeft.begin(); it8 != colorLeft.end(); ++it8)
+        {
+            std::cout << it8->c_str() << '\n';
+        }
+        //system("pause");
+
+        cout << "COLOR LEFT SIZE = " << colorLeft.size() << endl;
+    }
+
+    return result;
+}
+#pragma endregion
+
+#pragma region Part 2
+void DisplayMapPart2(map<string, vector<pair<int, string>>> structureToDisplay)
+{
+    for (std::map<string, vector<pair<int, string>>>::iterator it = structureToDisplay.begin(); it != structureToDisplay.end(); ++it)
+    {
+        std::cout << it->first << " => " << it->second.size() << " : ";
+
+        for (std::vector<pair<int, string>>::iterator it2 = it->second.begin(); it2 != it->second.end(); ++it2)
+        {
+            std::cout << it2->first << " - " << it2->second.c_str() << ", ";
+        }
+
+        std::cout << endl;
+    }
+
+    system("pause");
+}
+#pragma endregion
+
+
+int CountChildrenOfBagColor(string bagColor, map<string, vector<pair<int, string>>> bagColors)
+{
+    int result = 0;
+    vector<pair<int, string>> colorLeft({ make_pair(1, bagColor) });
+    //vector<string> visitedColor = vector<string>();
+
+    while (!colorLeft.empty())
+    {
+        pair<int, string> lastColor = colorLeft[colorLeft.size() - 1];
+        cout << "Current color is " << lastColor.second << "with factor " << lastColor.first << endl;
+
+        //visitedColor.push_back(lastColor.second);
+        colorLeft.pop_back();
+
+        int sumOfChidren = 0;
+        for (std::vector<pair<int, string>>::iterator it2 = bagColors[lastColor.second].begin(); it2 != bagColors[lastColor.second].end(); ++it2)
+        {
+            string nextColor = it2->second.c_str();
+            cout << "Next color is " << nextColor << endl;
+
+            sumOfChidren += it2->first;
+            cout << "next value is " << it2->first * lastColor.first << endl;
+            colorLeft.push_back(make_pair(it2->first * lastColor.first, nextColor));
+        }
+
+        cout << "Sum of children " << sumOfChidren << endl;
+        result += (lastColor.first * sumOfChidren);
+        cout << "Result is currently " << result << endl;
+
+        /*if (colorLeft.size() <= 0)
+        {
+            break;
+        }*/
+
+        /*for (std::vector<string>::iterator it8 = visitedColor.begin(); it8 != visitedColor.end(); ++it8)
+        {
+            std::cout << it8->c_str() << '\n';
+        }
+        cout << "===========" << endl;*/
+        for (std::vector<pair<int, string>>::iterator it8 = colorLeft.begin(); it8 != colorLeft.end(); ++it8)
+        {
+            std::cout << it8->second.c_str() << "with factor " << it8->first << '\n';
+        }
+        //system("pause");
+
+        cout << "COLOR LEFT SIZE = " << colorLeft.size() << endl;
+    }
+
+    return result;
+}
+
+
 int main()
 {
-    int nbPassportsValid = 0;
-
-    map<string, vector<string>> colors;
+    map<string, vector<string>> colorsWithParents;
+    map<string, vector<pair<int, string>>> colorsWithChildren;
 
     string line;
     ifstream  myfile;
@@ -36,15 +181,17 @@ int main()
             string containedColors = cm[2];
 
             // Add the current color
-            if (colors.find(currentColor) == colors.end())
+            if (colorsWithParents.find(currentColor) == colorsWithParents.end())
             {
-                colors.insert(pair<string, vector<string>>(currentColor, vector<string>()));
+                colorsWithParents.insert(pair<string, vector<string>>(currentColor, vector<string>()));
+                colorsWithChildren.insert(pair<string, vector<pair<int, string>>>(currentColor, vector<pair<int, string>>()));
             }
 
             std::string delimiter = ", ";
 
             size_t pos = 0;
-            std::string token;
+            int quantity = 0;
+            string token;
             while ((pos = containedColors.find(delimiter)) != std::string::npos) {
                 token = containedColors.substr(0, pos);
                 //std::cout << token << std::endl;
@@ -53,14 +200,19 @@ int main()
                 regex e("([1-9]) ([\ a-z]*) bags?\.?");
                 regex_match(token.c_str(), cm, e);
 
+                quantity = atoi(cm[1].str().c_str());
                 token = cm[2];
                 //std::cout << "Token parsed  " << token << std::endl;
 
-                if (colors.find(token) == colors.end())
+                if (colorsWithParents.find(token) == colorsWithParents.end())
                 {
-                    colors.insert(pair<string, vector<string>>(token, vector<string>()));
+                    colorsWithParents.insert(pair<string, vector<string>>(token, vector<string>()));
+                    colorsWithChildren.insert(pair<string, vector<pair<int, string>>>(token, vector<pair<int, string>>()));
                 }
-                colors[token].push_back(currentColor);
+                colorsWithParents[token].push_back(currentColor);
+
+                // Part 2
+                colorsWithChildren[currentColor].push_back(pair<int, string>(quantity, token));
 
                 containedColors.erase(0, pos + delimiter.length());
             }
@@ -70,98 +222,33 @@ int main()
             e = "([1-9]) ([\ a-z]*) bags?\.?";
             if (regex_match(containedColors.c_str(), cm, e))
             {
+                quantity = atoi(cm[1].str().c_str());
                 containedColors = cm[2];
                 //std::cout << "Token parsed" << containedColors << std::endl;
 
-                if (colors.find(containedColors) == colors.end())
+                if (colorsWithParents.find(containedColors) == colorsWithParents.end())
                 {
-                    colors.insert(pair<string, vector<string>>(containedColors, vector<string>()));
+                    colorsWithParents.insert(pair<string, vector<string>>(containedColors, vector<string>()));
                 }
-                colors[containedColors].push_back(currentColor);
+                colorsWithParents[containedColors].push_back(currentColor);
+
+                // Part 2
+                colorsWithChildren[currentColor].push_back(pair<int, string>(quantity, containedColors));
             }
 
             cout << "here" << endl;
         }
 
         // Display everything
-        for (std::map<string, vector<string>>::iterator it = colors.begin(); it != colors.end(); ++it)
-        {
-            std::cout << it->first << " => " << it->second.size() << " : ";
-
-            for (std::vector<string>::iterator it2 = it->second.begin(); it2 != it->second.end(); ++it2)
-            {
-                std::cout << it2->c_str() << ", ";
-            }
-
-            std::cout << endl;
-        }
-
-        system("pause");
+        DisplayMap(colorsWithParents);
+        DisplayMapPart2(colorsWithChildren);
 
         // result part 1
-        int result = 0;
-        vector<string> colorLeft({ "shiny gold" });
-        vector<string> visitedColor = vector<string>();
+        //int resultPart1 = CountParentOfBagColor("shiny gold", colorsWithParents);
+        int resultPart2 = CountChildrenOfBagColor("shiny gold", colorsWithChildren);
 
-        //std::vector<string>::iterator it = colorLeft.begin();
-        while (!colorLeft.empty())
-        //for (auto it = colorLeft.begin(); it != colorLeft.end(); ++it)
-        {
-            string lastColor = colorLeft[colorLeft.size() - 1];
-
-            cout << "Current color is " << lastColor << endl;
-
-           /* if (find(visitedColor.begin(), visitedColor.end(), lastColor) == visitedColor.end())
-            {
-                result += colors[lastColor].size();
-            }*/
-
-            cout << "Result is " << result << endl;
-
-            visitedColor.push_back(lastColor);
-            colorLeft.pop_back();
-            
-            //bool updated = false;
-            for (std::vector<string>::iterator it2 = colors[lastColor].begin(); it2 != colors[lastColor].end(); ++it2)
-            {
-                string nextColor = it2->c_str();
-                cout << "Next color is " << nextColor << endl;
-
-                bool alreadyVisitedColor = find(visitedColor.begin(), visitedColor.end(), nextColor) != visitedColor.end();
-                bool alreadyTagged = find(colorLeft.begin(), colorLeft.end(), nextColor) != colorLeft.end();
-
-                cout << "Add color " << (find(visitedColor.begin(), visitedColor.end(), nextColor) == visitedColor.end()) << endl;
-                cout << "Add color " << it2->c_str() << endl;
-
-                if (!alreadyVisitedColor && !alreadyTagged)
-                {
-                    result++;
-                    //updated = true;
-                    colorLeft.push_back(nextColor);
-                    //it = colorLeft.begin();
-                }
-            }
-
-            /*if (colorLeft.size() <= 0)
-            {
-                break;
-            }*/
-
-            /*for (std::vector<string>::iterator it8 = visitedColor.begin(); it8 != visitedColor.end(); ++it8)
-            {
-                std::cout << it8->c_str() << '\n';
-            }
-            cout << "===========" << endl;*/
-            for (std::vector<string>::iterator it8 = colorLeft.begin(); it8 != colorLeft.end(); ++it8)
-            {   
-                std::cout << it8->c_str() << '\n';
-            }
-            //system("pause");
-
-            cout << "COLOR LEFT SIZE = " << colorLeft.size() << endl;
-        }
-
-        cout << "Result is " << result << endl;
+        //cout << "Result for part 1 is " << resultPart1 << endl;
+        cout << "Result for part 2 is " << resultPart2 << endl;
     }
 
     myfile.close();
