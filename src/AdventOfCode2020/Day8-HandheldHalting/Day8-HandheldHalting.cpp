@@ -11,6 +11,7 @@ using namespace std;
 
 const int SAFE_GUARD = 10000;
 
+#pragma region Helpers
 int GetArgumentFromInstruction(string instruction)
 {
     cmatch cm;
@@ -38,7 +39,6 @@ vector<string> ConstructInstructionsFromFile(string fileName)
     {
         while (getline(myfile, line))
         {
-            cout << line.c_str() << endl;
             instructions.push_back(line.c_str());
         }
     }
@@ -46,6 +46,7 @@ vector<string> ConstructInstructionsFromFile(string fileName)
 
     return instructions;
 }
+#pragma endregion
 
 bool Part1(vector<string> instructions, int* result, bool swapWhenIndexMet = false, int swapIndex = -1)
 {
@@ -63,14 +64,22 @@ bool Part1(vector<string> instructions, int* result, bool swapWhenIndexMet = fal
         visitedInstructionPointer.push_back(instructionPointer);
 
         //cout << instructionPointer << " And size of vector " << instructions.size() << endl;
+
         string currentInstruction = instructions[instructionPointer];
         int number = GetArgumentFromInstruction(currentInstruction);
 
-        if (swapWhenIndexMet && nbJmpAndNopMet == swapIndex)
+        if (swapWhenIndexMet)
         {
-            string newInstruction = currentInstruction.substr(0, 3) == "nop" ? "jmp" : "nop";
-            instructions[instructionPointer].replace(0, 3, newInstruction);
+            if ((currentInstruction.substr(0, 3) == "jmp" || currentInstruction.substr(0, 3) == "nop") 
+                && (nbJmpAndNopMet + 1) == swapIndex)
+            {
+                //cout << "CHANGE IT !" << endl;
+                string newInstruction = currentInstruction.substr(0, 3) == "nop" ? "jmp" : "nop";
+                instructions[instructionPointer].replace(0, 3, newInstruction);
+                currentInstruction = instructions[instructionPointer];
+            }
         }
+
         //cout << "Instruction is " << currentInstruction << " number is " << number << endl;
 
         if (currentInstruction.substr(0, 3) == "acc")
@@ -81,10 +90,12 @@ bool Part1(vector<string> instructions, int* result, bool swapWhenIndexMet = fal
         else if (currentInstruction.substr(0, 3) == "jmp")
         {
             instructionPointer += number;
+            nbJmpAndNopMet++;
         }
         else if (currentInstruction.substr(0, 3) == "nop")
         {
             instructionPointer++;
+            nbJmpAndNopMet++;
         }
 
         loopIndex++;
@@ -99,10 +110,7 @@ bool Part1(vector<string> instructions, int* result, bool swapWhenIndexMet = fal
 
 int Part2(vector<string> instructions)
 {
-    //vector<int> visitedInstructionPointer = vector<int>();
-
     int accumulator = 0;
-    //int instructionPointer = 0;
     int nextJmpOrNopToChange = 0;
 
     bool hasProgramFinished = false;
@@ -110,81 +118,8 @@ int Part2(vector<string> instructions)
     while (mainLoopIndex < SAFE_GUARD && !hasProgramFinished)
     {
         nextJmpOrNopToChange++;
-
         vector<string> tempInstructions = vector<string>(instructions);
-
-        // reset everything
-        //accumulator = 0;
-        //instructionPointer = 0;
-        //visitedInstructionPointer.clear();
-
-        //int jmpOrNopMet = 1;
-        //int loopIndex = 0;
-
         hasProgramFinished = Part1(tempInstructions, &accumulator, true, nextJmpOrNopToChange);
-
-        //while (loopIndex < SAFE_GUARD && instructionPointer < tempInstructions.size() &&
-        //    find(visitedInstructionPointer.begin(), visitedInstructionPointer.end(), instructionPointer) == visitedInstructionPointer.end())
-        //{
-        //    visitedInstructionPointer.push_back(instructionPointer);
-
-        //    cout << instructionPointer << " And size of vector " << tempInstructions.size() << endl;
-        //    string currentInstruction = tempInstructions[instructionPointer];
-        //    int number = GetArgumentFromInstruction(currentInstruction);
-
-        //    cout << "Number is " << number << endl;
-
-        //    cout << "Instruction is " << currentInstruction << " number is " << number << endl;
-
-        //    if (currentInstruction.substr(0, 3) == "acc")
-        //    {
-        //        cout << "RESULT UPDATED " << accumulator << endl;
-        //        accumulator += number;
-        //        instructionPointer++;
-        //    }
-        //    else if (currentInstruction.substr(0, 3) == "jmp")
-        //    {
-        //        if (jmpOrNopMet == nextJmpOrNopToChange)
-        //        {
-        //            cout << "CHANGE IT" << endl;
-        //            tempInstructions[instructionPointer].replace(0, 3, "nop");
-
-        //            // Do a nop here
-        //            instructionPointer++;
-        //        }
-        //        else
-        //        {
-        //            instructionPointer += number;
-        //        }
-        //        jmpOrNopMet++;
-        //    }
-        //    else if (currentInstruction.substr(0, 3) == "nop")
-        //    {
-        //        if (jmpOrNopMet == nextJmpOrNopToChange)
-        //        {
-        //            if (instructionPointer + number >= 0 && instructionPointer + number < instructions.size())
-        //            {
-        //                cout << "CHANGE IT" << endl;
-        //                tempInstructions[instructionPointer].replace(0, 3, "jmp");
-        //                // Do a jump here
-        //                instructionPointer += number;
-        //            }
-        //            else
-        //            {
-        //                nextJmpOrNopToChange++;
-        //            }
-        //        }
-        //        else
-        //        {
-        //            instructionPointer++;
-        //        }
-        //        jmpOrNopMet++;
-        //    }
-
-        //    loopIndex++;
-        //}
-
-        //cout << "Main loop" << endl;
 
         mainLoopIndex++;
     }
@@ -196,11 +131,13 @@ int main()
 {
     vector<string> instructions = ConstructInstructionsFromFile("input.txt");
 
+    cout << "Start Part 1 ..." << endl;
     int resultPart1 = 0;
     Part1(instructions, &resultPart1);
 
-    //int resultPart2 = Part2(instructions);
+    cout << "Start Part 2 ..." << endl;
+    int resultPart2 = Part2(instructions);
 
     cout << "Result for part 1 is : " << resultPart1 << endl;
-    //cout << "Result for part 2 is : " << resultPart2 << endl;
+    cout << "Result for part 2 is : " << resultPart2 << endl;
 }
