@@ -1,6 +1,3 @@
-// Day1.cpp : Ce fichier contient la fonction 'main'. L'exécution du programme commence et se termine à cet endroit.
-//
-
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -8,8 +5,6 @@
 #include <vector>
 
 using namespace std;
-
-const int SAFE_GUARD = 10000;
 
 bool PairFound(vector<long long> preambule, int number)
 {
@@ -56,15 +51,6 @@ int Part1(vector<long long> numbers, int preambuleLength)
         int minSum = preambule[0] + preambule[1];
         int maxSum = preambule[preambule.size() - 2] + preambule[preambule.size() - 1];
 
-        // DEBUG: Display preambule
-        /*cout << "Display preambule" << endl;
-        for (size_t i = 0; i < preambuleLength; i++)
-        {
-            cout << preambule[i] << endl;
-        }
-        cout << "end" << endl;*/
-        // END DEBUG
-
         // Check the current number
         int currentNumber = numbers[index + preambuleLength];
 
@@ -85,23 +71,13 @@ int Part2(vector<long long> numbers, int numberToDecomposed)
 {
     int result = 0;
 
-    // first sort it
-    sort(numbers.begin(), numbers.end());
-
-    cout << "Display numbers" << endl;
-    for (size_t i = 0; i < numbers.size(); i++)
-    {
-        cout << numbers[i] << endl;
-    }
-    cout << "end" << endl;
-
     // Find index of number
     vector<long long>::iterator it;
     it = find(numbers.begin(), numbers.end(), numberToDecomposed);
     if (it == numbers.end())
     {
         cout << "Element need to be include in numbers !" << std::endl;
-        return 0;
+        return -1;
     }
 
     long long index = distance(numbers.begin(), it);
@@ -121,15 +97,18 @@ int Part2(vector<long long> numbers, int numberToDecomposed)
 
         if (currentSum == numberToDecomposed)
         {
-            int test = 0;
+            int min = numbers[j];
+            int max = numbers[j];
+            int sum = 0;
             for (size_t k = j; k < i; k++)
             {
-                test += numbers[k];
+                min = min > numbers[k] ? numbers[k] : min;
+                max = max < numbers[k] ? numbers[k] : max;
+                sum += numbers[k];
             }
-            cout << "Sum is " << test << " need to be equals to" << numberToDecomposed << endl;
+            cout << "should be equals to zero = " << numberToDecomposed - sum << endl;
 
-            cout << "Found =" << numbers[i] << ", " << numbers[j] << endl;
-            result = numbers[i] + numbers[j];
+            result = min + max;
             found = true;
         }
 
@@ -151,7 +130,6 @@ int main()
     {
         while (getline(myfile, line))
         {
-            cout << line.c_str() << endl;
             lines.push_back(_atoi64(line.c_str()));
         }
     }
@@ -159,8 +137,8 @@ int main()
     
     int preambuleLength = 25;
     int part1Result = Part1(lines, preambuleLength);
-    cout << "Result is : " << part1Result << endl;
+    cout << "Result for part 1 is : " << part1Result << endl;
 
     int part2Result = Part2(lines, part1Result);
-    cout << "Result is : " << part2Result << endl;
+    cout << "Result for part 2 is : " << part2Result << endl;
 }
