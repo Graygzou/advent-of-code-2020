@@ -43,7 +43,7 @@ pair<int, int> GetOffsetPosition(string instructionLettre)
     return offset;
 }
 
-void ApplyNavigationInstruction(string instruction, pair<int, int> *position, pair<int,int> *direction)
+void ApplyNavigationInstruction(string instruction, pair<int, int> *position, pair<int,int> *direction, bool useWaypoint)
 {
     cmatch cm;
     regex e("([A-Z])([0-9]*)");
@@ -52,16 +52,23 @@ void ApplyNavigationInstruction(string instruction, pair<int, int> *position, pa
     string instructionLetter = cm[1].str();
     double amount = atoi(cm[2].str().c_str());
 
-    cout << instructionLetter << " " << amount << endl;
-
     if (instructionLetter == "F")
     {
         SumPair(position, *direction, amount);
     }
     else if (instructionLetter == "N" || instructionLetter == "S" || instructionLetter == "E" || instructionLetter == "W")
     {
-        pair<int, int> offeset = GetOffsetPosition(instructionLetter);
-        SumPair(position, offeset, amount);
+        pair<int, int> offset = GetOffsetPosition(instructionLetter);
+        if (useWaypoint)
+        {
+            // Part2: Move the waypoint
+            SumPair(direction, offset, amount);
+        }
+        else
+        {
+            // Part1: Move the ship
+            SumPair(position, offset, amount);
+        }
     }
     else if (instructionLetter == "R" || instructionLetter == "L")
     {
@@ -75,8 +82,9 @@ void ApplyNavigationInstruction(string instruction, pair<int, int> *position, pa
         // Apply rotation matrix 2d
         int previousX = direction->first;
         int previousY = direction->second;
-        direction->first = previousX * cos(amount) - previousY * sin(amount);
-        direction->second = previousX * (int)sin(amount) + previousY * cos(amount);
+
+        direction->first = previousX * round(cos(amount)) - previousY * round(sin(amount));
+        direction->second = previousX * round(sin(amount)) + previousY * round(cos(amount));
     }
 }
 
@@ -85,29 +93,35 @@ int main()
 {
     // Starting position
     pair<int, int> startingPosition = make_pair(0, 0);
-    // Start east
+
+    // Part 1
+    pair<int, int> positionPart1 = startingPosition;
     pair<int, int> direction = make_pair(1, 0);
+
+    // Part 2
+    pair<int, int> positionPart2 = startingPosition;
+    pair<int, int> waypoint = make_pair(10, 1);
 
     string line;
     ifstream  myfile;
-
-    pair<int, int> position = startingPosition;
     myfile.open("input.txt");
     if (myfile.is_open())
     {
         int lineIndex = 0;
         while (getline(myfile, line))
         {
-            cout << line.c_str() << endl;
+            ApplyNavigationInstruction(line.c_str(), &positionPart1, &direction, false);
+            ApplyNavigationInstruction(line.c_str(), &positionPart2, &waypoint, true);
 
-            ApplyNavigationInstruction(line.c_str(), &position, &direction);
-
-            //cout << "POSITION IS NOW " << position.first << ", " << position.second << endl;
-            //cout << "DIRECTION IS NOW " << direction.first << ", " << direction.second << endl;
+            //cout << "POSITION IS NOW " << positionPart2.first << ", " << positionPart2.second << endl;
+            //cout << "DIRECTION IS NOW " << waypoint.first << ", " << waypoint.second << endl;
         }
     }
     myfile.close();
 
-    int manhattanDistanceFromStart = abs(startingPosition.first - position.first) + abs(startingPosition.second - position.second);
-    std::cout << "Part 1 result is " << manhattanDistanceFromStart << endl;;
+    int manhattanDistanceFromStart = abs(startingPosition.first - positionPart1.first) + abs(startingPosition.second - positionPart1.second);
+    std::cout << "Part 1 result is " << manhattanDistanceFromStart << endl;
+
+    int part2Result = abs(startingPosition.first - positionPart2.first) + abs(startingPosition.second - positionPart2.second);
+    std::cout << "Part 2 result is " << part2Result << endl;
 }
