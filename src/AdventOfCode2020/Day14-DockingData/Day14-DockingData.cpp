@@ -30,9 +30,60 @@ bitset<BITMASK_SIZE> ConvertNumberToBitset(unsigned long long number)
 }
 
 
+int CountNumberOfX(string adresse)
+{
+    int result = 0;
+    for (size_t i = 0; i < adresse.size(); i++)
+    {
+        if (adresse[i] == 'X')
+        {
+            result++;
+        }
+    }
+
+    return result;
+}
+
+int CountNumberOfCommunX(string addr1, string addr2)
+{
+    int result = 0;
+    for (size_t i = 0; i < addr1.size(); i++)
+    {
+        if (addr1[i] == 'X' && addr2[i] == 'X')
+        {
+            result++;
+        }
+    }
+
+    return result;
+}
+
+string Concat(string addr1, string addr2)
+{
+    string result = "";
+    for (size_t i = 0; i < addr1.size(); i++)
+    {
+        if (addr1[i] == 'X' || addr2[i] == 'X')
+        {
+            result[i] = 'X';
+        }
+        else if (addr1[i] == addr2[i])
+        {
+            result[i] = addr1[i];
+        }
+        else
+        {
+            // floating value
+            //bitmaskApplied[i] = 'X';
+        }
+    }
+
+    return result;
+}
+
 int main()
 {
-    map<unsigned long long, unsigned long long> adresses = map<unsigned long long, unsigned long long>();
+    map<string, unsigned long long> adresses = map<string, unsigned long long>();
 
     string line;
     ifstream  myfile;
@@ -43,7 +94,7 @@ int main()
     cout << (ConvertNumberToBitset(517650454).to_string() == "000000011110110110101011100000010110") << endl;
 
     unsigned long long result = 0;
-    myfile.open("input.txt");
+    myfile.open("example2.txt");
     if (myfile.is_open())
     {
 
@@ -71,40 +122,68 @@ int main()
 
                 cout << "Found " << storageAddr << ", " << numberToStore << endl;
 
-                bitset<BITMASK_SIZE> comvertedBitset = ConvertNumberToBitset(numberToStore);
-                cout << "Value              " << comvertedBitset << endl;
+                bitset<BITMASK_SIZE> comvertedBitsetAddr = ConvertNumberToBitset(storageAddr);
+                cout << "Value              " << comvertedBitsetAddr << endl;
                 cout << "bitSet defined     " << bitmaskStr << endl;
 
-                bitset<BITMASK_SIZE> bitmaskApplied = comvertedBitset;
+                string bitmaskApplied = comvertedBitsetAddr.to_string();
                 for (size_t i = 0; i < bitmaskStr.size(); i++)
                 {
                     if (bitmaskStr[i] == '0')
                     {
-                        bitmaskApplied.set(bitmaskStr.size() - 1 - i, 0);
+                        // unchanged
+                        //bitmaskApplied[i] = '0';
                     }
                     else if (bitmaskStr[i] == '1')
                     {
-                        bitmaskApplied.set(bitmaskStr.size() - 1 - i);
+                        bitmaskApplied[i] = '1';
                     }
                     else
                     {
-                        // Leave unchanged
+                        // floating value
+                        bitmaskApplied[i] = 'X';
                     }
                 }
 
                 //bitset<BITMASK_SIZE> bitmaskApplied = comvertedBitset | bitmask;
                 cout << "Final bitmask      " << bitmaskApplied << endl;
-                cout << "Converted value is " << bitmaskApplied.to_ullong() << endl;
-                adresses[storageAddr] = bitmaskApplied.to_ullong();
+                //cout << "Converted value is " << bitmaskApplied.to_ullong() << endl;
+                adresses[bitmaskApplied] = numberToStore;
             }
         }
     }
     myfile.close();
 
-    for (std::map<unsigned long long, unsigned long long>::iterator it = adresses.begin(); it != adresses.end(); ++it)
+    string concatenedFloatingAddress = "";
+    for (auto it = adresses.begin(); it != adresses.end(); ++it)
     {
-        cout << it->first << "=> " << it->second << endl;
-        result += it->second;
+        cout << it->first << "  =>    " << it->second << endl;
+        cout << CountNumberOfX(it->first) << endl;
+        unsigned long long nbFloatingValues = pow(2, CountNumberOfX(it->first));
+
+        cout << "Nb floating values " << nbFloatingValues << endl;
+
+        int sumOfAllCommunX = 0;
+        for (auto it2 = adresses.begin(); it2 != it; ++it2)
+        {
+            sumOfAllCommunX += CountNumberOfCommunX(it->first, it2->first);
+        }
+        cout << "Sum of commun X = " << sumOfAllCommunX << endl;
+
+        unsigned long long nbAddressesAlreadyAssigned = 0;
+        if (sumOfAllCommunX > 0)
+        {
+            nbAddressesAlreadyAssigned = pow(2, sumOfAllCommunX);
+        }
+
+        unsigned long long finalNumberOfAddressed = nbFloatingValues - nbAddressesAlreadyAssigned;
+
+        cout << "final number of addresses impacted " << finalNumberOfAddressed << endl;
+        cout << "Final value added " << it->second * finalNumberOfAddressed << endl;
+        result += it->second * finalNumberOfAddressed;
+
+        // Concatenated
+        //concatenedFloatingAddress = Concat(concatenedFloatingAddress, it->first);
     }
 
     cout << "Result is : " << result << endl;
