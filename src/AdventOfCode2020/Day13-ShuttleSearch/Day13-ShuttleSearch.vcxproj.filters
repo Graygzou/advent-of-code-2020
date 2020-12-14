@@ -26,5 +26,21 @@
     <Text Include="example.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="example1.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="Text1.txt" />
+    <Text Include="example2.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="example3.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="example4.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="example5.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>
