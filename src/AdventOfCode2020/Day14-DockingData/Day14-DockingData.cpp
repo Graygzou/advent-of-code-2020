@@ -44,6 +44,78 @@ int CountNumberOfX(string adresse)
     return result;
 }
 
+void ComputeAllPossibilities(string addr, int nbPossibilities, vector<string> *res)
+{
+    vector<string> results = vector<string>(nbPossibilities);
+
+    int nbXMeet = 0;
+    for (int i = 0; i < addr.size(); i++)
+    {
+        char c = addr[i];
+
+        if (c == 'X')
+        {
+            int half = nbPossibilities / pow(2, nbXMeet + 1);
+            int end = nbPossibilities / pow(2, nbXMeet);
+            //cout << "Half " << half << endl;
+            // Duplicated all possibilities and add 0 to half of them and 1 to the other half
+            for (size_t j = 0; j < half; j++)
+            {
+                results[j].push_back('0');
+            }
+            for (size_t j = half; j < end; j++)
+            {
+                results[j].push_back('1');
+            }
+
+            if (end != nbPossibilities)
+            {
+                // Mirror
+                int mirrorIndex = end;
+                while (mirrorIndex != nbPossibilities)
+                {
+                    int copyIndex = mirrorIndex % end;
+                    results[mirrorIndex].push_back(results[copyIndex][results[copyIndex].size() - 1]);
+
+                    mirrorIndex++;
+                }
+            }
+
+            nbXMeet++;
+        }
+        else
+        {
+            // Add the number to all possibilities
+            for (size_t j = 0; j < results.size(); j++)
+            {
+                results[j].push_back(c);
+            }
+        }
+
+        //cout << "Intermediate result " << endl;
+        //for (size_t acc = 0; acc < results.size(); acc++)
+        //{
+        //    cout << results[acc] << endl;
+        //}
+    }
+
+    *res = results;
+}
+
+bool ContainsCommunAdresses(string addr1, string addr2)
+{
+    bool hasCommunAddresses = true;
+    for (size_t i = 0; i < addr1.size(); i++)
+    {
+        if (addr1[i] != 'X' && addr2[i] != 'X' && addr1[i] != addr2[i])
+        {
+            hasCommunAddresses = false;
+        }
+    }
+
+    return hasCommunAddresses;
+}
+
 int CountNumberOfCommunX(string addr1, string addr2)
 {
     int result = 0;
@@ -81,8 +153,43 @@ string Concat(string addr1, string addr2)
     return result;
 }
 
+int RemoveCommunAddresses(vector<string> *possibilitiesLeft, vector<string> possibilitieFound)
+{
+    
+    int nbDuplicateFound = 0;
+
+    vector<string> temp = *possibilitiesLeft;
+    int i = 0;
+    while (i < temp.size() && temp.size() > 0)
+    {
+        bool found = false;
+
+        for (size_t j = 0; j < possibilitieFound.size(); j++)
+        {
+            if (temp[i] == possibilitieFound[j])
+            {
+                found = true;
+                temp.erase(temp.begin()+i);
+                nbDuplicateFound++;
+                break;
+            }
+        }
+
+        if (!found)
+        {
+            i++;
+        }
+    }
+
+    *possibilitiesLeft = temp;
+
+    return nbDuplicateFound;
+}
+
+
 int main()
 {
+    vector<string> indexes = vector<string>();
     map<string, unsigned long long> adresses = map<string, unsigned long long>();
 
     string line;
@@ -94,7 +201,7 @@ int main()
     cout << (ConvertNumberToBitset(517650454).to_string() == "000000011110110110101011100000010110") << endl;
 
     unsigned long long result = 0;
-    myfile.open("example2.txt");
+    myfile.open("input.txt");
     if (myfile.is_open())
     {
 
@@ -109,7 +216,7 @@ int main()
             {
                 //replace(line.begin(), line.end(), 'X', '0');
                 bitmaskStr = line.substr(pos + 7);
-                cout << "MASK IS =>         "<< bitmaskStr << endl;
+                //cout << "MASK IS =>         "<< bitmaskStr << endl;
             }
             else
             {
@@ -149,37 +256,67 @@ int main()
                 cout << "Final bitmask      " << bitmaskApplied << endl;
                 //cout << "Converted value is " << bitmaskApplied.to_ullong() << endl;
                 adresses[bitmaskApplied] = numberToStore;
+                indexes.push_back(bitmaskApplied);
             }
         }
     }
     myfile.close();
 
     string concatenedFloatingAddress = "";
-    for (auto it = adresses.begin(); it != adresses.end(); ++it)
+    for (int i = indexes.size() - 1; i >= 0; i--)
     {
-        cout << it->first << "  =>    " << it->second << endl;
-        cout << CountNumberOfX(it->first) << endl;
+        std::cout << i << endl;
+
+        auto it = adresses.find(indexes[i]);
+        std::cout << it->first << "  =>    " << it->second << endl;
+        std::cout << CountNumberOfX(it->first) << endl;
         unsigned long long nbFloatingValues = pow(2, CountNumberOfX(it->first));
 
-        cout << "Nb floating values " << nbFloatingValues << endl;
+        //std::cout << "Nb floating values " << nbFloatingValues << endl;
 
-        int sumOfAllCommunX = 0;
-        for (auto it2 = adresses.begin(); it2 != it; ++it2)
+        vector<string> possibilitiesLeft = vector<string>(nbFloatingValues);
+        ComputeAllPossibilities(it->first, nbFloatingValues, &possibilitiesLeft);
+
+       /* cout << "Nb possibilities is " << possibilitiesLeft.size() << endl;
+        for (size_t acc = 0; acc < possibilitiesLeft.size(); acc++)
         {
-            sumOfAllCommunX += CountNumberOfCommunX(it->first, it2->first);
+            cout << possibilitiesLeft[acc] << endl;
         }
-        cout << "Sum of commun X = " << sumOfAllCommunX << endl;
+        cout << endl;*/
 
-        unsigned long long nbAddressesAlreadyAssigned = 0;
-        if (sumOfAllCommunX > 0)
+
+        //bool hasCommunAdresses = false;
+        //int sumOfAllCommunX = 0;
+        for (size_t j = indexes.size() - 1; j > i; j--)
         {
-            nbAddressesAlreadyAssigned = pow(2, sumOfAllCommunX);
+            auto it2 = adresses.find(indexes[j]);
+            if (ContainsCommunAdresses(it->first, it2->first))
+            {
+                int nbPoss = pow(2, CountNumberOfX(it2->first));
+
+                vector<string> possibilities = vector<string>(nbPoss);
+                ComputeAllPossibilities(it2->first, nbPoss, &possibilities);
+                int nbDuplicated = RemoveCommunAddresses(&possibilitiesLeft, possibilities);
+
+                std::cout << "nb duplicate found are " << nbDuplicated << endl;
+                //hasCommunAdresses = true;
+
+                //sumOfAllCommunX += CountNumberOfCommunX(it->first, it2->first);
+            }
         }
+        //std::cout << "Contains commun addresses is " << hasCommunAdresses << " / And Sum of commun X = " << sumOfAllCommunX << endl;
 
-        unsigned long long finalNumberOfAddressed = nbFloatingValues - nbAddressesAlreadyAssigned;
+        //unsigned long long nbAddressesAlreadyAssigned = 0;
+        //if (hasCommunAdresses)
+        //{
+        //    nbAddressesAlreadyAssigned = pow(2, sumOfAllCommunX);
+        //}
+        cout << "Final nb possibilities is " << possibilitiesLeft.size() << endl;
 
-        cout << "final number of addresses impacted " << finalNumberOfAddressed << endl;
-        cout << "Final value added " << it->second * finalNumberOfAddressed << endl;
+        unsigned long long finalNumberOfAddressed = possibilitiesLeft.size();
+
+        //std::cout << "final number of addresses impacted " << finalNumberOfAddressed << endl;
+        //std::cout << "Final value added " << it->second * finalNumberOfAddressed << endl;
         result += it->second * finalNumberOfAddressed;
 
         // Concatenated

@@ -4,3 +4,6 @@ mem[7] = 101
 mem[8] = 0
 mask = 10XXXXXXXXXXXXXXXXXXXXXXXXXXX1XX0X01
 mem[15] = 10
+
+
+
