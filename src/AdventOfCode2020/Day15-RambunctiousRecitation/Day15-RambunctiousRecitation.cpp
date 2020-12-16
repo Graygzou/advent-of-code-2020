@@ -55,101 +55,56 @@ int main()
     string delimiter(",");
     vector<int> numbers = SplitWithDelimiter(startingNumbers, delimiter);
 
+    //
+    // Run the algo
+    //
+    int mostRecentSpokenNumber = -1;
+
+    // Store as key the number and has value his last position met.
+    map<int, pair<int, int>> wordsSpokenCount;
+
     for (size_t i = 0; i < numbers.size(); i++)
     {
-        cout << numbers[i] << endl;
+        //cout << numbers[i] << "Will take the value " << (i + 1) << endl;
+        wordsSpokenCount[numbers[i]] = make_pair(i+1, 0);
     }
+    mostRecentSpokenNumber = numbers[numbers.size() - 1];
 
-    // Run the algo
-    int mostRecentSpokenNumber = -1;
-    map<int, int> wordsSpokenCount;
-    vector<int> gameHistoric = vector<int>();
-
-    int turnToReach = 2020;
-    for (size_t turn = 0; turn < turnToReach; turn++)
+    int turnToReach = 30000000;
+    for (size_t turn = numbers.size() + 1; turn <= turnToReach; turn++)
     {
-        //cout << "Game History" << endl;
-        //for (size_t i = 0; i < gameHistoric.size(); i++)
-        //{
-        //    cout << gameHistoric[i] << endl;
-        //}
+         /*for (auto it = wordsSpokenCount.begin(); it != wordsSpokenCount.end(); it++)
+         {
+             cout << it->first << " , (" << it->second.first << "," << it->second.second << ")" << endl;
+         }**/
+        //cout << "Turn " << turn << " - Previous number is " << mostRecentSpokenNumber << endl;
 
-        if (turn < numbers.size() && gameHistoric.size() < numbers.size())
+        // first time last number spoken
+        if (wordsSpokenCount.at(mostRecentSpokenNumber).second == 0)
         {
-            mostRecentSpokenNumber = numbers[turn];
+            //cout << "FIRST !" << endl;
+            //wordsSpokenCount[mostRecentSpokenNumber] = make_pair(turn, 0);
+            int numberSpoken = 0;
+            wordsSpokenCount[numberSpoken] = make_pair(turn, wordsSpokenCount[numberSpoken].first);
 
-            wordsSpokenCount[mostRecentSpokenNumber] = 1;
-            gameHistoric.push_back(mostRecentSpokenNumber);
+            mostRecentSpokenNumber = numberSpoken;
         }
         else
         {
-            // first time last number spoken
-            auto lastTurnBeforePreviousOneSpokenNumber = find(gameHistoric.begin(), gameHistoric.end() - 1, mostRecentSpokenNumber);
-            if (lastTurnBeforePreviousOneSpokenNumber == gameHistoric.end() - 1)
-            {
-                //cout << "FIRST !" << endl;
-                int numberSpoken = 0;
+            /*cout << mostRecentSpokenNumber << endl;
+            cout << wordsSpokenCount.at(mostRecentSpokenNumber).first << wordsSpokenCount.at(mostRecentSpokenNumber).second << endl;
+           */
 
-                auto it = wordsSpokenCount.find(numberSpoken);
-                if (it != wordsSpokenCount.end())
-                {
-                    it->second++;
-                }
-                else
-                {
-                    wordsSpokenCount[numberSpoken] = 1;
-                }
+            int gap = wordsSpokenCount.at(mostRecentSpokenNumber).first - wordsSpokenCount.at(mostRecentSpokenNumber).second;
+            
+            //cout << "GAPPP " << gap << endl;
 
-                gameHistoric.push_back(numberSpoken);
-                mostRecentSpokenNumber = numberSpoken;
-            }
-            else
-            {
-                //cout << "ALREADY" << endl;
-                int index = 0;
-                for (size_t i = gameHistoric.size() - 2; i >= 0; i--)
-                {
-                    //cout << gameHistoric[i] << endl;
-                    if (gameHistoric[i] == mostRecentSpokenNumber)
-                    {
-                        index = i + 1;
-                        break;
-                    }
-                }
-
-                //cout << "HERE" << turn << " and " << index << endl;
-                // Found the gap
-                //auto lastTurnBeforePreviousOneSpokenNumber = find(gameHistoric.rbegin(), gameHistoric.rend(), mostRecentSpokenNumber);
-                
-                int gap = turn - index;
-
-                //cout << "GAPPP " << gap << endl;
-
-
-                auto it = wordsSpokenCount.find(gap);
-                if (it != wordsSpokenCount.end())
-                {
-                    it->second++;
-                }
-                else
-                {
-                    wordsSpokenCount[gap] = 1;
-                }
-                
-                mostRecentSpokenNumber = gap;
-                gameHistoric.push_back(mostRecentSpokenNumber);
-            }
+            wordsSpokenCount[gap] = make_pair(turn, wordsSpokenCount[gap].first);
+            mostRecentSpokenNumber = gap;
         }
 
-        cout << "Turn " << (turn + 1) << " - Previous number is " << mostRecentSpokenNumber << endl;
+        //cout << "I SAY " << mostRecentSpokenNumber << endl;
     }
-
-    /*for (size_t i = 0; i < 5; i++)
-    {
-        cout << gameHistoric[i] << endl;
-    }*/
-
-    cout << gameHistoric.size() << endl;
 
     cout << "Result is " << mostRecentSpokenNumber << endl;
 
