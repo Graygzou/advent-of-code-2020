@@ -20,12 +20,10 @@ vector<int> SplitWithDelimiter(string str, string delimiter)
         int nextDelimiterIndex = str.find(delimiter);
         if (nextDelimiterIndex != string::npos)
         {
-            cout << "ici" << atoi(str.substr(0, nextDelimiterIndex).c_str()) << endl;
             results.push_back(atoi(str.substr(0, nextDelimiterIndex).c_str()));
         }
         else
         {
-            cout << "la" << atoi(str.c_str()) << endl;
             results.push_back(atoi(str.c_str()));
             done = true;
         }
@@ -51,6 +49,8 @@ int main()
     vector<vector<bool>> possibilitiesPerSpot;
 
     vector<int> finalNumbers = vector<int>();
+
+    vector<int> myTicketNumbers;
 
     file.open("input.txt");
     if (file.is_open())
@@ -89,7 +89,7 @@ int main()
                 }
                 else if (myTicket)
                 {
-                    // TODO later
+                    myTicketNumbers = SplitWithDelimiter(line, ",");
                 }
                 else if (otherTickets)
                 {
@@ -102,39 +102,45 @@ int main()
                         {
                             cout << numbers[i] << ", ";
                         }
+                        cout << endl;
 
                         for (size_t i = 0; i < numbers.size(); i++)
                         {
                             cout << numbers[i] << endl;
-                            bool isLegit = false;
-                            for (size_t j = 0; !isLegit && j < rules.size(); j++)
+                            bool respectOneRule = false;
+                            for (size_t j = 0; j < rules.size(); j++)
                             {
-                                for (size_t k = 0; !isLegit && k < rules[j].size(); k++)
+                                bool isLegit = false;
+                                for (size_t k = 0; k < rules[j].size(); k++)
                                 {
                                     if (numbers[i] >= rules[j][k].first && numbers[i] <= rules[j][k].second)
                                     {
                                         isLegit = true;
+                                        respectOneRule = true;
                                     }
+                                }
+
+                                if (!isLegit && respectOneRule)
+                                {
+                                    cout << numbers[i] << " is not legit for the rule " << (j + 1) << endl;
+                                    possibilitiesPerSpot[i][j] = false;
                                 }
                             }
 
-                            if (!isLegit)
+                            if (!respectOneRule)
                             {
                                 //cout << "Add number " << numbers[i] << "to result " << endl;
                                 finalNumbers.push_back(numbers[i]);
-                            }
-                            else
-                            {
-                                
                             }
                         }
                     }
                     else
                     {
                         // We already know all the rules so create the finding structure
-                        for (size_t i = 0; i < rules.size(); i++)
+                        int rulesSize = rules.size();
+                        for (size_t i = 0; i < rulesSize; i++)
                         {
-                            possibilitiesPerSpot.push_back(vector<bool>(rules.size(), true));
+                            possibilitiesPerSpot.push_back(vector<bool>(rulesSize, true));
                         }
 
                         skipedHeader = true;
@@ -144,11 +150,81 @@ int main()
         }
     }
 
+    // Visualization
+    for (size_t i = 0; i < possibilitiesPerSpot.size(); i++)
+    {
+        cout << "ticket  | ";
+        for (size_t j = 0; j < possibilitiesPerSpot[i].size(); j++)
+        {
+            cout << possibilitiesPerSpot[i][j] << " | ";
+        }
+        cout << endl;
+    }
+    cout << endl;
+
+    // Part 2
+    // ticket => rule index
+    //map<int, int> rulesRespectedPerTicket;
+    map<int, int> finalRules = map<int, int>();
+    int i = 0;
+    while (finalRules.size() < possibilitiesPerSpot.size())
+    {
+        int sum = 0;
+        int lastPositiveIndex = 0;
+        for (size_t j = 0; j < possibilitiesPerSpot.size(); j++)
+        {
+            sum += possibilitiesPerSpot[j][i];
+            
+            if (possibilitiesPerSpot[j][i])
+            {
+                lastPositiveIndex = j;
+            }
+            //if (possibilitiesPerSpot[j][i])
+            //{
+            //    //rulesRespectedPerTicket.insert(j, i);
+            //}
+        }
+
+        cout << "SUM " << sum << " with last index " << lastPositiveIndex << endl;
+
+        if (sum == 1)
+        { 
+            finalRules.insert( pair<int,int>(i, lastPositiveIndex));
+
+            // Update all other tickets with false
+            for (size_t k = 0; k < possibilitiesPerSpot.size(); k++)
+            {
+                possibilitiesPerSpot[lastPositiveIndex][k] = false;
+            }
+        }
+
+        // Visualization
+        for (size_t i = 0; i < possibilitiesPerSpot.size(); i++)
+        {
+            cout << "ticket  | ";
+            for (size_t j = 0; j < possibilitiesPerSpot[i].size(); j++)
+            {
+                cout << possibilitiesPerSpot[i][j] << " | ";
+            }
+            cout << endl;
+        }
+        cout << endl;
+
+
+        i++;
+        i %= possibilitiesPerSpot.size();
+    }
+
+    // Part 2
+    for (std::map<int, int>::iterator it = finalRules.begin(); it != finalRules.end(); ++it)
+        std::cout << "field " << it->first << " => " << "rule " << it->second << '\n';
+
+    // Part 1
     int sum = 0;
     for (size_t i = 0; i < finalNumbers.size(); i++)
     {
         sum += finalNumbers[i];
     }
 
-    cout << "Result is " << sum << endl;
+    cout << "Result pat 1 is " << sum << endl;
 }
