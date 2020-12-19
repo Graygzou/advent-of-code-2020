@@ -33,6 +33,19 @@ vector<int> SplitWithDelimiter(string str, string delimiter)
     return results;
 }
 
+void Display(vector<vector<bool>> possibilitiesPerSpot)
+{
+    for (size_t i = 0; i < possibilitiesPerSpot.size(); i++)
+    {
+        for (size_t j = 0; j < possibilitiesPerSpot[i].size(); j++)
+        {
+            cout << possibilitiesPerSpot[i][j] << " | ";
+        }
+        cout << endl;
+    }
+    cout << endl;
+}
+
 int main()
 {
     ifstream file;
@@ -107,10 +120,11 @@ int main()
                         for (size_t i = 0; i < numbers.size(); i++)
                         {
                             cout << numbers[i] << endl;
-                            bool respectOneRule = false;
+                            vector<bool> respectedRules(rules.size(), true);
+                            bool isLegit = false;
                             for (size_t j = 0; j < rules.size(); j++)
                             {
-                                bool isLegit = false;
+                                bool respectOneRule = false;
                                 for (size_t k = 0; k < rules[j].size(); k++)
                                 {
                                     if (numbers[i] >= rules[j][k].first && numbers[i] <= rules[j][k].second)
@@ -120,17 +134,28 @@ int main()
                                     }
                                 }
 
-                                if (!isLegit && respectOneRule)
+                                if (!respectOneRule)
                                 {
                                     cout << numbers[i] << " is not legit for the rule " << (j + 1) << endl;
-                                    possibilitiesPerSpot[i][j] = false;
+                                    respectedRules[j] = false;
                                 }
                             }
 
-                            if (!respectOneRule)
+                            if (!isLegit)
                             {
                                 //cout << "Add number " << numbers[i] << "to result " << endl;
                                 finalNumbers.push_back(numbers[i]);
+                            }
+                            else
+                            {
+                                // Update the part 2 with his result
+                                for (size_t ind = 0; ind < respectedRules.size(); ind++)
+                                {
+                                    if (!respectedRules[ind])
+                                    {
+                                        possibilitiesPerSpot[i][ind] = false;
+                                    }
+                                }
                             }
                         }
                     }
@@ -150,21 +175,8 @@ int main()
         }
     }
 
-    // Visualization
-    for (size_t i = 0; i < possibilitiesPerSpot.size(); i++)
-    {
-        cout << "ticket  | ";
-        for (size_t j = 0; j < possibilitiesPerSpot[i].size(); j++)
-        {
-            cout << possibilitiesPerSpot[i][j] << " | ";
-        }
-        cout << endl;
-    }
-    cout << endl;
-
     // Part 2
-    // ticket => rule index
-    //map<int, int> rulesRespectedPerTicket;
+    // rule => ticket index
     map<int, int> finalRules = map<int, int>();
     int i = 0;
     while (finalRules.size() < possibilitiesPerSpot.size())
@@ -174,22 +186,18 @@ int main()
         for (size_t j = 0; j < possibilitiesPerSpot.size(); j++)
         {
             sum += possibilitiesPerSpot[j][i];
-            
+
             if (possibilitiesPerSpot[j][i])
             {
                 lastPositiveIndex = j;
             }
-            //if (possibilitiesPerSpot[j][i])
-            //{
-            //    //rulesRespectedPerTicket.insert(j, i);
-            //}
         }
 
         cout << "SUM " << sum << " with last index " << lastPositiveIndex << endl;
 
         if (sum == 1)
-        { 
-            finalRules.insert( pair<int,int>(i, lastPositiveIndex));
+        {
+            finalRules.insert(pair<int, int>(i, lastPositiveIndex));
 
             // Update all other tickets with false
             for (size_t k = 0; k < possibilitiesPerSpot.size(); k++)
@@ -198,26 +206,20 @@ int main()
             }
         }
 
-        // Visualization
-        for (size_t i = 0; i < possibilitiesPerSpot.size(); i++)
-        {
-            cout << "ticket  | ";
-            for (size_t j = 0; j < possibilitiesPerSpot[i].size(); j++)
-            {
-                cout << possibilitiesPerSpot[i][j] << " | ";
-            }
-            cout << endl;
-        }
-        cout << endl;
-
-
         i++;
         i %= possibilitiesPerSpot.size();
     }
 
     // Part 2
+    unsigned long long resultPart2 = 1;
     for (std::map<int, int>::iterator it = finalRules.begin(); it != finalRules.end(); ++it)
-        std::cout << "field " << it->first << " => " << "rule " << it->second << '\n';
+    {
+        std::cout << "rule " << it->first << " match field num " << it->second << '\n';
+        if (it->first < 6)
+        {
+            resultPart2 *= myTicketNumbers[it->second];
+        }
+    }
 
     // Part 1
     int sum = 0;
@@ -226,5 +228,6 @@ int main()
         sum += finalNumbers[i];
     }
 
-    cout << "Result pat 1 is " << sum << endl;
+    cout << "Result part 1 is " << sum << endl;
+    cout << "Result part 2 is " << resultPart2 << endl;
 }
