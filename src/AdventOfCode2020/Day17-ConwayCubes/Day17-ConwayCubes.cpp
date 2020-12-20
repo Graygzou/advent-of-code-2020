@@ -11,17 +11,17 @@ using namespace std;
 
 struct Node 
 {
-    //vector<Node> neighbors = vector<Node>();
     int positonX = -1;
     int positonY = -1;
     int positonZ = -1;
+    int positonW = -1;
 
-    Node(int x, int y, int z)
+    Node(int x, int y, int z, int w)
     {
-        //neighbors = vector<Node>();
         positonX = x;
         positonY = y;
         positonZ = z;
+        positonW = w;
     }
 
     float SquaredMagnitude(Node destination)
@@ -32,6 +32,11 @@ struct Node
         return vectorX * vectorX + vectorY * vectorY + vectorZ * vectorZ;
     }
 
+    bool WeigthDifferByOne(Node destination)
+    {
+        return abs(positonW - destination.positonW) <= 1.0;
+    }
+
     float Magnitude(Node destination)
     {
         return sqrt(SquaredMagnitude(destination));
@@ -39,166 +44,72 @@ struct Node
 
     bool Equals(Node node)
     {
-        return Equals(node.positonX, node.positonY, node.positonZ);
+        return Equals(node.positonX, node.positonY, node.positonZ, node.positonW);
     }
 
-    bool Equals(int x, int y, int z)
+    bool Equals(int x, int y, int z, int w)
     {
-        return positonX == x && positonY == y && positonZ == z;
+        return positonX == x && positonY == y && positonZ == z && positonW == w;
     }
 
     void Display()
     {
-        std::cout << " Position is (" << positonX << "," << positonY << "," << positonZ << ")" << endl;
+        std::cout << " Position is (" << positonX << "," << positonY << "," << positonZ << "," << positonW << ")" << endl;
     }
 
     bool operator<(const Node& rhs) const noexcept
     {
         return this->positonX < rhs.positonX 
             || this->positonX == rhs.positonX && this->positonY < rhs.positonY
-            || this->positonX == rhs.positonX && this->positonY == rhs.positonY && this->positonZ < rhs.positonZ;
+            || this->positonX == rhs.positonX && this->positonY == rhs.positonY && this->positonZ < rhs.positonZ
+            || this->positonX == rhs.positonX && this->positonY == rhs.positonY && this->positonZ == rhs.positonZ && this->positonW < rhs.positonW;
     }
 
     bool operator==(const Node& rhs) const noexcept
     {
-        return this->positonX == rhs.positonX && this->positonY == rhs.positonY && this->positonZ == rhs.positonZ;
+        return this->positonX == rhs.positonX 
+            && this->positonY == rhs.positonY 
+            && this->positonZ == rhs.positonZ
+            && this->positonW == rhs.positonW;
     }
 };
 
-void DisplayGrid(vector<Node> activeCubes, pair<int, int> xBounds, pair<int, int> yBounds, pair<int, int> zBounds)
+void DisplayGrid(vector<Node> activeCubes, pair<int, int> xBounds, pair<int, int> yBounds, pair<int, int> zBounds, pair<int, int> wBounds)
 {
     int gridSize = 5;
-    for (int z = zBounds.first; z <= zBounds.second; z++)
-    {
-        std::cout << "z=" << z << endl;
 
-        for (int x = xBounds.first; x <= xBounds.second; x++)
+    for (int w = wBounds.first; w <= wBounds.second; w++)
+    {
+        for (int z = zBounds.first; z <= zBounds.second; z++)
         {
-            for (int y = yBounds.first; y <= yBounds.second; y++)
+            std::cout << "z=" << z << "  w=" << w << endl;
+
+            for (int x = xBounds.first; x <= xBounds.second; x++)
             {
-                bool found = false;
-                for (int i = 0; !found && i < activeCubes.size(); i++)
+                for (int y = yBounds.first; y <= yBounds.second; y++)
                 {
-                    if (activeCubes[i].Equals(x, y, z))
+                    bool found = false;
+                    for (int i = 0; !found && i < activeCubes.size(); i++)
                     {
-                        std::cout << "#";
-                        found = true;
+                        if (activeCubes[i].Equals(x, y, z, w))
+                        {
+                            std::cout << "#";
+                            found = true;
+                        }
+                    }
+
+                    if (!found)
+                    {
+                        std::cout << ".";
                     }
                 }
-
-                if (!found)
-                {
-                    std::cout << ".";
-                }
+                std::cout << endl;
             }
-            std::cout << endl;
         }
     }
 }
 
-void GetCandidateNode(Node node1, Node node2, vector<Node> *candidates)
-{
-    //vector<Node> currentCandidates;
-
-    //int minX = min(node1.positonX, node2.positonX) - 1;
-    //int maxX = max(node1.positonX, node2.positonX) + 1;
-
-    //int minY = min(node1.positonY, node2.positonY) - 1;
-    //int maxY = max(node1.positonY, node2.positonY) + 1;
-
-    //int minZ = min(node1.positonZ, node2.positonZ) - 1;
-    //int maxZ = max(node1.positonZ, node2.positonZ) + 1;
-
-    //// Add all the "3D bounding box" points to be later tested
-    //for (size_t x = minX; x <= maxX; x++)
-    //{
-    //    for (size_t y = minY; y <= maxY; y++)
-    //    {
-    //        for (size_t z = minZ; z < maxZ; z++)
-    //        {
-    //            Node candidate = Node(x, y, z);
-    //            if (find(candidates->begin(), candidates->end(), candidate) == candidates->end())
-    //            {
-    //                candidates->push_back(candidate);
-    //            }
-    //        }
-    //    }
-    //}
-
-    //candidates = currentCandidates;
-}
-
-//
-//vector<Node> DeactivateNodes(vector<Node> tempActiveCubes)
-//{
-//    vector<Node> activeCubes;
-//    for (auto it = tempActiveCubes.begin(); it != tempActiveCubes.end(); it++)
-//    {
-//        std::cout << "BLABLABLA " << it->neighbors.size() << endl;
-//        //auto nodeSaved = find(tempActiveCubes.begin(), tempActiveCubes.end(), it);
-//        if (it->neighbors.size() >= 2 && it->neighbors.size() <= 3)
-//        {
-//            // Update his neighbors
-//            activeCubes.push_back(*it);
-//        }
-//    }
-//
-//    std::cout << activeCubes.size() << endl;
-//    return activeCubes;
-//}
-
-//vector<Node> MergedActiveNodes(vector<Node> nodeWithExtraActives, vector<Node> nodesWithoutInactives, pair<int, int>* xBounds, pair<int, int>* yBounds, pair<int, int>* zBounds)
-//{
-//    vector<Node> nodes = nodesWithoutInactives;
-//
-//    for (size_t i = 0; i < nodeWithExtraActives.size(); i++)
-//    {
-//        if (nodeWithExtraActives[i].positonX < xBounds->first)
-//            xBounds->first = nodeWithExtraActives[i].positonX;
-//        else if (nodeWithExtraActives[i].positonX > xBounds->second)
-//            xBounds->second = nodeWithExtraActives[i].positonX;
-//
-//        if (nodeWithExtraActives[i].positonY < yBounds->first)
-//            yBounds->first = nodeWithExtraActives[i].positonY;
-//        else if (nodeWithExtraActives[i].positonY > yBounds->second)
-//            yBounds->second = nodeWithExtraActives[i].positonY;
-//
-//        if (nodeWithExtraActives[i].positonZ < zBounds->first)
-//            zBounds->first = nodeWithExtraActives[i].positonZ;
-//        else if (nodeWithExtraActives[i].positonZ > zBounds->second)
-//            zBounds->second = nodeWithExtraActives[i].positonZ;
-//
-//        if (find(nodes.begin(), nodes.end(), nodeWithExtraActives[i]) == nodes.end())
-//        {
-//            // Link it to existing nodes
-//            for (size_t j = 0; j < nodes.size(); j++)
-//            {
-//                float magnitude = nodeWithExtraActives[i].Magnitude(nodes[j]);
-//                if (magnitude < 1.75)
-//                {
-//                    nodeWithExtraActives[i].neighbors.push_back(nodes[j]);
-//                    nodes[j].neighbors.push_back(nodeWithExtraActives[i]);
-//                }
-//            }
-//
-//            nodes.push_back(nodeWithExtraActives[i]);
-//        }
-//    }
-//
-//    xBounds->first--;
-//    xBounds->second++;
-//
-//    yBounds->first--;
-//    yBounds->second++;
-//
-//    zBounds->first--;
-//    zBounds->second++;
-//
-//    return nodes;
-//}
-
-
-void UpdateBounds(vector<Node> activeCubes, pair<int, int>* xBounds, pair<int, int>* yBounds, pair<int, int>* zBounds)
+void UpdateBounds(vector<Node> activeCubes, pair<int, int>* xBounds, pair<int, int>* yBounds, pair<int, int>* zBounds, pair<int, int>* wBounds)
 {
     for (size_t i = 0; i < activeCubes.size(); i++)
     {
@@ -216,6 +127,11 @@ void UpdateBounds(vector<Node> activeCubes, pair<int, int>* xBounds, pair<int, i
             zBounds->first = activeCubes[i].positonZ;
         else if (activeCubes[i].positonZ > zBounds->second)
             zBounds->second = activeCubes[i].positonZ;
+
+        if (activeCubes[i].positonW < wBounds->first)
+            wBounds->first = activeCubes[i].positonW;
+        else if (activeCubes[i].positonW > wBounds->second)
+            wBounds->second = activeCubes[i].positonW;
     }
 
     xBounds->first--;
@@ -226,9 +142,12 @@ void UpdateBounds(vector<Node> activeCubes, pair<int, int>* xBounds, pair<int, i
 
     zBounds->first--;
     zBounds->second++;
+
+    wBounds->first--;
+    wBounds->second++;
 }
 
-vector<Node> RunCycle(vector<Node> activeCubes, pair<int, int> *xBounds, pair<int, int> *yBounds, pair<int, int> *zBounds)
+vector<Node> RunCycle(vector<Node> activeCubes, pair<int, int> *xBounds, pair<int, int> *yBounds, pair<int, int> *zBounds, pair<int, int> *wBounds)
 {
     vector<Node> tempActiveCubes = vector<Node>();
 
@@ -240,7 +159,7 @@ vector<Node> RunCycle(vector<Node> activeCubes, pair<int, int> *xBounds, pair<in
             if (it2 != it)
             {
                 float magnitude = it->Magnitude(*it2);
-                if (magnitude < 1.75)
+                if (magnitude < 1.75 && it->WeigthDifferByOne(*it2))
                 {
                     nbNeigbors++;
                 }
@@ -254,84 +173,56 @@ vector<Node> RunCycle(vector<Node> activeCubes, pair<int, int> *xBounds, pair<in
         }
     }
 
-    cout << "Size of temp " << tempActiveCubes.size() << endl;
-    DisplayGrid(tempActiveCubes, *xBounds, *yBounds, *zBounds);
-
     // Check if we should activate new nodes.
-    for (int z = zBounds->first; z <= zBounds->second; z++)
+    for (int w = wBounds->first; w <= wBounds->second; w++)
     {
-        for (int x = xBounds->first; x <= xBounds->second; x++)
+        for (int z = zBounds->first; z <= zBounds->second; z++)
         {
-            for (int y = yBounds->first; y <= yBounds->second; y++)
+            for (int x = xBounds->first; x <= xBounds->second; x++)
             {
-                Node candidate = Node(x, y, z);
-
-                auto it = find(activeCubes.begin(), activeCubes.end(), candidate);
-                if (it == activeCubes.end())
+                for (int y = yBounds->first; y <= yBounds->second; y++)
                 {
+                    Node candidate = Node(x, y, z, w);
+
+                    auto it = find(activeCubes.begin(), activeCubes.end(), candidate);
                     // Node not active yet.
-
-                    int NeigborsCount = 0;
-                    for (size_t i = 0; i < activeCubes.size(); i++)
+                    if (it == activeCubes.end())
                     {
-                        //std::cout << "mangitude is " << candidate.Magnitude(activeCubes[i]) << endl;
-                        // sqrt(3) == 1,73205081
-                        float magnitude = candidate.Magnitude(activeCubes[i]);
-                        if (magnitude < 1.75)
+                        int NeigborsCount = 0;
+                        for (size_t i = 0; i < activeCubes.size(); i++)
                         {
-                            //auto it2 = find(tempActiveCubes.begin(), tempActiveCubes.end(), activeCubes[i]);
-                            //if (it2 != tempActiveCubes.end())
-                            //{
-                            //    //candidate.neighbors.push_back(*it2);
-                            //}
-
-                            NeigborsCount++;
+                            // sqrt(3) == 1,73205081
+                            // sqrt(3.8) == 1,94935887
+                            float magnitude = candidate.Magnitude(activeCubes[i]);
+                            if (magnitude < 1.75 && candidate.WeigthDifferByOne(activeCubes[i]))
+                            {
+                                NeigborsCount++;
+                            }
                         }
-                    }
 
-                    //std::cout << "Neighbors count " << NeigborsCount << endl;
-                    if (NeigborsCount == 3)
-                    {
-                        tempActiveCubes.push_back(candidate);
-
-                        //for (size_t i = 0; i < candidate.neighbors.size(); i++)
-                        //{
-                        //    //auto it2 = find(tempActiveCubes.begin(), tempActiveCubes.end(), candidate.neighbors[i]);
-                        //    //if (it2 != tempActiveCubes.end())
-                        //    //{
-                        //    //    std::cout << "OOF" << endl;
-                        //    candidate.neighbors[i].neighbors.push_back(candidate);
-                        //    //}
-                        //    //else
-                        //    //{
-                        //    //    std::cout << "WATTTT" << endl;
-                        //    //}
-                        //}
+                        //std::cout << "Neighbors count " << NeigborsCount << endl;
+                        if (NeigborsCount == 3)
+                        {
+                            tempActiveCubes.push_back(candidate);
+                        }
                     }
                 }
             }
         }
     }
 
-    UpdateBounds(tempActiveCubes, xBounds, yBounds, zBounds);
+    // Debug
+    //DisplayGrid(tempActiveCubes, *xBounds, *yBounds, *zBounds, *wBounds);
 
-    //DisplayGrid(tempActiveCubes, *xBounds, *yBounds, *zBounds);
+    UpdateBounds(tempActiveCubes, xBounds, yBounds, zBounds, wBounds);
 
-    std::cout << "^^^^^^===================" << endl;
-
-    // Check if we should keep some nodes
-    //vector<Node> newNodes2 = DeactivateNodes(activeCubes);
-    //DisplayGrid(newNodes2, *xBounds, *yBounds, *zBounds);
-
-    //std::cout << "^^^^^^===================" << endl;
-    //vector<Node> finalNodes = MergedActiveNodes(tempActiveCubes, newNodes2, xBounds, yBounds, zBounds);
     return tempActiveCubes;
 }
 
 /// <summary>
 /// Construct the list of nodes to iters over.
 /// </summary>
-vector<Node> GetStartingActiveNodes(pair<int, int> *xBounds, pair<int, int> *yBounds, pair<int, int> *zBounds)
+vector<Node> GetStartingActiveNodes(pair<int, int> *xBounds, pair<int, int> *yBounds, pair<int, int> *zBounds, pair<int, int> *wBounds)
 {
     vector<Node> activeCubes;
 
@@ -340,10 +231,12 @@ vector<Node> GetStartingActiveNodes(pair<int, int> *xBounds, pair<int, int> *yBo
     file.open("input.txt");
     if (file.is_open())
     {
+        int w = 0;
         int z = 0;
         int x = 0;
         xBounds->first = x - 1;
         zBounds->first = z - 1;
+        wBounds->first = w - 1;
 
         while (getline(file, line))
         {
@@ -352,7 +245,7 @@ vector<Node> GetStartingActiveNodes(pair<int, int> *xBounds, pair<int, int> *yBo
             {
                 if (line[y] == '#')
                 {
-                    Node node = Node(x, y, z);
+                    Node node = Node(x, y, z, w);
 
                     // Find any neighbor active
                     for (int activeIndex = 0; activeIndex < activeCubes.size(); activeIndex++)
@@ -390,6 +283,7 @@ vector<Node> GetStartingActiveNodes(pair<int, int> *xBounds, pair<int, int> *yBo
         xBounds->second = x;
         yBounds->second += 1;
         zBounds->second += 1;
+        wBounds->second += 1;
     }
 
     return activeCubes;
@@ -397,41 +291,15 @@ vector<Node> GetStartingActiveNodes(pair<int, int> *xBounds, pair<int, int> *yBo
 
 void Part1()
 {
-    pair<int, int> xBounds;
-    pair<int, int> yBounds;
-    pair<int, int> zBounds;
-    vector<Node> activeCubes = GetStartingActiveNodes(&xBounds, &yBounds, &zBounds);
-
-    std::cout << xBounds.first << ", " << xBounds.second << endl;
-    std::cout << yBounds.first << ", " << yBounds.second << endl;
-    std::cout << zBounds.first << ", " << zBounds.second << endl;
-
-    // Debug
-    for (size_t i = 0; i < activeCubes.size(); i++)
-    {
-        activeCubes[i].Display();
-    }
+    pair<int, int> xBounds, yBounds, zBounds, wBounds;
+    vector<Node> activeCubes = GetStartingActiveNodes(&xBounds, &yBounds, &zBounds, &wBounds);
 
     // Run all cycles
     int nbCycle = 6;
     for (size_t i = 0; i < nbCycle; i++)
     {
-        vector<Node> finalNodes = RunCycle(activeCubes, &xBounds, &yBounds, &zBounds);
-
-        for (size_t i = 0; i < activeCubes.size(); i++)
-        {
-            activeCubes[i].Display();
-        }
-
-        // Debug
-        DisplayGrid(finalNodes, xBounds, yBounds, zBounds);
-
-        // Update
+        vector<Node> finalNodes = RunCycle(activeCubes, &xBounds, &yBounds, &zBounds, &wBounds);
         activeCubes = finalNodes;
-
-        std::cout << "===================" << endl;
-        std::cout << "===================" << endl;
-        std::cout << "===================" << endl;
     }
 
 
