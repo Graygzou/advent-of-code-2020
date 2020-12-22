@@ -90,16 +90,9 @@ unsigned long long EvaluateExpression(std::string expression, int *offset)
 
 std::string AddParenthesis(std::string expression, char ope)
 {
-    std::map<int, int> indexes;
-
-    int currentParenthesisIndex = 0;
-
-
-    int insertedParenthesisIndex = 0;
-    int previousParenthesisIndex = 0;
-    int previousIndex = 0;
-    //bool needRightParenthesis = false;
-    std::vector<int> rightParenthesisIndex;
+    std::map<int, int> lastOperandsIndexes = std::map<int, int>();
+    std::vector<int> rightParenthesis = std::vector<int>();
+    int currentLevel = 0;
 
     for (size_t i = 0; i < expression.size(); i++)
     {
@@ -107,76 +100,78 @@ std::string AddParenthesis(std::string expression, char ope)
         {
             if (expression[i] == ope)
             {
-                if (currentParenthesisIndex < 0)
+                // 1.
+                if (lastOperandsIndexes.find(currentLevel + 1) == lastOperandsIndexes.end())
                 {
-                    expression.insert(0, "(");
-                }
-                else if (indexes.find(currentParenthesisIndex) == indexes.end())
-                {
-                    expression.insert(previousIndex, "(");
-                    indexes.insert(std::make_pair(currentParenthesisIndex, previousIndex));
-
-                    currentParenthesisIndex++;
+                    lastOperandsIndexes.insert(std::make_pair(currentLevel + 1, lastOperandsIndexes[currentLevel]));
                 }
                 else
                 {
-                    expression.insert(indexes[currentParenthesisIndex], "(");
-                    currentParenthesisIndex++;
-                    //if (currentParenthesisIndex > 1)
-                    //{
-                    //    indexes.erase(currentParenthesisIndex);
-                    //}
+                    lastOperandsIndexes[currentLevel + 1] = lastOperandsIndexes[currentLevel];
                 }
 
+                // 2.
+                expression.insert(lastOperandsIndexes[currentLevel], "(");
                 i++;
-                rightParenthesisIndex.push_back(currentParenthesisIndex);
+
+                // 3. Update level
+                currentLevel++;
+
+                // 4.
+                rightParenthesis.push_back(currentLevel);
             }
             else if (expression[i] == '(')
             {
-                if (indexes.find(currentParenthesisIndex) == indexes.end())
+                // 1. Update the last operand met
+                if (lastOperandsIndexes.find(currentLevel) == lastOperandsIndexes.end())
                 {
-                    indexes.insert(std::make_pair(currentParenthesisIndex, i));
+                    lastOperandsIndexes.insert(std::make_pair(currentLevel, i));
                 }
                 else
                 {
-                    indexes[currentParenthesisIndex] = i;
+                    lastOperandsIndexes[currentLevel] = i;
                 }
 
-                currentParenthesisIndex++;
-
-                //std::cout << "index of i " << i << std::endl;
-               /* for (auto it = indexes.begin(); it != indexes.end(); ++it)
-                    std::cout << it->first << " => " << it->second << '\n';*/
+                // 2. Update level
+                currentLevel++;
             }
             else if (expression[i] == ')')
             {
-                indexes.erase(currentParenthesisIndex);
-                currentParenthesisIndex--;
+                // 1. Update level
+                currentLevel--;
 
-                // Add right parenthesis if group is a variable
-                /*auto it = find(rightParenthesisIndex.begin(), rightParenthesisIndex.end(), currentParenthesisIndex);
-                if (it != rightParenthesisIndex.end())
+                // 2. Add right parenthesis if we should
+                auto it = find(rightParenthesis.begin(), rightParenthesis.end(), currentLevel);
+                if (it != rightParenthesis.end())
                 {
-                    rightParenthesisIndex.erase(it);
-                    expression.insert(i + 1, ")");
-                    currentParenthesisIndex--;
-                    i++;
-                }*/
+                    rightParenthesis.erase(it);
+                    expression.insert(i+1, ")");
+                }
             }
             else
             {
-                // Add right parenthesis if group is a variable
-                auto it = find(rightParenthesisIndex.begin(), rightParenthesisIndex.end(), currentParenthesisIndex);
-                if (it != rightParenthesisIndex.end())
+                // 1. Update the last operand met
+                if (lastOperandsIndexes.find(currentLevel) == lastOperandsIndexes.end())
                 {
-                    rightParenthesisIndex.erase(it);
-                    expression.insert(i+1, ")");
-                    currentParenthesisIndex--;
-                    i++;
+                    lastOperandsIndexes.insert(std::make_pair(currentLevel, i));
                 }
-
-                previousIndex = i;
+                else
+                {
+                    lastOperandsIndexes[currentLevel] = i;
+                }
+               
+                // 2. Add right parenthesis if we should
+                auto it = find(rightParenthesis.begin(), rightParenthesis.end(), currentLevel);
+                if (it != rightParenthesis.end())
+                {
+                    rightParenthesis.erase(it);
+                    expression.insert(i + 1, ")");
+                }
             }
+
+            //std::cout << "index of i " << i << std::endl;
+/* for (auto it = indexes.begin(); it != indexes.end(); ++it)
+     std::cout << it->first << " => " << it->second << '\n';*/
         }
     }
 
@@ -282,17 +277,17 @@ void TestPart2()
     //std::cout << EvaluateExpression(AddParenthesis("((2 + 4 * 9) * (6 + 9 * 8 + 6) + 6) + 2 + 4 * 2", '+'), offset) << std::endl;
 
 
-    //std::cout << AddParenthesis("(2 + 4 * 9)", '+') << std::endl;
-    //std::cout << AddParenthesis("((2 + 4 * 9) + 6)", '+') << std::endl;
-    //std::cout << AddParenthesis("((2 + 4 * 9) * (6 + 9 * 8 + 6) + 6) + 2 + 4 * 2", '+') << std::endl;
-    //std::cout << AddParenthesis("((2 + 4 * 9) * (6 + 9 * 8 + 6) + 6) + 2 + 4 * 2", '+') << std::endl;
-    //std::cout << AddParenthesis("5 + (8 * 3 + 9 + 3 * 4 * 3)", '+') << std::endl;
+    std::cout << AddParenthesis("(2 + 4 * 9)", '+') << std::endl;
+    std::cout << AddParenthesis("((2 + 4 * 9) + 6)", '+') << std::endl;
+    std::cout << AddParenthesis("((2 + 4 * 9) * (6 + 9 * 8 + 6) + 6) + 2 + 4 * 2", '+') << std::endl;
+    std::cout << AddParenthesis("((2 + 4 * 9) * (6 + 9 * 8 + 6) + 6) + 2 + 4 * 2", '+') << std::endl;
+    std::cout << AddParenthesis("5 + (8 * 3 + 9 + 3 * 4 * 3)", '+') << std::endl;
 }
 
 int main()
 {
     std::cout << "Operation Order" << std::endl;
 
-    TestPart2();
-    //Part1("input.txt");
+    //TestPart2();
+    Part1("input.txt");
 }
