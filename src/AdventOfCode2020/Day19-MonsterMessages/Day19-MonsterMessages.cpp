@@ -151,7 +151,7 @@ vector<string> BuildRules(ifstream* file)
         std::cout << it->first << " => " ;
         for (size_t k = 0; k < it->second.size(); k++)
         {
-            std::cout << it->second[k] << "//";
+            std::cout << it->second[k];
             currentRule += it->second[k];
         }
         std::cout << endl;
@@ -169,7 +169,26 @@ int NbMessageMatchRule(ifstream* file, vector<string> rules, int ruleIndex)
     string line;
     while (getline(*file, line))
     {
-        if (std::regex_match(line, regex(rules[ruleIndex])))
+        bool matched = false;
+
+        int i = 1;
+        int nbCombi = 15;
+        while (i <= nbCombi && !matched)
+        {
+            string currentRule = rules[ruleIndex];
+
+            int index = currentRule.find("@");
+            currentRule.replace(index, 1, to_string(i));
+            index = currentRule.find("@", index + 1);
+            currentRule.replace(index, 1, to_string(i));
+
+            //cout << currentRule << endl;
+
+            matched = std::regex_match(line, regex(currentRule));
+            i++;
+        }
+
+        if (matched)
         {
             std::cout << "string object matched\n";
             result++;
@@ -204,6 +223,6 @@ void Part1(string fileName)
 int main()
 {
     cout << "Monster Messages" << endl;
-    Part1("input.txt");
+    Part1("inputModified.txt");
 
 }
