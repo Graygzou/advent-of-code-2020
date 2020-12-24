@@ -31,7 +31,8 @@ map<string, vector<int>> CreateUniqueIdsFromTileSides(ifstream *file)
         int index = 0;
         while (getline(*file, line) && !line.empty())
         {
-            cout << line << endl;
+            leftSide += line[0];
+            rightSide += line[line.size() - 1];
 
             if (index == 0 || index == 9)
             {
@@ -55,11 +56,7 @@ map<string, vector<int>> CreateUniqueIdsFromTileSides(ifstream *file)
                 {
                     uniqueIds[line].push_back(id);
                 }
-                //uniqueIds[line].push_back(id);
             }
-
-            leftSide += line[0];
-            rightSide += line[line.size() - 1];
 
             index++;
         }
@@ -69,7 +66,6 @@ map<string, vector<int>> CreateUniqueIdsFromTileSides(ifstream *file)
             uniqueIds.insert(make_pair(leftSide, vector<int>()));
         if (find(uniqueIds[leftSide].begin(), uniqueIds[leftSide].end(), id) == uniqueIds[leftSide].end())
             uniqueIds[leftSide].push_back(id);
-        //uniqueIds[leftSide].push_back(id);
 
         reverse(leftSide.begin(), leftSide.end());
 
@@ -77,14 +73,12 @@ map<string, vector<int>> CreateUniqueIdsFromTileSides(ifstream *file)
             uniqueIds.insert(make_pair(leftSide, vector<int>()));
         if (find(uniqueIds[leftSide].begin(), uniqueIds[leftSide].end(), id) == uniqueIds[leftSide].end())
             uniqueIds[leftSide].push_back(id);
-        //uniqueIds[leftSide].push_back(id);
 
         // Right side
         if (uniqueIds.find(rightSide) == uniqueIds.end())
             uniqueIds.insert(make_pair(rightSide, vector<int>()));
         if (find(uniqueIds[rightSide].begin(), uniqueIds[rightSide].end(), id) == uniqueIds[rightSide].end())
             uniqueIds[rightSide].push_back(id);
-        //uniqueIds[rightSide].push_back(id);
 
         reverse(rightSide.begin(), rightSide.end());
 
@@ -92,12 +86,27 @@ map<string, vector<int>> CreateUniqueIdsFromTileSides(ifstream *file)
             uniqueIds.insert(make_pair(rightSide, vector<int>()));
         if (find(uniqueIds[rightSide].begin(), uniqueIds[rightSide].end(), id) == uniqueIds[rightSide].end())
             uniqueIds[rightSide].push_back(id);
-        //uniqueIds[rightSide].push_back(id);
-
-        cout << "Exit tile ID " << id << endl;
     }
 
     return uniqueIds;
+}
+
+bool cmp(pair<int, int>& pair1, pair<int, int>& pair2)
+{
+    return pair1.second < pair2.second;
+}
+
+vector<pair<int, int>> sort(map<int, int>& map)
+{
+    vector<pair<int, int>> vectorSorted;
+
+    for (auto& it : map)
+    {
+        vectorSorted.push_back(it);
+    }
+
+    sort(vectorSorted.begin(), vectorSorted.end(), cmp);
+    return vectorSorted;
 }
 
 void Part1(string fileName)
@@ -107,26 +116,10 @@ void Part1(string fileName)
     if (file.is_open())
     {
         map<string, vector<int>> rules = CreateUniqueIdsFromTileSides(&file);
-
-        cout << "============" << endl;
-        for (auto it = rules.begin(); it != rules.end(); ++it)
-        {
-            cout << it->first << " ==> ";
-
-            for (size_t i = 0; i < it->second.size(); i++)
-            {
-                cout << it->second[i] << ", ";
-            }
-            cout << endl;
-        }
-        cout << "============" << endl;
-
-
         map<int, int> nbCommunSide;
+
         for (auto it = rules.begin(); it != rules.end(); ++it)
         {
-            cout << it->first << " ==> ";
-
             if (it->second.size() == 2)
             {
                 for (size_t i = 0; i < it->second.size(); i++)
@@ -137,21 +130,24 @@ void Part1(string fileName)
                     nbCommunSide[it->second[i]]++;
                 }
             }
-
-            for (size_t i = 0; i < it->second.size(); i++)
-            {
-                cout << it->second[i] << ", ";
-            }
-            cout << endl;
         }
 
-        for (auto it = nbCommunSide.begin(); it != nbCommunSide.end(); ++it)
+        vector<pair<int, int>> sortedSides = sort(nbCommunSide);
+
+        int index = 0;
+        unsigned long long result = 1;
+        for (auto& it : sortedSides)
         {
-            cout << it->first << " ==> " << it->second << endl;
+            if (index < 4)
+            {
+                result *= it.first;
+            }
+            index++;
+
+            cout << it.first << ' ' << it.second << endl;
         }
 
-        //int result = NbMessageMatchRule(&file, rules, 0);
-        //std::cout << "Result for part 1 is " << result << std::endl;
+        std::cout << "Result for part 1 is " << result << std::endl;
     }
 }
 
