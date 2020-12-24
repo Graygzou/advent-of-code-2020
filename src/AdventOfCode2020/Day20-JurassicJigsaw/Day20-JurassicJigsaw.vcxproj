@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{539c2480-7136-4cb3-90c5-8512b16a4e44}</ProjectGuid>
-    <RootNamespace>Day19MonsterMessages</RootNamespace>
+    <ProjectGuid>{06e793ae-3ee7-43d0-a889-e2cd3a7541cb}</ProjectGuid>
+    <RootNamespace>Day20JurassicJigsaw</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -139,14 +139,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Day19-MonsterMessages.cpp" />
+    <ClCompile Include="Day20-JurassicJigsaw.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="example3.txt" />
     <Text Include="example.txt" />
-    <Text Include="example2.txt" />
     <Text Include="input.txt" />
-    <Text Include="inputModified.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

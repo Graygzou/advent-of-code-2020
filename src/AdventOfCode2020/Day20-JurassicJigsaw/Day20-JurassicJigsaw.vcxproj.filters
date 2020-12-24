@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Day19-MonsterMessages.cpp">
+    <ClCompile Include="Day20-JurassicJigsaw.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -23,16 +23,7 @@
     <Text Include="example.txt">
       <Filter>Resource Files</Filter>
     </Text>
-    <Text Include="example2.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
-    <Text Include="example3.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
     <Text Include="input.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
-    <Text Include="inputModified.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>
