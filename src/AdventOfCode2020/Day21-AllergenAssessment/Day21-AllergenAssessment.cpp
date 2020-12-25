@@ -6,6 +6,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -20,7 +21,6 @@ vector<string> RemoveFromFirstVector(vector<string> vec1, vector<string> vec2)
             updateVec.erase(it);
         }
     }
-
     return updateVec;
 }
 
@@ -34,7 +34,6 @@ vector<string> ConcatVectorsWithoutDuplicates(vector<string> vec1, vector<string
             concat.push_back(vec2[i]);
         }
     }
-
     return concat;
 }
 
@@ -49,7 +48,6 @@ vector<string> IntersectionVectors(vector<string> vec1, vector<string> vec2)
             merged.push_back(vec1[i]);
         }
     }
-
     return merged;
 }
 
@@ -116,8 +114,6 @@ void Part1(string fileName)
 {
     vector<string> allIngredientsListedWithoutAllergens = vector<string>();
     vector<string> cumulatedSafeFood = vector<string>();
-
-    map<string, string> ingredientWithAllergens = map<string, string>();
     map<string, vector<string>> possibleAllergensMapping = map<string, vector<string>>();
 
     std::ifstream file;
@@ -136,31 +132,6 @@ void Part1(string fileName)
                 allIngredientsListedWithoutAllergens.push_back(ingredients[i]);
             }
 
-            //cout << "Ingredients" << endl;
-            //for (size_t i = 0; i < ingredients.size(); i++)
-            //{
-            //    cout << ingredients[i] << endl;
-            //}
-            //cout << "===========================" << endl;
-
-            //cout << "Allergens" << endl;
-            //for (size_t i = 0; i < allergens.size(); i++)
-            //{
-            //    cout << allergens[i] << endl;
-            //}
-            //cout << "===========================" << endl;
-
-            for (auto it5 = possibleAllergensMapping.begin(); it5 != possibleAllergensMapping.end(); ++it5)
-            {
-                cout << "== " << it5->first << " ==> ";
-                for (size_t i = 0; i < it5->second.size(); i++)
-                {
-                    cout << it5->second[i] << " ";
-                }
-                cout << endl;
-            }
-
-            vector<string> candidateForAllergen;
             for (size_t i = 0; i < allergens.size(); i++)
             {
                 string currentAllergen = allergens[i];
@@ -170,18 +141,11 @@ void Part1(string fileName)
                     possibleAllergensMapping[currentAllergen] = ingredients;
                 }
 
-                candidateForAllergen = IntersectionVectors(ingredients, possibleAllergensMapping[currentAllergen]);
-
+                vector<string> candidateForAllergen = IntersectionVectors(ingredients, possibleAllergensMapping[currentAllergen]);
                 vector<string> safeFood = DifferenceVectors(ingredients, possibleAllergensMapping[currentAllergen]);
+                cumulatedSafeFood = ConcatVectorsWithoutDuplicates(cumulatedSafeFood, safeFood);  
+
                 possibleAllergensMapping[currentAllergen] = candidateForAllergen;
-
-                cumulatedSafeFood = ConcatVectorsWithoutDuplicates(cumulatedSafeFood, safeFood);
-
-                //cout << "Safe food" << endl;
-                //for (size_t i = 0; i < safeFood.size(); i++)
-                //{
-                //    cout << safeFood[i] << endl;
-                //}                
             }
 
             // Update the final list
@@ -189,35 +153,48 @@ void Part1(string fileName)
             {
                 cumulatedSafeFood = RemoveFromFirstVector(cumulatedSafeFood, it->second);
             }
-
-            cout << "OOF" << endl;
-            for (size_t i = 0; i < cumulatedSafeFood.size(); i++)
-            {
-                cout << cumulatedSafeFood[i] << endl;
-            }
-            cout << "==================" << endl;
         }
     }
 
-    //cout << "LALLA" << cumulatedSafeFood.size() << endl;
-    //for (size_t i = 0; i < cumulatedSafeFood.size(); i++)
-    //{
-    //    cout << cumulatedSafeFood[i] << endl;
-    //}
-    //cout << " END LALLA" << cumulatedSafeFood.size() << endl;
+    map<string, string> ingredientWithAllergens = map<string, string>();
+    for (auto it = possibleAllergensMapping.begin(); it != possibleAllergensMapping.end(); ++it)
+    {
+        if (it->second.size() == 1)
+        {
+            string ingredientFound = it->second[0];
+            ingredientWithAllergens.insert(make_pair(it->first, ingredientFound));
+
+            // Remove the ingredient from all lists.
+            for (auto it2 = possibleAllergensMapping.begin(); it2 != possibleAllergensMapping.end(); ++it2)
+            {
+                auto index = find(it2->second.begin(), it2->second.end(), ingredientFound);
+                if (index != it2->second.end())
+                {
+                    it2->second.erase(index);
+                }
+            }
+
+            // Start over
+            it = possibleAllergensMapping.begin();
+        }
+    }
 
     unsigned long long result = 0;
     for (size_t i = 0; i < allIngredientsListedWithoutAllergens.size(); i++)
     {
-        cout << allIngredientsListedWithoutAllergens[i] << endl;
         if (find(cumulatedSafeFood.begin(), cumulatedSafeFood.end(), allIngredientsListedWithoutAllergens[i]) != cumulatedSafeFood.end())
         {
             result++;
         }
     }
 
-    cout << "Nb of ingredients = " << allIngredientsListedWithoutAllergens.size() << endl;
     std::cout << "Result for part 1 is " << result << std::endl;
+    std::cout << "Canonical dangerous ingredient list is ";
+    for (auto it = ingredientWithAllergens.begin(); it != ingredientWithAllergens.end(); ++it)
+    {
+        cout << it->second << ",";
+    }
+    cout << endl;
 }
 
 void Tests()
