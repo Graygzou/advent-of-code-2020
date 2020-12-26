@@ -5,6 +5,7 @@
 #include <fstream>
 #include <string>
 #include <queue>
+#include <stack>
 
 using namespace std;
 
@@ -23,7 +24,7 @@ queue<int> CreateNewQueueFrom(queue<int> deck, int size)
     return result;
 }
 
-string GetConfigurationFootprint(queue<int> player1Cards, queue<int> player2Cards)
+string GetConfigurationFootprint(queue<int> player1Cards)
 {
     string result("");
     while (!player1Cards.empty())
@@ -31,15 +32,6 @@ string GetConfigurationFootprint(queue<int> player1Cards, queue<int> player2Card
         result += to_string(player1Cards.front()) + ",";
         player1Cards.pop();
     }
-    result += "/";
-    while (!player2Cards.empty())
-    {
-        result += to_string(player2Cards.front()) + ",";
-        player2Cards.pop();
-    }
-
-    //cout << result << endl;
-
     return result;
 }
 
@@ -63,7 +55,6 @@ void Part1(string fileName)
     queue<int> player1deck;
     queue<int> player2deck;
 
-    int factor = 0;
     file.open(fileName);
     if (file.is_open())
     {
@@ -72,7 +63,6 @@ void Part1(string fileName)
             if (line.size() > 0 && line.size() < 5)
             {
                 player1deck.push(atoi(line.c_str()));
-                factor++;
             }
         }
 
@@ -81,27 +71,33 @@ void Part1(string fileName)
             if (line.size() > 0 && line.size() < 5)
             {
                 player2deck.push(atoi(line.c_str()));
-                factor++;
             }
         }
     }
 
-    vector<string> currentConfigurationFootprint;
-    queue<vector<string>> configurationFootprintsMet;
-
-    queue<queue<int>> savedConfigurationsPla1;
-    queue<queue<int>> savedConfigurationsPla2;
-    queue<int> player1Cards;
-    queue<int> player2Cards;
+    // avoid recursions
+    vector<string> currentConfigurationFootprintPla1;
+    vector<string> currentConfigurationFootprintPla2;
+    stack<vector<string>> configurationFootprintsMetPla1;
+    stack<vector<string>> configurationFootprintsMetPla2;
+    // decks stack
+    stack<queue<int>> savedConfigurationsPla1;
+    stack<queue<int>> savedConfigurationsPla2;
+    // played cards stack
+    stack<int> player1Cards;
+    stack<int> player2Cards;
 
     bool player1WinRound = false;
+    bool player2WinRound = false;
+
     bool currentGameDone = false;
-    bool newGameStarted = false;
+
     int index = 1;
     int gameIndex = 1;
     while (!currentGameDone || !savedConfigurationsPla1.empty())
     {
-        player1WinRound = true;
+        player1WinRound = false;
+        player2WinRound = false;
 
         int player1Card = 0;
         int player2Card = 0;
@@ -110,49 +106,60 @@ void Part1(string fileName)
         cout << "Player 1's deck: " << DisplayDeck(player1deck) << endl;
         cout << "Player 2's deck: " << DisplayDeck(player2deck) << endl;
 
-        string currentFootprint = GetConfigurationFootprint(player1deck, player2deck);
+        string currentFootprintPla1 = GetConfigurationFootprint(player1deck);
+        string currentFootprintPla2 = GetConfigurationFootprint(player2deck);
 
-        if (find(currentConfigurationFootprint.begin(), currentConfigurationFootprint.end(), currentFootprint) != currentConfigurationFootprint.end())
+        if (find(currentConfigurationFootprintPla1.begin(), currentConfigurationFootprintPla1.end(), currentFootprintPla1) != currentConfigurationFootprintPla1.end()
+            || find(currentConfigurationFootprintPla2.begin(), currentConfigurationFootprintPla2.end(), currentFootprintPla2) != currentConfigurationFootprintPla2.end())
         {
             // game instantly ends in a win for player 1
             player1WinRound = true;
-            cout << "STOP THE GAME !" << endl;
-            break;
+            player2deck = queue<int>();
+            currentGameDone = true;
         }
         else
         {
-            currentConfigurationFootprint.push_back(currentFootprint);
+            currentConfigurationFootprintPla1.push_back(currentFootprintPla1);
+            currentConfigurationFootprintPla2.push_back(currentFootprintPla2);
         }
 
         if (currentGameDone)
         {
-            player1WinRound = !player1deck.empty();
+            if (gameIndex > 1)
+            {
+                player1WinRound = !player1deck.empty();
+                player2WinRound = !player2deck.empty();
 
-            player1deck = savedConfigurationsPla1.front();
-            savedConfigurationsPla1.pop();
-            player2deck = savedConfigurationsPla2.front();
-            savedConfigurationsPla2.pop();
+                player1deck = savedConfigurationsPla1.top();
+                player2deck = savedConfigurationsPla2.top();
 
-            player1Card = player1Cards.front();
-            player1Cards.pop();
-            player2Card = player2Cards.front();
-            player2Cards.pop();
+                savedConfigurationsPla1.pop();
+                savedConfigurationsPla2.pop();
 
-            // Setup back footprints
-            currentConfigurationFootprint = configurationFootprintsMet.front();
-            configurationFootprintsMet.pop();
+                player1Card = player1Cards.top();
+                player1Cards.pop();
+                player2Card = player2Cards.top();
+                player2Cards.pop();
 
-            gameIndex--;
-            index = 1;
+                // Setup back footprints
+                currentConfigurationFootprintPla1 = configurationFootprintsMetPla1.top();
+                configurationFootprintsMetPla1.pop();
+                currentConfigurationFootprintPla2 = configurationFootprintsMetPla2.top();
+                configurationFootprintsMetPla2.pop();
+
+                gameIndex--;
+                index = 1;
+            }
         }
         else
         {
+            // pick cards
             player1Card = player1deck.front();
-            player2Card = player2deck.front();
-
             player1deck.pop();
+            player2Card = player2deck.front();
             player2deck.pop();
 
+            // Check if we can recurse
             if (player1Card <= player1deck.size() && player2Card <= player2deck.size())
             {
                 // Recursive start
@@ -167,39 +174,32 @@ void Part1(string fileName)
                 player1deck = CreateNewQueueFrom(player1deck, player1Card);
                 player2deck = CreateNewQueueFrom(player2deck, player2Card);
 
-                configurationFootprintsMet.push(currentConfigurationFootprint);
-                currentConfigurationFootprint = vector<string>();
-
-                newGameStarted = true;
+                configurationFootprintsMetPla1.push(currentConfigurationFootprintPla1);
+                configurationFootprintsMetPla2.push(currentConfigurationFootprintPla2);
+                currentConfigurationFootprintPla1 = vector<string>();
+                currentConfigurationFootprintPla2 = vector<string>();
             }
             else
             {
                 // Regular rounds
                 player1WinRound = player1Card > player2Card;
+                player2WinRound = !player1WinRound;
             }
         }
 
         cout << "Player 1 plays: " << player1Card << endl;
         cout << "Player 2's deck: " << player2Card << endl;
 
-        if (!newGameStarted)
+        if (player1WinRound)
         {
-            if (player1WinRound)
-            {
-                player1deck.push(player1Card);
-                player1deck.push(player2Card);
-            }
-            else
-            {
-                player2deck.push(player2Card);
-                player2deck.push(player1Card);
-            }
+            player1deck.push(player1Card);
+            player1deck.push(player2Card);
         }
-        else
+        else if (player2WinRound)
         {
-            newGameStarted = false;
+            player2deck.push(player2Card);
+            player2deck.push(player1Card);
         }
-        
 
         currentGameDone = player1deck.empty() || player2deck.empty();
         index++;
@@ -218,7 +218,7 @@ void Part1(string fileName)
     }
     else
     {
-        int faqctor = player2deck.size();
+        int factor = player2deck.size();
         while (!player2deck.empty())
         {
             result += factor * player2deck.front();
@@ -233,5 +233,5 @@ void Part1(string fileName)
 int main()
 {
     std::cout << "Crab Combat" << endl;
-    Part1("example.txt");
+    Part1("input.txt");
 }
