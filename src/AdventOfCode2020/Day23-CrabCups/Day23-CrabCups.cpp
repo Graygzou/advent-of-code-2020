@@ -8,7 +8,7 @@
 
 using namespace std;
 
-void Part1(string fileName)
+void Part1(string fileName, bool part2)
 {
     ifstream file;
     string line;
@@ -35,7 +35,19 @@ void Part1(string fileName)
         }
     }
 
-    int nbTurns = 100;
+    if (part2)
+    {
+        int nbCups = 1000000;
+        maxValue = nbCups;
+        for (size_t i = cups.size(); i <= nbCups; i++)
+        {
+            cups.push_back(i);
+        }
+    }
+
+    cout << "Size " << cups.size() << endl;
+
+    int nbTurns = 10000000;
     vector<int> previousPickUps;
 
     int currentIndex = 0;
@@ -54,26 +66,30 @@ void Part1(string fileName)
             }
         }
 
-        cout << "-- Move " << (turn + 1) << " --" << endl;
-        cout << "cups: ";
-        for (size_t i = 0; i < cups.size(); i++)
+        if ((turn + 1) % 1000 == 0)
         {
-            if (i == currentIndex)
-            {
-                cout << "(";
-            }
-            cout << cups[i];
-            if (i == currentIndex)
-            {
-                cout << ")";
-            }
-            cout << ", ";
+            cout << "-- Move " << (turn + 1) << " --" << endl;
         }
-        cout << endl << "pick up: ";
-        for (auto it = pickUps.begin(); it != pickUps.end(); ++it)
-        {
-            cout << *it << ", ";
-        }
+       
+        //cout << "cups: ";
+        //for (size_t i = 0; i < cups.size(); i++)
+        //{
+        //    if (i == currentIndex)
+        //    {
+        //        cout << "(";
+        //    }
+        //    cout << cups[i];
+        //    if (i == currentIndex)
+        //    {
+        //        cout << ")";
+        //    }
+        //    cout << ", ";
+        //}
+        //cout << endl << "pick up: ";
+        //for (auto it = pickUps.begin(); it != pickUps.end(); ++it)
+        //{
+        //    cout << *it << ", ";
+        //}
         
 
         // remove extra elements at the beginning
@@ -100,13 +116,13 @@ void Part1(string fileName)
         auto it = find(cups.begin(), cups.end(), destination);
         int index = std::distance(cups.begin(), it);
 
-        cout << endl << "destination: " << destination << endl;
-        cout << endl << "index: " << index << endl;
+        //cout << endl << "destination: " << destination << endl;
+        //cout << endl << "index: " << index << endl;
 
-        for (size_t i = 0; i < pickUps.size(); i++)
-        {
-            cout << pickUps[i] << endl;
-        }
+        //for (size_t i = 0; i < pickUps.size(); i++)
+        //{
+        //    cout << pickUps[i] << endl;
+        //}
 
         if (index < currentIndex )
         {
@@ -122,18 +138,31 @@ void Part1(string fileName)
         currentIndex = (currentIndex + 1) % maxValue;
     }
 
-    cout << "-- final --" << endl;
-    cout << "cups: ";
-    for (size_t i = 0; i < cups.size(); i++)
+    if (!part2)
     {
-        cout << cups[i] << ", ";
+        cout << "-- final --" << endl;
+        cout << "cups: ";
+        for (size_t i = 0; i < cups.size(); i++)
+        {
+            cout << cups[i] << ", ";
+        }
+        cout << endl;
     }
-    cout << endl;
+    else
+    {
+        auto it = find(cups.begin(), cups.end(), 1);
+        int index = std::distance(cups.begin(), it);
 
+        cout << "Number 1 " << cups[index + 1] << endl;
+        cout << "Number 2 " << cups[index + 2] << endl;
+
+        unsigned long long result = cups[index + 1] * cups[index + 2];
+        cout << "Result part 2 is " << result << endl;
+    }
 }
 
 int main()
 {
     std::cout << "Crab Cups" << endl;
-    Part1("input.txt");
+    Part1("example.txt", true);
 }
