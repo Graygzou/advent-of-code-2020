@@ -35,9 +35,7 @@ void Part1(string fileName)
         }
     }
 
-    //maxValue -= 1;
-
-    int nbTurns = 10;
+    int nbTurns = 100;
     vector<int> previousPickUps;
 
     int currentIndex = 0;
@@ -78,29 +76,24 @@ void Part1(string fileName)
         }
         
 
-        if (lastIndex == cups.size())
-        {
-            cups.erase(cups.begin() + currentIndex + 1, cups.begin() + lastIndex);
+        // remove extra elements at the beginning
+        int removingIndexStart = max(0, (currentIndex + pickUpNumber) - (int)cups.size());
+        cups.erase(cups.begin() + currentIndex + 1, cups.begin() + lastIndex);
 
-            // remove extra elements at the beginning
-            int removingIndexStart = (currentIndex + pickUpNumber - 1) - cups.size();
-
-            cout << "LALALALA" << removingIndexStart << endl;
-            cups.erase(cups.begin(), cups.begin() + removingIndexStart);
-        }
-        else
-        {
-            cups.erase(cups.begin() + currentIndex + 1, cups.begin() + lastIndex);
-        }
+        cups.erase(cups.begin(), cups.begin() + pickUpNumber - (lastIndex - (currentIndex + 1)));
         
         int destination = value;
         
-        while (find(pickUps.begin(), pickUps.end(), destination) != pickUps.end())
+        while (destination == 0 || 
+            find(pickUps.begin(), pickUps.end(), destination) != pickUps.end())
         {
-            destination--;
             if (destination == 0)
             {
                 destination = maxValue;
+            }
+            else
+            {
+                destination--;
             }
         }
 
@@ -117,14 +110,9 @@ void Part1(string fileName)
 
         if (index < currentIndex )
         {
-            int nbElementToRemoveAtTheEnd = max(0, (int)cups.size() - (currentIndex + 1));
-            cout << "nbElementToRemoveAtTheEnd " << nbElementToRemoveAtTheEnd << endl;
-            currentIndex = (currentIndex + (pickUpNumber - nbElementToRemoveAtTheEnd)) % maxValue;
-            cout << "ICI " << currentIndex << endl;
-            //index = currentIndex;
+            currentIndex = (currentIndex + pickUpNumber - (pickUpNumber - (lastIndex - (currentIndex + 1)))) % maxValue;
         }
 
-        //for (size_t i = 0; i < n.size(); i++)
         for(auto it = pickUps.rbegin(); it != pickUps.rend(); ++it)
         {
             cups.insert(cups.begin() + index + 1, *it);
@@ -134,15 +122,18 @@ void Part1(string fileName)
         currentIndex = (currentIndex + 1) % maxValue;
     }
 
+    cout << "-- final --" << endl;
+    cout << "cups: ";
     for (size_t i = 0; i < cups.size(); i++)
     {
-        cout << cups[i] << endl;
+        cout << cups[i] << ", ";
     }
+    cout << endl;
 
 }
 
 int main()
 {
     std::cout << "Crab Cups" << endl;
-    Part1("example.txt");
+    Part1("input.txt");
 }
