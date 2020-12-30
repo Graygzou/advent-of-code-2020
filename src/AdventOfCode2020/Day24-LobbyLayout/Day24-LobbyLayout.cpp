@@ -11,7 +11,7 @@ using namespace std;
 
 typedef pair<float, float> Position;
 
-#pragma region function defs
+#pragma region function signatures defs
 void ProcessInput(string fileName);
 
 void FlipTiles(map<Position, bool>* tilePositions);
@@ -121,7 +121,7 @@ int main()
 {
     std::cout << "Lobby Layout" << endl;
     //Tests();
-    ProcessInput("example.txt");
+    ProcessInput("input.txt");
 }
 
 void ProcessInput(string fileName)
@@ -185,21 +185,15 @@ vector<Position> FindCandidates(map<Position, bool> tilePositions, vector<Positi
             {
                 if (it2->first != it->first && tilePositions[it2->first])
                 {
-                    // For now we will add all his neighbors. 
-                    // IMPROVEMENTS: we could filtrate more if needed by only adding potential node thanks to every configurations.
-
                     bool nextToEachOther = Magnitude(it->first, it2->first) <= 1.5;
                     if (nextToEachOther)
                     {
                         nbAdjacentBlackTiles++;
                     }
-                    // sqrt(4) == 2
-                    bool appartButAligned = Magnitude(it->first, it2->first) == 2;
-                    // sqrt(3) == 1.80277564
-                    bool appartAndFollowHexaLine = Magnitude(it->first, it2->first) == 1.80277564;
-                    // sqrt(5) == 2,23606798
-                    bool appartAndNotFollowHexaLine = Magnitude(it->first, it2->first) == 2.23606798;
-                    if (nextToEachOther || appartButAligned || appartAndFollowHexaLine || appartAndNotFollowHexaLine)
+
+                    // For now we will add all his neighbors. 
+                    // IMPROVEMENTS: we could filtrate more if needed by only adding potential node thanks to every configurations.
+                    if (nextToEachOther || Magnitude(it->first, it2->first) < 2.5)
                     {
                         for (size_t i = 0; i < NEIGHBOTS_TOTAL_COUNT; i++)
                         {
@@ -271,7 +265,6 @@ void FlipBlackTileToWhite(vector<Position> nextwhiteTiles, map<Position, bool>* 
     for (auto it = nextwhiteTiles.begin(); it != nextwhiteTiles.end(); ++it)
     {
         tilePositions->erase(*it);
-        //(*tilePositions)[*it] = false;
     }
 }
 #pragma endregion Part 2 functions
