@@ -15,10 +15,12 @@ typedef pair<float, float> Position;
 void ProcessInput(string fileName);
 
 void FlipTiles(map<Position, bool>* tilePositions);
-vector<Position> FindCandidates(map<Position, bool> tilePositions);
+vector<Position> FindCandidates(map<Position, bool> tilePositions, vector<Position>* futureWhiteTile);
 vector<Position> FindFinalCandidates(vector<Position> candidates, map<Position, bool> tilePositions);
-void FlipFinalCandidates(vector<Position> nextBlackTiles, map<Position, bool>* tilePositions);
-bool CountBlackNeighbor(Position position, map<Position, bool> tilePositions);
+void FlipFinalCandidatesToBlack(vector<Position> nextBlackTiles, map<Position, bool>* tilePositions);
+int CountBlackNeighbor(Position position, map<Position, bool> tilePositions);
+
+void FlipBlackTileToWhite(vector<Position> nextwhiteTiles, map<Position, bool>* tilePositions);
 #pragma endregion
 
 #pragma region Consts
@@ -27,7 +29,7 @@ const Position NEIGHBORS_RELATIVE_POS[]
 { 
         Position(-0.5,1),  Position(0.5,1), 
 
-    Position(0,-1),             Position(0,1), 
+    Position(-1,0),             Position(1,0), 
 
         Position(-0.5,-1), Position(0.5,-1) 
 };
@@ -149,11 +151,11 @@ void ProcessInput(string fileName)
 
     cout << "Result part 1 is " << CountTotalBlackTiles(tilePositions) << endl;
 
-    int nbDays = 1;
+    int nbDays = 100;
     for (size_t day = 0; day < nbDays; day++)
     {
         FlipTiles(&tilePositions);
-        cout << "Day " << day << ":" << CountTotalBlackTiles(tilePositions) << endl;
+        cout << "Day " << (day + 1) << ":" << CountTotalBlackTiles(tilePositions) << endl;
     }
 
     cout << "Result part 2 is " << CountTotalBlackTiles(tilePositions) << endl;
@@ -162,39 +164,59 @@ void ProcessInput(string fileName)
 #pragma region Part 2 functions
 void FlipTiles(map<Position, bool>* tilePositions)
 {
-    vector<Position> candidates = FindCandidates(*tilePositions);
+    vector<Position> futureWhiteTiles;
+    vector<Position> candidates = FindCandidates(*tilePositions, &futureWhiteTiles);
     vector<Position> finalCandidates = FindFinalCandidates(candidates, *tilePositions);
-    FlipFinalCandidates(finalCandidates, tilePositions);
+
+    FlipBlackTileToWhite(futureWhiteTiles, tilePositions);
+    FlipFinalCandidatesToBlack(finalCandidates, tilePositions);
 }
 
-vector<Position> FindCandidates(map<Position, bool> tilePositions)
+vector<Position> FindCandidates(map<Position, bool> tilePositions, vector<Position> *futureWhiteTile)
 {
     vector<Position> candidates;
     
     for (auto it = tilePositions.begin(); it != tilePositions.end(); ++it)
     {
-        for (auto it2 = tilePositions.begin(); it2 != tilePositions.end() && it2 != it; ++it2)
+        if (tilePositions[it->first])
         {
-            // For now we will add all his neighbors. 
-            // IMPROVEMENTS: we could filtrate more if needed by only adding potential node thanks to every configurations.
-            
-            bool nextToEachOther = Magnitude(it->first, it2->first) < 2;
-            // sqrt(4) == 2
-            bool appartButAligned = Magnitude(it->first, it2->first) == 2;
-            // sqrt(3) == 1.80277564
-            bool appartAndFollowHexaLine = Magnitude(it->first, it2->first) == 1.80277564;
-            // sqrt(5) == 2,23606798
-            bool appartAndNotFollowHexaLine = Magnitude(it->first, it2->first) == 2.23606798;
-            if (nextToEachOther || appartButAligned || appartAndFollowHexaLine || appartAndNotFollowHexaLine)
+            int nbAdjacentBlackTiles = 0;
+            for (auto it2 = tilePositions.begin(); it2 != tilePositions.end(); ++it2)
             {
-                for (size_t i = 0; i < NEIGHBOTS_TOTAL_COUNT; i++)
+                if (it2->first != it->first && tilePositions[it2->first])
                 {
-                    Position currentCandidate = SumPair(it->first, NEIGHBORS_RELATIVE_POS[i]);
-                    if (find(candidates.begin(), candidates.end(), currentCandidate) == candidates.end())
+                    // For now we will add all his neighbors. 
+                    // IMPROVEMENTS: we could filtrate more if needed by only adding potential node thanks to every configurations.
+
+                    bool nextToEachOther = Magnitude(it->first, it2->first) <= 1.5;
+                    if (nextToEachOther)
                     {
-                        candidates.push_back(currentCandidate);
+                        nbAdjacentBlackTiles++;
+                    }
+                    // sqrt(4) == 2
+                    bool appartButAligned = Magnitude(it->first, it2->first) == 2;
+                    // sqrt(3) == 1.80277564
+                    bool appartAndFollowHexaLine = Magnitude(it->first, it2->first) == 1.80277564;
+                    // sqrt(5) == 2,23606798
+                    bool appartAndNotFollowHexaLine = Magnitude(it->first, it2->first) == 2.23606798;
+                    if (nextToEachOther || appartButAligned || appartAndFollowHexaLine || appartAndNotFollowHexaLine)
+                    {
+                        for (size_t i = 0; i < NEIGHBOTS_TOTAL_COUNT; i++)
+                        {
+                            Position currentCandidate = SumPair(it->first, NEIGHBORS_RELATIVE_POS[i]);
+                            // If the tile is not a candidate neither black yet
+                            if (find(candidates.begin(), candidates.end(), currentCandidate) == candidates.end())
+                            {
+                                candidates.push_back(currentCandidate);
+                            }
+                        }
                     }
                 }
+            }
+
+            if (nbAdjacentBlackTiles == 0 || nbAdjacentBlackTiles > 2)
+            {
+                futureWhiteTile->push_back(it->first);
             }
         }
     }
@@ -208,8 +230,8 @@ vector<Position> FindFinalCandidates(vector<Position> candidates, map<Position, 
 
     for (auto it = candidates.begin(); it != candidates.end(); ++it)
     {
-        // If the tile is not black yet
-        if (!tilePositions[*it])
+        // Make sure we only study white tiles
+        if (tilePositions.find(*it) == tilePositions.end() || !tilePositions[*it])
         {
             int nbBlackNeighnors = CountBlackNeighbor(*it, tilePositions);
             if (nbBlackNeighnors == 2)
@@ -222,7 +244,7 @@ vector<Position> FindFinalCandidates(vector<Position> candidates, map<Position, 
     return finalCandidates;
 }
 
-bool CountBlackNeighbor(Position position, map<Position, bool> tilePositions)
+int CountBlackNeighbor(Position position, map<Position, bool> tilePositions)
 {
     int nbBlackNeighbor = 0;
     for (size_t i = 0; i < NEIGHBOTS_TOTAL_COUNT; i++)
@@ -236,11 +258,20 @@ bool CountBlackNeighbor(Position position, map<Position, bool> tilePositions)
     return nbBlackNeighbor;
 }
 
-void FlipFinalCandidates(vector<Position> nextBlackTiles, map<Position, bool>* tilePositions)
+void FlipFinalCandidatesToBlack(vector<Position> nextBlackTiles, map<Position, bool>* tilePositions)
 {
     for (auto it = nextBlackTiles.begin(); it != nextBlackTiles.end(); ++it)
     {
         (*tilePositions)[*it] = true;
+    }
+}
+
+void FlipBlackTileToWhite(vector<Position> nextwhiteTiles, map<Position, bool>* tilePositions)
+{
+    for (auto it = nextwhiteTiles.begin(); it != nextwhiteTiles.end(); ++it)
+    {
+        tilePositions->erase(*it);
+        //(*tilePositions)[*it] = false;
     }
 }
 #pragma endregion Part 2 functions
