@@ -15,7 +15,7 @@ void Part1(string fileName)
     string line;
 
     vector<int> cups;
-    
+
     int maxValue = 0;
     file.open(fileName);
     if (file.is_open())
@@ -49,7 +49,7 @@ void Part1(string fileName)
     {
         numberIndexes.insert(make_pair(cups[i], i));
     }
-    
+
     int pickUpNumber = 3;
 
     vector<int> pickUps;
@@ -104,9 +104,9 @@ void Part1(string fileName)
             int indexWithoutPickUp = i % pickUpNumber;
             numberIndexes[cups[indexWithoutPickUp]] = currentDestinationIndex + indexWithoutPickUp;
         }
-        
+
         int i = pickUpNumber - 1;
-        for(auto it = pickUps.rbegin(); it != pickUps.rend(); ++it)
+        for (auto it = pickUps.rbegin(); it != pickUps.rend(); ++it)
         {
             cups.insert(cups.begin() + destinationIndex + 1, *it);
             numberIndexes[*it] = destination + i;
@@ -158,7 +158,7 @@ void Part2(string fileName, bool debug)
         maxValue = nbCups;
         for (size_t i = cups.size() + 1; i <= nbCups; i++)
         {
-            cups.insert(make_pair(i-1, i));
+            cups.insert(make_pair(i - 1, i));
         }
     }
 
@@ -177,36 +177,45 @@ void Part2(string fileName, bool debug)
         indexesOfCups.insert(make_pair(cups[i], i));
     }
 
-    cout << "index -> cup: ";
-    for (auto it = cups.begin(); it != cups.end(); ++it)
-        cout << it->second << ", ";
-    cout << endl;
-
-    cout << "indexes: ";
-    for (auto it = indexesOfCups.begin(); it != indexesOfCups.end(); ++it)
-        cout << it->first << " => " << it->second << ", ";
-    cout << endl;
-
     int pickUpNumber = 3;
 
     vector<int> pickUps;
     int selectedCupIndex = 0;
 
     int destination = -1;
-    int nextDestination = cups[selectedCupIndex] - 1;
+    //int nextDestination = cups[selectedCupIndex] - 1;
 
     int nbTurns = 100;
     for (size_t turn = 0; turn < nbTurns; turn++)
     {
-        destination = nextDestination;
+        destination = cups[selectedCupIndex] - 1;
+
+        //cout << "-- Move " << (turn + 1) << " --" << endl;
+        //cout << "index -> cup: ";
+        //int yy = 0;
+        //for (auto it = cups.begin(); it != cups.end(); ++it)
+        //{
+        //    if (yy == selectedCupIndex)
+        //    {
+        //        cout << "(";
+        //    }
+        //    cout << it->second;
+        //    if (yy == selectedCupIndex)
+        //    {
+        //        cout << ")";
+        //    }
+        //    cout << ", ";
+        //    yy++;
+        //}
+        //cout << endl;
+
+        //cout << "number -> index: ";
+        //for (auto it = indexesOfCups.begin(); it != indexesOfCups.end(); ++it)
+        //    cout << it->first << " => " << it->second << ", ";
+        //cout << endl;
 
         if ((turn + 1) % 2000 == 0)
             cout << "-- Move " << (turn + 1) << " --" << endl;
-
-        //cout << "cups: ";
-        //for (size_t i = 0; i < cups.size(); i++)
-        //    cout << cups[i] << ", ";
-        //cout << endl;
 
         pickUps.clear();
         int index = -1;
@@ -229,47 +238,74 @@ void Part2(string fileName, bool debug)
         }
 
         int destinationIndex = indexesOfCups[destinationNumber];
-        nextDestination = selectedCupIndex + 1;
+        //nextDestination = selectedCupIndex + 1;
 
-        cout << "Current destination is " << destinationIndex << " and Next destination is " << nextDestination << endl;
+        //cout << "Current index " << selectedCupIndex << endl;
+        //cout << "destination number is " << destinationNumber << endl;
+        //cout << "Current destination index is " << destinationIndex << endl;
 
-        // Update the maps by mobing all cups next to the current selected cups
-        int offset = 1;
-        for (size_t i = selectedCupIndex + pickUpNumber + 1; i < destinationIndex + 1; i++)
+        //cout << "Test " << (selectedCupIndex < destinationIndex) << endl;
+
+        if (selectedCupIndex < destinationIndex)
         {
-            int index = selectedCupIndex + offset;
+            // Update the maps by moving all cups next to the current selected cups
+            int offset = 1;
+            for (size_t i = selectedCupIndex + pickUpNumber + 1; i < destinationIndex + 1; i++)
+            {
+                int index = (selectedCupIndex + offset) % maxValue;;
 
-            // Update both maps
-            //int temp = indexesOfCups[cups[i]];
-            indexesOfCups[cups[i]] = index;
-            cups[index] = cups[i];
-            offset++;
+                // Update both maps
+                //int temp = indexesOfCups[cups[i]];
+                if (destinationNumber == cups[i]
+                    /*&& (destinationIndex + 1) - pickUpNumber < 0*/)
+                {
+                    destinationIndex = index + 1;
+                }
+
+                indexesOfCups[cups[i]] = index;
+                cups[index] = cups[i];
+                offset++;
+            }
+
+            int i = 0;
+            for (auto it = pickUps.begin(); it != pickUps.end(); ++it)
+            {
+                int index = (destinationIndex + i) % maxValue;/* - pickUpNumber + i*/;
+
+                // Update both maps
+                //int temp = indexesOfCups[*it];
+                indexesOfCups[*it] = index;
+                cups[index] = *it;
+                i++;
+            }
+        }
+        else
+        {
+            int offset = selectedCupIndex - destinationIndex;
+            for (size_t i = selectedCupIndex; i >= destinationIndex + 1; i--)
+            {
+                int index = (destinationIndex + pickUpNumber + offset) % maxValue;
+                indexesOfCups[cups[i]] = index;
+                cups[index] = cups[i];
+                offset--;
+            }
+
+            int i = 1;
+            for (auto it = pickUps.begin(); it != pickUps.end(); ++it)
+            {
+                int index = (destinationIndex + i) % maxValue;/* - pickUpNumber + i*/;
+
+                // Update both maps
+                indexesOfCups[*it] = index;
+                cups[index] = *it;
+                i++;
+            }
+
+            selectedCupIndex += pickUpNumber;
         }
 
-        int i = 0;
-        for (auto it = pickUps.begin(); it != pickUps.end(); ++it)
-        {
-            int index = (destinationIndex + 1) - pickUpNumber + i;
-
-            // Update both maps
-            //int temp = indexesOfCups[*it];
-            indexesOfCups[*it] = index;
-            cups[index] = *it;
-            i++;
-        }
-
-        cout << "index -> cup: ";
-        for (auto it = cups.begin(); it != cups.end(); ++it)
-            cout << it->second << ", ";
-        cout << endl;
-
-        cout << "number -> index: ";
-        for (auto it = indexesOfCups.begin(); it != indexesOfCups.end(); ++it)
-            cout << it->first << " => " << it->second << ", ";
-        cout << endl;
-
-
-        selectedCupIndex = ((destinationIndex < selectedCupIndex ? (selectedCupIndex + pickUpNumber) % maxValue : selectedCupIndex) + 1) % maxValue;
+        selectedCupIndex++;
+        selectedCupIndex %= maxValue;
     }
 
     cout << "-- final --" << endl;
@@ -277,24 +313,27 @@ void Part2(string fileName, bool debug)
     for (size_t i = 0; i < cups.size(); i++)
     {
         cout << cups[i] << ", ";
+        selectedCupIndex++;
+        selectedCupIndex %= maxValue;
     }
     cout << endl;
 
+    auto it = cups.find(1);
     //auto it = find(cups.begin(), cups.end(), 1);
-    //int index = std::distance(cups.begin(), it);
+    int index = std::distance(cups.begin(), it);
 
-    //cout << "Number 1 " << cups[index + 1] << endl;
-    //cout << "Number 1 " << cups[index - 1] << endl;
-    //cout << "Number 2 " << cups[index + 2] << endl;
-    //cout << "Number 2 " << cups[index - 2] << endl;
+    cout << "Number indexOf1 + 1 " << cups[index + 1] << endl;
+    cout << "Number indexOf1 - 1 " << cups[index - 1] << endl;
+    cout << "Number indexOf1 + 2 " << cups[index + 2] << endl;
+    cout << "Number indexOf1 - 2 " << cups[index - 2] << endl;
 
-    //unsigned long long result = cups[index + 1] * cups[index + 2];
-    //cout << "Result part 2 is " << result << endl;
+    unsigned long long result = cups[index + 1] * cups[index + 2];
+    cout << "Result part 2 is " << result << endl;
 }
 
 int main()
 {
     std::cout << "Crab Cups" << endl;
     //Part1("example.txt");
-    Part2("example.txt", true);
+    Part2("example.txt", false);
 }
