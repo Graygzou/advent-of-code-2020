@@ -6,101 +6,167 @@
 #include <string>
 #include <map>
 #include <regex>
+#include "Tile.h"
+#include "Border.h"
 
 using namespace std;
 
-class Border;
-
-enum SidePosition { Top, Right, Bottom, Left };
-
-class Tile
+string ReverseString(string str)
 {
-public:
-    int id;
-    bool isFlipped = false;
-    int rotatingAngle;
-    int nbBorders = 0;
+    reverse(str.begin(), str.end());
+    return str;
+}
 
-    Border* top;
-    Border* bottom;
-    Border* left;
-    Border* right;
-    vector<string> lines;
+#pragma region Tile
+Tile::Tile(int id)
+{
+    this->id = id;
+}
 
-    Tile(int id)
+void Tile::RotatePattern(SidePosition from, SidePosition to)
+{
+    // If they are opposed
+    if (from == SidePosition::Bottom && to == SidePosition::Top
+        || from == SidePosition::Top && to == SidePosition::Bottom
+        || from == SidePosition::Right && to == SidePosition::Left
+        || from == SidePosition::Left && to == SidePosition::Right)
     {
-        this->id = id;
+        // nothing to do;
+        return;
     }
-
-    string Display()
+    else if (from == to)
     {
-        string result("");
-        if (left == nullptr && top == nullptr)
-        {
-            for (size_t i = 0; i < lines.size(); i++)
-            {
-                if (isFlipped)
-                {
+        Border* temp = this->top->Copy();
+        this->top = this->bottom;
+        this->bottom = temp;
 
-                }
-                else
-                {
-                    result += lines[i];
-                }
+        temp = this->right->Copy();
+        this->right = this->left;
+        this->left = temp;
+
+        // Rotate everything by 180 (reverse ?)
+        for (size_t i = 0; i < lines.size(); i++)
+        {
+            lines[i] = ReverseString(lines[i]);
+        }
+    }
+    else if (from == SidePosition::Right && to == SidePosition::Top
+        || from == SidePosition::Bottom && to == SidePosition::Left
+        || from == SidePosition::Left && to == SidePosition::Bottom
+        || from == SidePosition::Top && to == SidePosition::Right)
+    {
+        // Rotate by 90 degree
+        Border* temp = this->left->Copy();
+        this->left = this->top;
+        this->top = this->right;
+        this->right = this->bottom;
+        this->bottom = temp;
+
+        // lines
+        vector<string> newLines(lines.size(), "");
+        for (size_t i = 0; i < lines.size(); i++)
+        {
+            for (int j = lines[i].size() - 1; j >= 0; j--)
+            {
+                newLines[j] += lines[i][j];
             }
         }
     }
-
-    void AddBorder(SidePosition direction, Tile* tile2)
+    else if (from == SidePosition::Right && to == SidePosition::Bottom
+        || from == SidePosition::Bottom && to == SidePosition::Right
+        || from == SidePosition::Left && to == SidePosition::Top
+        || from == SidePosition::Top && to == SidePosition::Left)
     {
-        switch (direction)
+        // Rotate by -90 degree
+        Border* temp = this->left->Copy();
+        this->left = this->bottom;
+        this->bottom = this->right;
+        this->right = this->top;
+        this->top = temp;
+
+        // lines
+        vector<string> newLines(lines.size(), "");
+        for (int i = lines.size() - 1; i >= 0; i--)
         {
-        case Top:
-            //top = new Border(this, tile2);
-            break;
-        case Right:
-            break;
-        case Bottom:
-            break;
-        case Left:
-            break;
-        default:
-            break;
+            for (int j = lines[i].size() - 1; j >= 0; j--)
+            {
+                newLines[j] += lines[i][j];
+            }
         }
     }
-};
+    else
+    {
+        throw new exception("bug");
+    }
+}
 
-class Border
+void Tile::AddBorder(SidePosition direction, Tile* tile2)
 {
-public:
-    Tile* tile1;
-    Tile* tile2;
-    string pattern;
-
-    Border(Tile* tile1, Tile* tile2, string pattern)
+    switch (direction)
     {
-        this->pattern = pattern;
-        this->tile1 = tile1;
-        this->tile2 = tile2;
+    case Top:
+        //top = new Border(this, tile2);
+        break;
+    case Right:
+        break;
+    case Bottom:
+        break;
+    case Left:
+        break;
+    default:
+        break;
+    }
+}
+#pragma endregion
+
+
+#pragma region Border
+Border::Border(Tile* tile1, Tile* tile2, string pattern)
+{
+    this->pattern = pattern;
+    this->tile1 = tile1;
+    this->tile2 = tile2;
+}
+
+Border* Border::Copy()
+{
+    return new Border(tile1, tile2, pattern);
+}
+
+Tile* Border::GetOtherTile(int id)
+{
+    Tile* tile = NULL;
+    if (tile1->id == id)
+    {
+        tile = tile2;
+    }
+    else if (tile2->id == id)
+    {
+        tile = tile1;
     }
 
-    void Switch(Tile* tileToswitch)
+    return tile;
+}
+
+void Border::Switch(Tile* tileToswitch)
+{
+    if (tile1 == tileToswitch)
     {
-        if (tile1 == tileToswitch)
-        {
-            tile1->isFlipped = true;
-            tile1->rotatingAngle += 180;
-        }
-        else if (tile2 == tileToswitch)
-        {
-            tile2->isFlipped = true;
-        }
-        else
-        {
-            cout << "Errors" << endl;
-        }
+        tile1->isFlipped = true;
+        tile1->rotatingAngle += 180;
     }
-};
+    else if (tile2 == tileToswitch)
+    {
+        tile2->isFlipped = true;
+    }
+    else
+    {
+        cout << "Errors" << endl;
+    }
+}
+#pragma endregion
+
+//enum SidePosition { Top, Right, Bottom, Left };
 
 map<string, vector<int>> CreateUniqueIdsFromTileSides(ifstream* file, vector<Tile*>* tiles)
 {
@@ -220,12 +286,6 @@ vector<pair<int, int>> sort(map<int, int>& map)
     return vectorSorted;
 }
 
-string ReverseString(string str)
-{
-    reverse(str.begin(), str.end());
-    return str;
-}
-
 void Part1(string fileName)
 {
     std::ifstream file;
@@ -250,11 +310,11 @@ void Part1(string fileName)
         while (tiles.size() > 0 && loop < limit)
         {
             Tile* currentTile = tiles[currentTileIndex];
-            vector<Border*> currentBorders;
-            currentBorders.push_back(currentTile->top);
-            currentBorders.push_back(currentTile->right);
-            currentBorders.push_back(currentTile->bottom);
-            currentBorders.push_back(currentTile->left);
+            vector<pair<Border*, SidePosition>> currentBorders;
+            currentBorders.push_back(make_pair(currentTile->top, SidePosition::Top));
+            currentBorders.push_back(make_pair(currentTile->right, SidePosition::Right));
+            currentBorders.push_back(make_pair(currentTile->bottom, SidePosition::Bottom));
+            currentBorders.push_back(make_pair(currentTile->left, SidePosition::Left));
 
             int nbMatchingSide = 0;
             int nbUniqueSide = 0;
@@ -268,7 +328,7 @@ void Part1(string fileName)
                 SidePosition side;
 
                 bool isUniqueSide = true;
-                string pattern = (*bord)->pattern;
+                string pattern = (*bord).first->pattern;
                 for (auto it = tiles.begin(); it != tiles.end(); it++)
                 {
                     if (*it != currentTile)
@@ -279,32 +339,32 @@ void Part1(string fileName)
                             isUniqueSide = false;
                             candidates.push_back(make_pair(*it, flipped));
                             side = SidePosition::Bottom;
-                            cout << (*bord)->tile1->id << " tile match pattern " << pattern << " with bottom of " << (*it)->id << " and is flipped =" << flipped << endl;
+                            //cout << (*bord).first->tile1->id << " tile match pattern " << pattern << " with bottom of " << (*it)->id << " and is flipped =" << flipped << endl;
                         }
                         else if (pattern == (*it)->left->pattern || (flipped = pattern == ReverseString((*it)->left->pattern)))
                         {
                             isUniqueSide = false;
                             candidates.push_back(make_pair(*it, flipped));
                             side = SidePosition::Left;
-                            cout << (*bord)->tile1->id << " tile match pattern " << pattern << " with left of " << (*it)->id << " and is flipped =" << flipped << endl;
+                            //cout << (*bord).first->tile1->id << " tile match pattern " << pattern << " with left of " << (*it)->id << " and is flipped =" << flipped << endl;
                         }
                         else if (pattern == (*it)->top->pattern || (flipped = pattern == ReverseString((*it)->top->pattern)))
                         {
                             isUniqueSide = false;
-                            if (flipped)
-                            {
-                                (*it)->isFlipped = true;
-                            }
+                            //if (flipped)
+                            //{
+                            //    (*it)->isFlipped = true;
+                            //}
                             candidates.push_back(make_pair(*it, flipped));
                             side = SidePosition::Top;
-                            cout << (*bord)->tile1->id << " tile match pattern " << pattern << " with top " << (*it)->id << " and is flipped =" << flipped << endl;
+                            //cout << (*bord).first->tile1->id << " tile match pattern " << pattern << " with top " << (*it)->id << " and is flipped =" << flipped << endl;
                         }
                         else if (pattern == (*it)->right->pattern || (flipped = pattern == ReverseString((*it)->right->pattern)))
                         {
                             isUniqueSide = false;
                             candidates.push_back(make_pair(*it, flipped));
                             side = SidePosition::Right;
-                            cout << (*bord)->tile1->id << " tile match pattern " << pattern << " with right " << (*it)->id << " and is flipped =" << flipped << endl;
+                            //cout << (*bord).first->tile1->id << " tile match pattern " << pattern << " with right " << (*it)->id << " and is flipped =" << flipped << endl;
                         }
                     }
                 }
@@ -318,21 +378,22 @@ void Part1(string fileName)
                 if (candidates.size() == 1)
                 {
                     candidates[0].first->isFlipped = candidates[0].second;
-                    (*bord)->tile2 = candidates[0].first;
+                    candidates[0].first->RotatePattern((*bord).second, side);
+                    (*bord).first->tile2 = candidates[0].first;
 
-                    switch (side)
+                    switch ((*bord).second)
                     {
                     case Top:
-                        candidates[0].first->top = (*bord);
+                        candidates[0].first->bottom = (*bord).first;
                         break;
                     case Right:
-                        candidates[0].first->right = (*bord);
+                        candidates[0].first->left = (*bord).first;
                         break;
                     case Bottom:
-                        candidates[0].first->bottom = (*bord);
+                        candidates[0].first->top = (*bord).first;
                         break;
                     case Left:
-                        candidates[0].first->left = (*bord);
+                        candidates[0].first->right = (*bord).first;
                         break;
                     default:
                         break;
@@ -364,6 +425,49 @@ void Part1(string fileName)
             }
         }
 
+        // Find the top left tile
+        Tile* topLeftTile = NULL;
+        for (auto it = grid.begin(); it != grid.end(); it++)
+        {
+            if ((*it)->top->tile2 == NULL && (*it)->left->tile2 == NULL)
+            {
+                topLeftTile = *it;
+            }
+        }
+
+        // Display the grid
+        vector<string> lines;
+        Tile* currentTile = topLeftTile;
+        while (currentTile != nullptr)
+        {
+            // concatenate Tile
+            if (lines.empty())
+            {
+                lines = currentTile->lines;
+            }
+            else
+            {
+                for (size_t i = 0; i < lines.size(); i++)
+                {
+                    lines[i] += currentTile->lines[i];
+                }
+            }
+
+            //if (currentTile->isFlipped)
+            //{
+            //    currentTile = currentTile->left->GetOtherTile(currentTile->id);
+            //}
+            //else
+            //{
+                currentTile = currentTile->right->GetOtherTile(currentTile->id);
+            //}
+        }
+
+
+        for (size_t i = 0; i < lines.size(); i++)
+        {
+            cout << lines[i] << endl;
+        }
 
 
 
