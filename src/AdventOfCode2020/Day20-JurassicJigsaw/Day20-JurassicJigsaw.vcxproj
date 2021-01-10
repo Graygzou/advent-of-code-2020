@@ -140,8 +140,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Day20-JurassicJigsaw.cpp" />
-    <ClCompile Include="Border.cpp" />
-    <ClCompile Include="Tile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="example.txt" />
@@ -149,6 +147,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Border.h" />
+    <ClInclude Include="Pattern.h" />
     <ClInclude Include="Tile.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

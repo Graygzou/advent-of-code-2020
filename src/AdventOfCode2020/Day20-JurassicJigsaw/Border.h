@@ -8,11 +8,11 @@ class Tile;
 class Border
 {
 public:
-    Border(Tile* tile1, Tile* tile2, std::string pattern);
-    Border* Copy();
-    Tile* GetOtherTile(int id);
-    void Switch(Tile* tileToswitch);
     Tile* tile1;
     Tile* tile2;
     std::string pattern;
+    bool isUnique = false;
+
+    Border(Tile* tile1, Tile* tile2, std::string pattern);
+    Tile* GetOtherTile(int id);
 };

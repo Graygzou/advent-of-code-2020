@@ -11,9 +11,6 @@ class Tile
 {
 public:
     int id;
-    bool isFlipped = false;
-    int rotatingAngle;
-    int nbBorders = 0;
 
     Border* top;
     Border* bottom;
@@ -23,5 +20,6 @@ public:
 
     Tile(int id);
     void RotatePattern(SidePosition from, SidePosition to);
-    void AddBorder(SidePosition direction, Tile* tile2);
+    void Flip();
+    void Rotate90ClockWise();
 };
