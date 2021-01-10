@@ -473,8 +473,6 @@ void Part1(string fileName)
         int totalNumberOfDial = 0;
         for (size_t i = 0; i < fullImage->lines.size(); i++)
         {
-            cout << fullImage->lines[i] << endl;
-
             for (size_t j = 0; j < fullImage->lines[i].size(); j++)
             {
                 if (fullImage->lines[i][j] == '#')
@@ -487,37 +485,49 @@ void Part1(string fileName)
         // Count of many sea monsters there is in the picture
         // Warning ! Doing it like that could detect sea monsters but "splitted" (every line will not be aligned with each other
         vector<regex> seaMonsterPattern = {
-            regex(".*#.*"),
-            regex(".*#.{4}##.{4}##.{4}###.*"),
-            regex(".*#.{2}#.{2}#.{2}#.{2}#.{2}#.{3}.*")
+            regex(".{18}#."),
+            regex("#.{4}##.{4}##.{4}###"),
+            regex(".#.{2}#.{2}#.{2}#.{2}#.{2}#.{3}")
         };
-        int seaMomsterCount = 0;
+        int seaMonsterLength = 20;
+        int seaMonsterHeight = 3;
         int dialIncludedInSeaMonster = 15;
 
         // Test
-        fullImage->Flip(false);
+        //fullImage->Flip(false);
 
         // Find sea monsters
         int nbLoop = 0;
+        int seaMonsterCount = 0;
         do
         {
-            for (size_t i = 0; i < fullImage->lines.size() - 2; i++)
+            // Debug
+            //for (size_t i = 0; i < fullImage->lines.size(); i++)
+            //{
+            //    cout << fullImage->lines[i] << endl;
+            //}
+            //cout << "==================" << endl;
+            // End debug
+
+            for (size_t i = 0; i <= fullImage->lines.size() - seaMonsterHeight; i++)
             {
-
-                //cout << regex_match(fullImage->lines[i], seaMonsterPattern[0]) << endl;
-                //cout << regex_match(fullImage->lines[i+1], seaMonsterPattern[1]) << endl;
-                //cout << regex_match(fullImage->lines[i+2], seaMonsterPattern[2]) << endl;
-
-                if (regex_match(fullImage->lines[i], seaMonsterPattern[0]) &&
-                    regex_match(fullImage->lines[i + 1], seaMonsterPattern[1]) &&
-                    regex_match(fullImage->lines[i + 2], seaMonsterPattern[2]))
+                //cout << i << endl;
+                for (size_t j = 0; j <= fullImage->lines[i].size() - seaMonsterLength; j++)
                 {
-                    seaMomsterCount++;
+                    if (regex_match(fullImage->lines[i].substr(j, seaMonsterLength), seaMonsterPattern[0]) &&
+                        regex_match(fullImage->lines[i + 1].substr(j, seaMonsterLength), seaMonsterPattern[1]) &&
+                        regex_match(fullImage->lines[i + 2].substr(j, seaMonsterLength), seaMonsterPattern[2]))
+                    {
+                        cout << "start at " << i << "end at " << i + 2 << endl;
+                        seaMonsterCount++;
+                        break;
+                    }
                 }
+                
             }
 
             cout << nbLoop << endl;
-            if (nbLoop % 4 == 0)
+            if ((nbLoop + 1) % 4 == 0)
             {
                 // flip it;
                 fullImage->Flip(false);
@@ -528,9 +538,9 @@ void Part1(string fileName)
                 fullImage->Rotate90ClockWise();
             }
             nbLoop++;
-        } while (seaMomsterCount == 0);
+        } while (seaMonsterCount == 0);
 
-        int result = totalNumberOfDial - seaMomsterCount * dialIncludedInSeaMonster;
+        int result = totalNumberOfDial - seaMonsterCount * dialIncludedInSeaMonster;
         std::cout << "Result for part 1 is " << result << std::endl;
     }
 }
@@ -539,5 +549,5 @@ int main()
 {
     cout << "Jurassic Jigsaw " << endl;
 
-    Part1("example.txt");
+    Part1("input.txt");
 }
