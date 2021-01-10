@@ -14,5 +14,4 @@ public:
     bool isUnique = false;
 
     Border(Tile* tile1, Tile* tile2, std::string pattern);
-    Tile* GetOtherTile(int id);
 };

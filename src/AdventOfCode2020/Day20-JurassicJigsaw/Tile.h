@@ -19,7 +19,6 @@ public:
     std::vector<std::string> lines;
 
     Tile(int id);
-    void RotatePattern(SidePosition from, SidePosition to);
-    void Flip();
-    void Rotate90ClockWise();
+    void Flip(bool flipBorder = true);
+    void Rotate90ClockWise(bool flipBorder = true);
 };

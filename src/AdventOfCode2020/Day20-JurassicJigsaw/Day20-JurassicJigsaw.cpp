@@ -7,6 +7,7 @@
 #include <map>
 #include <regex>
 #include <queue>
+#include <regex>
 
 #include "Tile.h"
 #include "Border.h"
@@ -26,91 +27,17 @@ Tile::Tile(int id)
     this->id = id;
 }
 
-void Tile::RotatePattern(SidePosition from, SidePosition to)
+void Tile::Flip(bool flipBorder)
 {
-    // If they are opposed
-    if (from == SidePosition::Bottom && to == SidePosition::Top
-        || from == SidePosition::Top && to == SidePosition::Bottom
-        || from == SidePosition::Right && to == SidePosition::Left
-        || from == SidePosition::Left && to == SidePosition::Right)
+    if (flipBorder)
     {
-        // nothing to do;
-        return;
-    }
-    else if (from == to)
-    {
-        Border* temp = this->top;
-        this->top = this->bottom;
-        this->bottom = temp;
+        this->top->pattern = ReverseString(this->top->pattern);
+        this->bottom->pattern = ReverseString(this->bottom->pattern);
 
-        temp = this->right;
+        Border* temp = this->right;
         this->right = this->left;
         this->left = temp;
-
-        // Rotate everything by 180 (reverse ?)
-        for (size_t i = 0; i < lines.size(); i++)
-        {
-            lines[i] = ReverseString(lines[i]);
-        }
     }
-    else if (from == SidePosition::Right && to == SidePosition::Top
-        || from == SidePosition::Bottom && to == SidePosition::Left
-        || from == SidePosition::Left && to == SidePosition::Bottom
-        || from == SidePosition::Top && to == SidePosition::Right)
-    {
-        // Rotate by 90 degree
-        Border* temp = this->left;
-        this->left = this->top;
-        this->top = this->right;
-        this->right = this->bottom;
-        this->bottom = temp;
-
-        // lines
-        vector<string> newLines(lines.size(), "");
-        for (size_t i = 0; i < lines.size(); i++)
-        {
-            for (int j = lines[i].size() - 1; j >= 0; j--)
-            {
-                newLines[j] += lines[i][j];
-            }
-        }
-    }
-    else if (from == SidePosition::Right && to == SidePosition::Bottom
-        || from == SidePosition::Bottom && to == SidePosition::Right
-        || from == SidePosition::Left && to == SidePosition::Top
-        || from == SidePosition::Top && to == SidePosition::Left)
-    {
-        // Rotate by -90 degree
-        Border* temp = this->left;
-        this->left = this->bottom;
-        this->bottom = this->right;
-        this->right = this->top;
-        this->top = temp;
-
-        // lines
-        vector<string> newLines(lines.size(), "");
-        for (int i = lines.size() - 1; i >= 0; i--)
-        {
-            for (int j = lines[i].size() - 1; j >= 0; j--)
-            {
-                newLines[j] += lines[i][j];
-            }
-        }
-    }
-    else
-    {
-        throw new exception("bug");
-    }
-}
-
-void Tile::Flip()
-{
-    this->top->pattern = ReverseString(this->top->pattern);
-    this->bottom->pattern = ReverseString(this->bottom->pattern);
-
-    Border*  temp = this->right;
-    this->right = this->left;
-    this->left = temp;
 
     // Apply to image
     for (size_t i = 0; i < lines.size(); i++)
@@ -119,13 +46,16 @@ void Tile::Flip()
     }
 }
 
-void Tile::Rotate90ClockWise()
+void Tile::Rotate90ClockWise(bool flipBorders)
 {
-    Border* temp = this->left;
-    this->left = this->bottom;
-    this->bottom = this->right;
-    this->right = this->top;
-    this->top = temp;
+    if (flipBorders)
+    {
+        Border* temp = this->left;
+        this->left = this->bottom;
+        this->bottom = this->right;
+        this->right = this->top;
+        this->top = temp;
+    }
 
     // Apply to image
     vector<string> newLines(lines.size(), "");
@@ -147,21 +77,6 @@ Border::Border(Tile* tile1, Tile* tile2, string pattern)
     this->pattern = pattern;
     this->tile1 = tile1;
     this->tile2 = tile2;
-}
-
-Tile* Border::GetOtherTile(int id)
-{
-    Tile* tile = NULL;
-    if (tile1->id == id)
-    {
-        tile = tile2;
-    }
-    else if (tile2->id == id)
-    {
-        tile = tile1;
-    }
-
-    return tile;
 }
 #pragma endregion
 
@@ -554,15 +469,68 @@ void Part1(string fileName)
         }
 
         // Display image
+        // Should count how many "#" are in the picture
+        int totalNumberOfDial = 0;
         for (size_t i = 0; i < fullImage->lines.size(); i++)
         {
             cout << fullImage->lines[i] << endl;
+
+            for (size_t j = 0; j < fullImage->lines[i].size(); j++)
+            {
+                if (fullImage->lines[i][j] == '#')
+                {
+                    totalNumberOfDial++;
+                }
+            }
         }
 
-        int index = 0;
-        unsigned long long result = 1;
+        // Count of many sea monsters there is in the picture
+        // Warning ! Doing it like that could detect sea monsters but "splitted" (every line will not be aligned with each other
+        vector<regex> seaMonsterPattern = {
+            regex(".*#.*"),
+            regex(".*#.{4}##.{4}##.{4}###.*"),
+            regex(".*#.{2}#.{2}#.{2}#.{2}#.{2}#.{3}.*")
+        };
+        int seaMomsterCount = 0;
+        int dialIncludedInSeaMonster = 15;
 
+        // Test
+        fullImage->Flip(false);
 
+        // Find sea monsters
+        int nbLoop = 0;
+        do
+        {
+            for (size_t i = 0; i < fullImage->lines.size() - 2; i++)
+            {
+
+                //cout << regex_match(fullImage->lines[i], seaMonsterPattern[0]) << endl;
+                //cout << regex_match(fullImage->lines[i+1], seaMonsterPattern[1]) << endl;
+                //cout << regex_match(fullImage->lines[i+2], seaMonsterPattern[2]) << endl;
+
+                if (regex_match(fullImage->lines[i], seaMonsterPattern[0]) &&
+                    regex_match(fullImage->lines[i + 1], seaMonsterPattern[1]) &&
+                    regex_match(fullImage->lines[i + 2], seaMonsterPattern[2]))
+                {
+                    seaMomsterCount++;
+                }
+            }
+
+            cout << nbLoop << endl;
+            if (nbLoop % 4 == 0)
+            {
+                // flip it;
+                fullImage->Flip(false);
+            }
+            else
+            {
+                // rotate it
+                fullImage->Rotate90ClockWise();
+            }
+            nbLoop++;
+        } while (seaMomsterCount == 0);
+
+        int result = totalNumberOfDial - seaMomsterCount * dialIncludedInSeaMonster;
         std::cout << "Result for part 1 is " << result << std::endl;
     }
 }
