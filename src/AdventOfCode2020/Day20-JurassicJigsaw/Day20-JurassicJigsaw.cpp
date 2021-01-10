@@ -111,6 +111,12 @@ void Tile::Flip()
     Border*  temp = this->right;
     this->right = this->left;
     this->left = temp;
+
+    // Apply to image
+    for (size_t i = 0; i < lines.size(); i++)
+    {
+        lines[i] = ReverseString(lines[i]);
+    }
 }
 
 void Tile::Rotate90ClockWise()
@@ -120,6 +126,17 @@ void Tile::Rotate90ClockWise()
     this->bottom = this->right;
     this->right = this->top;
     this->top = temp;
+
+    // Apply to image
+    vector<string> newLines(lines.size(), "");
+    for (int i = lines.size() - 1; i >= 0; i--)
+    {
+        for (int j = lines[i].size() - 1; j >= 0; j--)
+        {
+            newLines[j] += lines[i][j];
+        }
+    }
+    lines = newLines;
 }
 #pragma endregion
 
@@ -496,92 +513,55 @@ void Part1(string fileName)
             loop++;
         }
 
-        // Find the top left tile
-        Tile* topLeftTile = NULL;
-        for (auto it = finalGrid.begin(); it != finalGrid.end(); it++)
-        {
-            cout << "(" << it->first.first << "," << it->first.second << ") => " << it->second->id << endl;
-        }
+        
+        Tile* fullImage = new Tile(0);
 
-        // Display the grid
-        vector<string> lines;
-        Tile* currentTile = topLeftTile;
-        while (currentTile != nullptr)
+        pair<int, int> position = make_pair(0, 0);
+        int lineSize = sqrt(finalGrid.size());
+
+        vector<string> currentlines;
+
+        for (size_t i = 0; i < finalGrid.size(); i++)
         {
-            // concatenate Tile
-            if (lines.empty())
+            position.first = i % lineSize;
+            position.second = i / lineSize;
+
+            if (position.first == 0)
             {
-                lines = currentTile->lines;
+                currentlines.clear();
+                currentlines = finalGrid[position]->lines;
             }
             else
             {
-                for (size_t i = 0; i < lines.size(); i++)
+                for (size_t j = 0; j < currentlines.size(); j++)
                 {
-                    lines[i] += currentTile->lines[i];
+                    currentlines[j] += finalGrid[position]->lines[j];
                 }
             }
 
-            //if (currentTile->isFlipped)
-            //{
-            //    currentTile = currentTile->left->GetOtherTile(currentTile->id);
-            //}
-            //else
-            //{
-                currentTile = currentTile->right->GetOtherTile(currentTile->id);
-            //}
+            cout << "||  (" << position.first << ", " << position.second << ") => ";
+            cout << finalGrid[position]->id << " ||";
+
+            if (position.first == lineSize - 1)
+            {
+                cout << endl;
+
+                for (size_t j = 0; j < currentlines.size(); j++)
+                {
+                    fullImage->lines.push_back(currentlines[j]);
+                }
+            }
         }
 
-
-        for (size_t i = 0; i < lines.size(); i++)
+        // Display image
+        for (size_t i = 0; i < fullImage->lines.size(); i++)
         {
-            cout << lines[i] << endl;
+            cout << fullImage->lines[i] << endl;
         }
-
-
-
-        //cout << tiles.size() << endl;
-        //for (auto it = tiles.begin(); it != tiles.end(); ++it)
-        //{
-        //    cout << it->first << endl;
-        //}
-
-        //map<int, int> nbCommunSide;
-        //for (auto it = rules.begin(); it != rules.end(); ++it)
-        //{
-        //    if (it->second.size() == 2)
-        //    {
-        //        for (size_t i = 0; i < it->second.size(); i++)
-        //        {
-        //            cout <<
-        //                tiles[it->second[i]]->AddBorder()
-
-
-        //                if (nbCommunSide.find(it->second[i]) == nbCommunSide.end())
-        //                    nbCommunSide.insert(make_pair(it->second[i], 0));
-
-        //            nbCommunSide[it->second[i]]++;
-        //        }
-        //    }
-        //}
-
-        //vector<pair<int, int>> sortedSides = sort(nbCommunSide);
-
-        // Display grid
-        //cout << grid.Display() << endl;
-
 
         int index = 0;
         unsigned long long result = 1;
-        //for (auto& it : sortedSides)
-        //{
-        //    if (index < 4)
-        //    {
-        //        result *= it.first;
-        //    }
-        //    index++;
 
-        //    cout << it.first << ' ' << it.second << endl;
-        //}
 
         std::cout << "Result for part 1 is " << result << std::endl;
     }
