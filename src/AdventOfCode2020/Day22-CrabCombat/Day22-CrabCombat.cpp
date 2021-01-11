@@ -47,7 +47,7 @@ string DisplayDeck(queue<int> deck)
     return result;
 }
 
-void Part1(string fileName)
+int PlayCombatGame(string fileName, bool allowRecursion)
 {
     ifstream file;
     string line;
@@ -101,10 +101,6 @@ void Part1(string fileName)
 
         int player1Card = 0;
         int player2Card = 0;
-
-        cout << "Round " << index << " Game (" << gameIndex << ")" << endl;
-        cout << "Player 1's deck: " << DisplayDeck(player1deck) << endl;
-        cout << "Player 2's deck: " << DisplayDeck(player2deck) << endl;
 
         string currentFootprintPla1 = GetConfigurationFootprint(player1deck);
         string currentFootprintPla2 = GetConfigurationFootprint(player2deck);
@@ -160,7 +156,7 @@ void Part1(string fileName)
             player2deck.pop();
 
             // Check if we can recurse
-            if (player1Card <= player1deck.size() && player2Card <= player2deck.size())
+            if (allowRecursion && player1Card <= player1deck.size() && player2Card <= player2deck.size())
             {
                 // Recursive start
                 gameIndex++;
@@ -186,9 +182,6 @@ void Part1(string fileName)
                 player2WinRound = !player1WinRound;
             }
         }
-
-        cout << "Player 1 plays: " << player1Card << endl;
-        cout << "Player 2's deck: " << player2Card << endl;
 
         if (player1WinRound)
         {
@@ -227,11 +220,15 @@ void Part1(string fileName)
         }
     }
 
-    cout << "Part 1 result is " << result << endl;
+    return result;
 }
 
 int main()
 {
     std::cout << "Crab Combat" << endl;
-    Part1("input.txt");
+    int resultPart1 = PlayCombatGame("example.txt", false);
+    std::cout << "Part 1 result is " << resultPart1 << endl;
+
+    int resultPart2 = PlayCombatGame("example.txt", true);
+    std::cout << "Part 2 result is " << resultPart2 << endl;
 }
