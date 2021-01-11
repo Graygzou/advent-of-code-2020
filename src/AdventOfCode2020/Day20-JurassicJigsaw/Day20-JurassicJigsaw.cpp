@@ -323,231 +323,233 @@ int FindTileMatchingPattern(vector<Tile*> tiles, Tile* firstCorner, Pattern patt
     return -1;
 }
 
-void Part1(string fileName)
+map<pair<int, int>, Tile*> ConstructFullGrid(string fileName)
 {
+    map<pair<int, int>, Tile*> finalGrid;
+
     std::ifstream file;
     file.open(fileName);
-    if (file.is_open())
+    if (file.is_open() == false)
     {
-        vector<Tile*> tiles;
-        map<string, vector<int>> rules = CreateUniqueIdsFromTileSides(&file, &tiles);
-
-        InitializeUniqueSide(tiles);
-
-        Tile* firstCorner = nullptr;
-
-        map<pair<int, int>, Tile*> finalGrid;
-        vector<Border*> gridBorders;
-
-        //gridBorders.push_back(tiles[0]->top);
-        //gridBorders.push_back(tiles[0]->right);
-        //gridBorders.push_back(tiles[0]->bottom);
-        //gridBorders.push_back(tiles[0]->left);
-        //tiles.erase(tiles.begin());
-
-        map<pair<int, int>, Pattern*> patterns;
-        queue<pair<int, int>> nextPositions;
-
-        // Create and insert first pattern to find a top left tile
-        Pattern* pattern = new Pattern();
-        pattern->uniqueTop = true;
-        pattern->uniqueLeft = true;
-        patterns.insert(make_pair(make_pair(0, 0), pattern));
-        nextPositions.push(make_pair(0, 0));
-
-        int loop = 0;
-        int limit = 20;
-        int currentTileIndex = 0;
-        while (tiles.size() > 0 && loop < limit)
-        {
-            Tile* currentTile = new Tile(0);
-
-            pair<int, int> currentPos = nextPositions.front();
-            nextPositions.pop();
-            
-            if (finalGrid.find(currentPos) != finalGrid.end())
-            {
-                // The tile was already found.
-                continue;
-            }
-
-            int tileIndex = FindTileMatchingPattern(tiles, currentTile, *(patterns[currentPos]));
-
-            if (firstCorner == nullptr)
-            {
-                firstCorner = currentTile;
-                cout << "first Corner is " << firstCorner->id << endl;
-            }
-
-            //if (tileIndex >= 0)
-            //{
-                tiles.erase(tiles.begin() + tileIndex);
-                cout << "Save at " << endl;
-                cout << "(" << currentPos.first << "," << currentPos.second << ") => " << currentTile->id << endl;
-                finalGrid.insert(make_pair(currentPos, currentTile));
-            //}
-
-            // Build the next two patterns (2 sides left)
-            for (size_t i = 0; i < 2; i++)
-            {
-                pair<int, int> nextPos = make_pair(0,0);
-
-                // Right
-                if (i == 0 && !currentTile->right->isUnique)
-                {
-                    nextPos = make_pair(currentPos.first + 1, currentPos.second);
-                    if (patterns.find(nextPos) == patterns.end())
-                    {
-                        patterns.insert(make_pair(nextPos, new Pattern()));
-                    }
-
-                    if (currentTile->top->isUnique)
-                        patterns[nextPos]->uniqueTop = true;
-
-                    patterns[nextPos]->leftPattern = currentTile->right->pattern;
-
-                    nextPositions.push(nextPos);
-                }
-                else if (!currentTile->bottom->isUnique) // Bottom
-                {
-                    nextPos = make_pair(currentPos.first, currentPos.second + 1);
-                    if (patterns.find(nextPos) == patterns.end())
-                    {
-                        patterns.insert(make_pair(nextPos, new Pattern()));
-                    }
-
-                    if (currentTile->left->isUnique)
-                        patterns[nextPos]->uniqueLeft = true;
-
-                    patterns[nextPos]->topPattern = currentTile->bottom->pattern;
-
-                    nextPositions.push(nextPos);
-                }
-            }
-
-            loop++;
-        }
-
-        
-        Tile* fullImage = new Tile(0);
-
-        pair<int, int> position = make_pair(0, 0);
-        int lineSize = sqrt(finalGrid.size());
-
-        vector<string> currentlines;
-
-        for (size_t i = 0; i < finalGrid.size(); i++)
-        {
-            position.first = i % lineSize;
-            position.second = i / lineSize;
-
-            if (position.first == 0)
-            {
-                currentlines.clear();
-                currentlines = finalGrid[position]->lines;
-            }
-            else
-            {
-                for (size_t j = 0; j < currentlines.size(); j++)
-                {
-                    currentlines[j] += finalGrid[position]->lines[j];
-                }
-            }
-
-            cout << "||  (" << position.first << ", " << position.second << ") => ";
-            cout << finalGrid[position]->id << " ||";
-
-            if (position.first == lineSize - 1)
-            {
-                cout << endl;
-
-                for (size_t j = 0; j < currentlines.size(); j++)
-                {
-                    fullImage->lines.push_back(currentlines[j]);
-                }
-            }
-        }
-
-        // Display image
-        // Should count how many "#" are in the picture
-        int totalNumberOfDial = 0;
-        for (size_t i = 0; i < fullImage->lines.size(); i++)
-        {
-            for (size_t j = 0; j < fullImage->lines[i].size(); j++)
-            {
-                if (fullImage->lines[i][j] == '#')
-                {
-                    totalNumberOfDial++;
-                }
-            }
-        }
-
-        // Count of many sea monsters there is in the picture
-        // Warning ! Doing it like that could detect sea monsters but "splitted" (every line will not be aligned with each other
-        vector<regex> seaMonsterPattern = {
-            regex(".{18}#."),
-            regex("#.{4}##.{4}##.{4}###"),
-            regex(".#.{2}#.{2}#.{2}#.{2}#.{2}#.{3}")
-        };
-        int seaMonsterLength = 20;
-        int seaMonsterHeight = 3;
-        int dialIncludedInSeaMonster = 15;
-
-        // Test
-        //fullImage->Flip(false);
-
-        // Find sea monsters
-        int nbLoop = 0;
-        int seaMonsterCount = 0;
-        do
-        {
-            // Debug
-            //for (size_t i = 0; i < fullImage->lines.size(); i++)
-            //{
-            //    cout << fullImage->lines[i] << endl;
-            //}
-            //cout << "==================" << endl;
-            // End debug
-
-            for (size_t i = 0; i <= fullImage->lines.size() - seaMonsterHeight; i++)
-            {
-                //cout << i << endl;
-                for (size_t j = 0; j <= fullImage->lines[i].size() - seaMonsterLength; j++)
-                {
-                    if (regex_match(fullImage->lines[i].substr(j, seaMonsterLength), seaMonsterPattern[0]) &&
-                        regex_match(fullImage->lines[i + 1].substr(j, seaMonsterLength), seaMonsterPattern[1]) &&
-                        regex_match(fullImage->lines[i + 2].substr(j, seaMonsterLength), seaMonsterPattern[2]))
-                    {
-                        cout << "start at " << i << "end at " << i + 2 << endl;
-                        seaMonsterCount++;
-                        j += seaMonsterLength;
-                    }
-                }
-                
-            }
-
-            cout << nbLoop << endl;
-            if ((nbLoop + 1) % 4 == 0)
-            {
-                // flip it;
-                fullImage->Flip(false);
-            }
-            else
-            {
-                // rotate it
-                fullImage->Rotate90ClockWise();
-            }
-            nbLoop++;
-        } while (seaMonsterCount == 0);
-
-        int result = totalNumberOfDial - seaMonsterCount * dialIncludedInSeaMonster;
-        std::cout << "Result for part 1 is " << result << std::endl;
+        return finalGrid;
     }
+
+    vector<Tile*> tiles;
+    map<string, vector<int>> rules = CreateUniqueIdsFromTileSides(&file, &tiles);
+    InitializeUniqueSide(tiles);
+
+    Tile* firstCorner = nullptr;
+
+    map<pair<int, int>, Pattern*> patterns;
+    queue<pair<int, int>> nextPositions;
+
+    // Create and insert first pattern to find a top left tile
+    Pattern* pattern = new Pattern();
+    pattern->uniqueTop = true;
+    pattern->uniqueLeft = true;
+    patterns.insert(make_pair(make_pair(0, 0), pattern));
+    nextPositions.push(make_pair(0, 0));
+
+    int currentTileIndex = 0;
+    while (tiles.size() > 0)
+    {
+        Tile* currentTile = new Tile(0);
+
+        pair<int, int> currentPos = nextPositions.front();
+        nextPositions.pop();
+
+        if (finalGrid.find(currentPos) != finalGrid.end())
+        {
+            // The tile was already found.
+            continue;
+        }
+
+        int tileIndex = FindTileMatchingPattern(tiles, currentTile, *(patterns[currentPos]));
+        if (firstCorner == nullptr)
+        {
+            firstCorner = currentTile;
+        }
+
+        tiles.erase(tiles.begin() + tileIndex);
+        finalGrid.insert(make_pair(currentPos, currentTile));
+
+        // Build the next two patterns (2 sides left)
+        for (size_t i = 0; i < 2; i++)
+        {
+            pair<int, int> nextPos = make_pair(0, 0);
+
+            // Right
+            if (i == 0 && !currentTile->right->isUnique)
+            {
+                nextPos = make_pair(currentPos.first + 1, currentPos.second);
+                if (patterns.find(nextPos) == patterns.end())
+                {
+                    patterns.insert(make_pair(nextPos, new Pattern()));
+                }
+
+                if (currentTile->top->isUnique)
+                    patterns[nextPos]->uniqueTop = true;
+
+                patterns[nextPos]->leftPattern = currentTile->right->pattern;
+
+                nextPositions.push(nextPos);
+            }
+            // Bottom
+            else if (!currentTile->bottom->isUnique)
+            {
+                nextPos = make_pair(currentPos.first, currentPos.second + 1);
+                if (patterns.find(nextPos) == patterns.end())
+                {
+                    patterns.insert(make_pair(nextPos, new Pattern()));
+                }
+
+                if (currentTile->left->isUnique)
+                    patterns[nextPos]->uniqueLeft = true;
+
+                patterns[nextPos]->topPattern = currentTile->bottom->pattern;
+
+                nextPositions.push(nextPos);
+            }
+        }
+    }
+
+    return finalGrid;
+}
+
+
+int CountSeaMonsters(Tile* fullImage)
+{
+    // Count of many sea monsters there is in the picture
+    // Warning ! Doing it like that could detect sea monsters but "splitted" (every line will not be aligned with each other
+    vector<regex> seaMonsterPattern = {
+        regex(".{18}#."),
+        regex("#.{4}##.{4}##.{4}###"),
+        regex(".#.{2}#.{2}#.{2}#.{2}#.{2}#.{3}")
+    };
+    int seaMonsterLength = 20;
+    int seaMonsterHeight = 3;
+
+    // Find sea monsters
+    int nbLoop = 0;
+    int seaMonsterCount = 0;
+    do
+    {
+        for (size_t i = 0; i <= fullImage->lines.size() - seaMonsterHeight; i++)
+        {
+            //cout << i << endl;
+            for (size_t j = 0; j <= fullImage->lines[i].size() - seaMonsterLength; j++)
+            {
+                if (regex_match(fullImage->lines[i].substr(j, seaMonsterLength), seaMonsterPattern[0]) &&
+                    regex_match(fullImage->lines[i + 1].substr(j, seaMonsterLength), seaMonsterPattern[1]) &&
+                    regex_match(fullImage->lines[i + 2].substr(j, seaMonsterLength), seaMonsterPattern[2]))
+                {
+                    seaMonsterCount++;
+                    j += seaMonsterLength;
+                }
+            }
+                
+        }
+
+        if ((nbLoop + 1) % 4 == 0)
+        {
+            // flip it;
+            fullImage->Flip(false);
+        }
+        else
+        {
+            // rotate it
+            fullImage->Rotate90ClockWise();
+        }
+        nbLoop++;
+    } while (seaMonsterCount == 0);
+
+    return seaMonsterCount;
+}
+
+unsigned long long MultiplyCornerIds(map<pair<int, int>, Tile*> grid)
+{
+    unsigned long long result = 1;
+
+    int lineSize = sqrt(grid.size());
+    for (size_t i = 0; i < grid.size(); i++)
+    {
+        pair<int, int> position = make_pair(i % lineSize, i / lineSize);
+        if (i == 0 ||
+            i == lineSize - 1 ||
+            i == grid.size() - lineSize ||
+            i == grid.size() - 1)
+        {
+            result *= grid[position]->id;
+        }
+    }
+
+    return result;
+}
+
+Tile* CreateMergedImage(map<pair<int, int>, Tile*> grid)
+{
+    Tile* fullImage = new Tile(0);
+
+    int lineSize = sqrt(grid.size());
+    vector<string> currentlines;
+    for (size_t i = 0; i < grid.size(); i++)
+    {
+        pair<int, int> position = make_pair(i % lineSize, i / lineSize);
+        if (position.first == 0)
+        {
+            currentlines.clear();
+            currentlines = grid[position]->lines;
+        }
+        else
+        {
+            for (size_t j = 0; j < currentlines.size(); j++)
+            {
+                currentlines[j] += grid[position]->lines[j];
+            }
+        }
+
+        if (position.first == lineSize - 1)
+        {
+            for (size_t j = 0; j < currentlines.size(); j++)
+            {
+                fullImage->lines.push_back(currentlines[j]);
+            }
+        }
+    }
+
+    return fullImage;
+}
+
+int CountDialsInPicture(Tile* fullImage, char dialPattern)
+{
+    int totalNumberOfDial = 0;
+    for (size_t i = 0; i < fullImage->lines.size(); i++)
+    {
+        for (size_t j = 0; j < fullImage->lines[i].size(); j++)
+        {
+            if (fullImage->lines[i][j] == dialPattern)
+            {
+                totalNumberOfDial++;
+            }
+        }
+    }
+
+    return totalNumberOfDial;
 }
 
 int main()
 {
     cout << "Jurassic Jigsaw " << endl;
+    map<pair<int, int>, Tile*> finalGrid = ConstructFullGrid("input.txt");
 
-    Part1("input.txt");
+    // Part 1
+    unsigned long long part1Result = MultiplyCornerIds(finalGrid);
+    std::cout << "Result for part 1 is " << part1Result << std::endl;
+
+    // Part 2
+    const int dialIncludedInSeaMonster = 15;
+    Tile* fullImage = CreateMergedImage(finalGrid);
+    int totalNumberOfDial = CountDialsInPicture(fullImage, '#');
+    int seaMonstersCount = CountSeaMonsters(fullImage);
+    std::cout << "Result for part 2 is " << totalNumberOfDial - seaMonstersCount * dialIncludedInSeaMonster << std::endl;
 }
