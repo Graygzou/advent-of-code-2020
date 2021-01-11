@@ -520,7 +520,7 @@ void Part1(string fileName)
                     {
                         cout << "start at " << i << "end at " << i + 2 << endl;
                         seaMonsterCount++;
-                        break;
+                        j += seaMonsterLength;
                     }
                 }
                 
