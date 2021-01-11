@@ -104,7 +104,6 @@ int CountTotalBlackTiles(map<Position, bool> tilePositions)
     int result = 0;
     for (auto it = tilePositions.begin(); it != tilePositions.end(); ++it)
     {
-        //cout << "(" << it->first.first << "," << it->first.second << ") ==> " << it->second << endl;
         result += it->second ? 1 : 0;
     }
 
@@ -138,8 +137,6 @@ void ProcessInput(string fileName)
         while (getline(file, line))
         {
             Position position = ProcessDirection(line);
-            //cout << "position " << "(" << position.first << "," << position.second << ")" << endl;
-
             if (tilePositions.find(position) == tilePositions.end())
             {
                 tilePositions[position] = false;
