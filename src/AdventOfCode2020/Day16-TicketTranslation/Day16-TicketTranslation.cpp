@@ -91,9 +91,6 @@ int main()
                     regex e("(?:[^[:digit:]]*)([[:digit:]]*)-([[:digit:]]*)(?: or )([[:digit:]]*)-([[:digit:]]*)");
                     regex_match(line.c_str(), cm, e);
 
-                    cout << "Rules one " << cm[1] << " - " << cm[2] << endl;
-                    cout << "Rules two " << cm[3] << " - " << cm[4] << endl;
-
                     vector<pair<int, int>> newRules = vector<pair<int, int>>();
 
                     newRules.push_back(make_pair(atoi(cm[1].str().c_str()), atoi(cm[2].str().c_str())));
@@ -110,16 +107,8 @@ int main()
                     {
                         string delimiter(",");
                         vector<int> numbers = SplitWithDelimiter(line, delimiter);
-
                         for (size_t i = 0; i < numbers.size(); i++)
                         {
-                            cout << numbers[i] << ", ";
-                        }
-                        cout << endl;
-
-                        for (size_t i = 0; i < numbers.size(); i++)
-                        {
-                            cout << numbers[i] << endl;
                             vector<bool> respectedRules(rules.size(), true);
                             bool isLegit = false;
                             for (size_t j = 0; j < rules.size(); j++)
@@ -136,14 +125,12 @@ int main()
 
                                 if (!respectOneRule)
                                 {
-                                    cout << numbers[i] << " is not legit for the rule " << (j + 1) << endl;
                                     respectedRules[j] = false;
                                 }
                             }
 
                             if (!isLegit)
                             {
-                                //cout << "Add number " << numbers[i] << "to result " << endl;
                                 finalNumbers.push_back(numbers[i]);
                             }
                             else
@@ -193,8 +180,6 @@ int main()
             }
         }
 
-        cout << "SUM " << sum << " with last index " << lastPositiveIndex << endl;
-
         if (sum == 1)
         {
             finalRules.insert(pair<int, int>(i, lastPositiveIndex));
@@ -214,7 +199,6 @@ int main()
     unsigned long long resultPart2 = 1;
     for (std::map<int, int>::iterator it = finalRules.begin(); it != finalRules.end(); ++it)
     {
-        std::cout << "rule " << it->first << " match field num " << it->second << '\n';
         if (it->first < 6)
         {
             resultPart2 *= myTicketNumbers[it->second];
