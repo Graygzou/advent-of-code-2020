@@ -34,56 +34,15 @@ vector<int> SplitWithDelimiter(string str, string delimiter)
     return results;
 }
 
-int main()
+int RunMemoryGame(vector<int> numbers, map<int, pair<int, int>> wordsSpokenCount, int nbTurns)
 {
-    ifstream file;
-    string line;
+    int mostRecentSpokenNumber = numbers[numbers.size() - 1];
 
-    string startingNumbers("");
-
-    file.open("input.txt");
-    if (file.is_open())
+    for (size_t turn = numbers.size() + 1; turn <= nbTurns; turn++)
     {
-        while (getline(file, line))
-        {
-            startingNumbers = line;
-        }
-    }
-
-    int part1Result = 0;
-
-    string delimiter(",");
-    vector<int> numbers = SplitWithDelimiter(startingNumbers, delimiter);
-
-    //
-    // Run the algo
-    //
-    int mostRecentSpokenNumber = -1;
-
-    // Store as key the number and has value his last position met.
-    map<int, pair<int, int>> wordsSpokenCount;
-
-    for (size_t i = 0; i < numbers.size(); i++)
-    {
-        //cout << numbers[i] << "Will take the value " << (i + 1) << endl;
-        wordsSpokenCount[numbers[i]] = make_pair(i+1, 0);
-    }
-    mostRecentSpokenNumber = numbers[numbers.size() - 1];
-
-    int turnToReach = 30000000;
-    for (size_t turn = numbers.size() + 1; turn <= turnToReach; turn++)
-    {
-         /*for (auto it = wordsSpokenCount.begin(); it != wordsSpokenCount.end(); it++)
-         {
-             cout << it->first << " , (" << it->second.first << "," << it->second.second << ")" << endl;
-         }**/
-        //cout << "Turn " << turn << " - Previous number is " << mostRecentSpokenNumber << endl;
-
         // first time last number spoken
         if (wordsSpokenCount.at(mostRecentSpokenNumber).second == 0)
         {
-            //cout << "FIRST !" << endl;
-            //wordsSpokenCount[mostRecentSpokenNumber] = make_pair(turn, 0);
             int numberSpoken = 0;
             wordsSpokenCount[numberSpoken] = make_pair(turn, wordsSpokenCount[numberSpoken].first);
 
@@ -91,21 +50,47 @@ int main()
         }
         else
         {
-            /*cout << mostRecentSpokenNumber << endl;
-            cout << wordsSpokenCount.at(mostRecentSpokenNumber).first << wordsSpokenCount.at(mostRecentSpokenNumber).second << endl;
-           */
-
             int gap = wordsSpokenCount.at(mostRecentSpokenNumber).first - wordsSpokenCount.at(mostRecentSpokenNumber).second;
-            
-            //cout << "GAPPP " << gap << endl;
-
             wordsSpokenCount[gap] = make_pair(turn, wordsSpokenCount[gap].first);
             mostRecentSpokenNumber = gap;
         }
-
-        //cout << "I SAY " << mostRecentSpokenNumber << endl;
     }
 
-    cout << "Result is " << mostRecentSpokenNumber << endl;
+    return mostRecentSpokenNumber;
+}
+
+int main()
+{
+    ifstream file;
+    
+    string startingNumbers("");
+
+    file.open("input.txt");
+    if (file.is_open())
+    {
+        string line;
+        while (getline(file, line))
+        {
+            startingNumbers = line;
+        }
+    }
+
+    string delimiter(",");
+    vector<int> numbers = SplitWithDelimiter(startingNumbers, delimiter);
+
+    // Store as key the number and has value his last position met.
+    map<int, pair<int, int>> wordsSpokenCount;
+    for (size_t i = 0; i < numbers.size(); i++)
+    {
+        wordsSpokenCount[numbers[i]] = make_pair(i+1, 0);
+    }
+
+    // Part 1
+    int part1Result = RunMemoryGame(numbers, wordsSpokenCount, 2020);
+    cout << "Result Part 1 is " << part1Result << endl;
+
+    // Part 2
+    int part2Result = RunMemoryGame(numbers, wordsSpokenCount, 30000000);
+    cout << "Result Part 2 is " << part2Result << endl;
 
 }
