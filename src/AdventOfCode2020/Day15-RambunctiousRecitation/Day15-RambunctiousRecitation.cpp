@@ -63,7 +63,7 @@ int main()
 {
     ifstream file;
     
-    string startingNumbers("");
+    vector<int> numbers;
 
     file.open("input.txt");
     if (file.is_open())
@@ -71,12 +71,9 @@ int main()
         string line;
         while (getline(file, line))
         {
-            startingNumbers = line;
+            numbers = SplitWithDelimiter(line, ",");
         }
     }
-
-    string delimiter(",");
-    vector<int> numbers = SplitWithDelimiter(startingNumbers, delimiter);
 
     // Store as key the number and has value his last position met.
     map<int, pair<int, int>> wordsSpokenCount;

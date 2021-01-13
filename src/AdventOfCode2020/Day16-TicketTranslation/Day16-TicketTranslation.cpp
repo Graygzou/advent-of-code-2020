@@ -46,133 +46,142 @@ void Display(vector<vector<bool>> possibilitiesPerSpot)
     cout << endl;
 }
 
-int main()
+vector<vector<pair<int, int>>> GatherRules(ifstream *file)
 {
-    ifstream file;
+    vector<vector<pair<int, int>>> rules;
+
+    string line;
+    while (getline(*file, line) && !line.empty())
+    {
+        cmatch cm;
+        regex e("(?:[^[:digit:]]*)([[:digit:]]*)-([[:digit:]]*)(?: or )([[:digit:]]*)-([[:digit:]]*)");
+        regex_match(line.c_str(), cm, e);
+
+        vector<pair<int, int>> newRules = vector<pair<int, int>>();
+
+        newRules.push_back(make_pair(atoi(cm[1].str().c_str()), atoi(cm[2].str().c_str())));
+        newRules.push_back(make_pair(atoi(cm[3].str().c_str()), atoi(cm[4].str().c_str())));
+        rules.push_back(newRules);
+    }
+
+    return rules;
+}
+
+vector<int> GetPersonalTicketInfos(ifstream* file)
+{
+    string line;
+    // Skip the header
+    getline(*file, line);
+
+    // Retrieve the ticket
+    getline(*file, line);
+    return SplitWithDelimiter(line, ",");
+}
+
+vector<vector<int>> GatherAllOtherTickets(ifstream* file)
+{
+    vector<vector<int>> otherTickets;
+
     string line;
 
-    string startingNumbers("");
+    // Skip the whitespace and the header
+    getline(*file, line);
+    getline(*file, line);
 
-    bool gatherRules = true;
-    bool myTicket = true;
-    bool otherTickets = true;
-    bool skipedHeader = false;
+    // Gather them all
+    while (getline(*file, line) && !line.empty())
+    {
+        string delimiter(",");
+        vector<int> currentTicket = SplitWithDelimiter(line, delimiter);
 
-    vector<vector<pair<int, int>>> rules;
+        otherTickets.push_back(currentTicket);
+    }
+
+    return otherTickets;
+}
+
+bool IsRuleRespected(vector<pair<int, int>> rule, int value)
+{
+    bool currentRuleRespected = false;
+
+    // Iterate over all the conditions
+    for (size_t j = 0; j < rule.size() && !currentRuleRespected; j++)
+    {
+        currentRuleRespected |= (value >= rule[j].first && value <= rule[j].second);
+    }
+
+    return currentRuleRespected;
+}
+
+vector<bool> GetNonRespectedRules(size_t* nonRespectedRulesCount, int currentNumber, vector<vector<pair<int, int>>> rules)
+{ 
+    vector<bool> respectedRules(rules.size(), true);
+    for (size_t i = 0; i < rules.size(); i++)
+    {
+        if (!IsRuleRespected(rules[i], currentNumber))
+        {
+            respectedRules[i] = false;
+            (*nonRespectedRulesCount)++;
+        }
+    }
+
+    return respectedRules;
+}
+
+vector<vector<bool>> FindPossibilitiesWithOtherTickets(vector<vector<pair<int, int>>> rules, vector<vector<int>> tickets, vector<int> *errors)
+{
     vector<vector<bool>> possibilitiesPerSpot;
 
-    vector<int> finalNumbers = vector<int>();
-
-    vector<int> myTicketNumbers;
-
-    file.open("input.txt");
-    if (file.is_open())
+    // We already know all how many rules we have so create the finding structure
+    int rulesSize = rules.size();
+    for (size_t j = 0; j < rulesSize; j++)
     {
-        while (getline(file, line))
-        {
-            if (line.empty())
-            {
-                skipedHeader = false;
-                if (myTicket && gatherRules == false)
-                {
-                    myTicket = false;
-                }
+        possibilitiesPerSpot.push_back(vector<bool>(rulesSize, true));
+    }
 
-                if (gatherRules)
-                {
-                    gatherRules = false;
-                }
+    for (size_t i = 0; i < tickets.size(); i++)
+    {
+        for (size_t j = 0; j < tickets[i].size(); j++)
+        {
+            int currentNumber = tickets[i][j];
+
+            size_t* nonRespectedRulesCount = new size_t(0);
+            vector<bool> respectedRules = GetNonRespectedRules(nonRespectedRulesCount, currentNumber, rules);
+
+            if (*nonRespectedRulesCount == rules.size())
+            {
+                // Part 1.
+                (*errors).push_back(currentNumber);
             }
             else
             {
-                if (gatherRules)
+                // Update the final structure for part 2
+                for (size_t ind = 0; ind < respectedRules.size(); ind++)
                 {
-                    cmatch cm;
-                    regex e("(?:[^[:digit:]]*)([[:digit:]]*)-([[:digit:]]*)(?: or )([[:digit:]]*)-([[:digit:]]*)");
-                    regex_match(line.c_str(), cm, e);
-
-                    vector<pair<int, int>> newRules = vector<pair<int, int>>();
-
-                    newRules.push_back(make_pair(atoi(cm[1].str().c_str()), atoi(cm[2].str().c_str())));
-                    newRules.push_back(make_pair(atoi(cm[3].str().c_str()), atoi(cm[4].str().c_str())));
-                    rules.push_back(newRules);
-                }
-                else if (myTicket)
-                {
-                    myTicketNumbers = SplitWithDelimiter(line, ",");
-                }
-                else if (otherTickets)
-                {
-                    if (skipedHeader)
+                    if (!respectedRules[ind])
                     {
-                        string delimiter(",");
-                        vector<int> numbers = SplitWithDelimiter(line, delimiter);
-                        for (size_t i = 0; i < numbers.size(); i++)
-                        {
-                            vector<bool> respectedRules(rules.size(), true);
-                            bool isLegit = false;
-                            for (size_t j = 0; j < rules.size(); j++)
-                            {
-                                bool respectOneRule = false;
-                                for (size_t k = 0; k < rules[j].size(); k++)
-                                {
-                                    if (numbers[i] >= rules[j][k].first && numbers[i] <= rules[j][k].second)
-                                    {
-                                        isLegit = true;
-                                        respectOneRule = true;
-                                    }
-                                }
-
-                                if (!respectOneRule)
-                                {
-                                    respectedRules[j] = false;
-                                }
-                            }
-
-                            if (!isLegit)
-                            {
-                                finalNumbers.push_back(numbers[i]);
-                            }
-                            else
-                            {
-                                // Update the part 2 with his result
-                                for (size_t ind = 0; ind < respectedRules.size(); ind++)
-                                {
-                                    if (!respectedRules[ind])
-                                    {
-                                        possibilitiesPerSpot[i][ind] = false;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // We already know all the rules so create the finding structure
-                        int rulesSize = rules.size();
-                        for (size_t i = 0; i < rulesSize; i++)
-                        {
-                            possibilitiesPerSpot.push_back(vector<bool>(rulesSize, true));
-                        }
-
-                        skipedHeader = true;
+                        possibilitiesPerSpot[j][ind] = false;
                     }
                 }
             }
         }
     }
 
-    // Part 2
-    // rule => ticket index
+    return possibilitiesPerSpot;
+}
+
+map<int, int> MapPossibilitiesLeft(vector<vector<bool>> possibilitiesPerSpot)
+{
     map<int, int> finalRules = map<int, int>();
+
     int i = 0;
     while (finalRules.size() < possibilitiesPerSpot.size())
     {
-        int sum = 0;
+        int nbPossibilitiesLeft = 0;
         int lastPositiveIndex = 0;
         for (size_t j = 0; j < possibilitiesPerSpot.size(); j++)
         {
-            sum += possibilitiesPerSpot[j][i];
+            nbPossibilitiesLeft += possibilitiesPerSpot[j][i];
 
             if (possibilitiesPerSpot[j][i])
             {
@@ -180,7 +189,7 @@ int main()
             }
         }
 
-        if (sum == 1)
+        if (nbPossibilitiesLeft == 1)
         {
             finalRules.insert(pair<int, int>(i, lastPositiveIndex));
 
@@ -191,27 +200,51 @@ int main()
             }
         }
 
-        i++;
-        i %= possibilitiesPerSpot.size();
+        i = (i + 1) % possibilitiesPerSpot.size();
     }
 
+    return finalRules;
+}
+
+int main()
+{
+    cout << "Day 16 - Ticket Translation" << endl;
+
+    ifstream file;
+
+    file.open("input.txt");
+    if (!file.is_open())
+    {
+        return 0;
+    }
+
+    vector<vector<pair<int, int>>> rules = GatherRules(&file);
+    vector<int> myTicketNumbers = GetPersonalTicketInfos(&file);
+    vector<vector<int>> gatherAllOtherTickets = GatherAllOtherTickets(&file);
+
+    vector<int> errors = vector<int>();
+    vector<vector<bool>> possibilitiesPerSpot = FindPossibilitiesWithOtherTickets(rules, gatherAllOtherTickets, &errors);
+
+    // Part 1
+    int resultPart1 = 0;
+    for (size_t i = 0; i < errors.size(); i++)
+    {
+        resultPart1 += errors[i];
+    }
+    cout << "Result part 1 is " << resultPart1 << endl;
+
     // Part 2
+    // rule => ticket index
+    map<int, int> finalRules = MapPossibilitiesLeft(possibilitiesPerSpot);
+
     unsigned long long resultPart2 = 1;
     for (std::map<int, int>::iterator it = finalRules.begin(); it != finalRules.end(); ++it)
     {
+        // Luckily, The first 6 rules are the one with the word "departure"
         if (it->first < 6)
         {
             resultPart2 *= myTicketNumbers[it->second];
         }
     }
-
-    // Part 1
-    int sum = 0;
-    for (size_t i = 0; i < finalNumbers.size(); i++)
-    {
-        sum += finalNumbers[i];
-    }
-
-    cout << "Result part 1 is " << sum << endl;
     cout << "Result part 2 is " << resultPart2 << endl;
 }
