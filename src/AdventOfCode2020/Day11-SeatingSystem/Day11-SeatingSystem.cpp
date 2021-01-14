@@ -9,38 +9,44 @@
 
 using namespace std;
 
-bool Part1NeighborhoodComputation(vector<vector<char>> previousLayout, int i, int j, int xBound, int yBound, int *neighborsOccupiedTotal)
+bool HasNonEmptyNeighbor(
+    vector<vector<char>> previousLayout, 
+    int xDirection, 
+    int yDirection,
+    int *neighborI, 
+    int *neighborJ, 
+    int minBoundsX, 
+    int maxBoundsX, 
+    int minBoundsY, 
+    int maxBoundsY)
 {
-    bool allNeighborsEmpty = true;
+    bool found = false;
 
-    int minXBounds = max(0, i - 1);
-    int maxXBounds = min(i + 1, xBound);
+    int currentI = *neighborI;
+    int currentJ = *neighborJ;
 
-    int minYBounds = max(0, j - 1);
-    int maxYBounds = min(j + 1, yBound);
-    //cout << "study neighbors" << endl;
-    for (int neighborJ = minYBounds; neighborJ <= maxYBounds; neighborJ++)
+    while (!found &&
+        currentI >= minBoundsX && currentI <= maxBoundsX &&
+        currentJ >= minBoundsY && currentJ <= maxBoundsY)
     {
-        for (int neighborI = minXBounds; neighborI <= maxXBounds; neighborI++)
-        {
-            if (neighborJ != j || neighborI != i)
-            {
-                //cout << "(" << neighborI << "," << neighborJ << ")" << endl;
-                if (previousLayout[neighborJ][neighborI] == '#')
-                {
-                    //cout << "neigbor found ! " << seatLayout[neighborJ][neighborI];
-                    (*neighborsOccupiedTotal)++;
-                }
+        // Find it
+        found = previousLayout[currentJ][currentI] != '.';
 
-                allNeighborsEmpty = allNeighborsEmpty && previousLayout[neighborJ][neighborI] != '#';
-            }
+        if (!found)
+        {
+            // Update for part 1 basically
+            currentI += xDirection;
+            currentJ += yDirection;
         }
     }
 
-    return allNeighborsEmpty;
+    *neighborI = currentI;
+    *neighborJ = currentJ;
+
+    return found;
 }
 
-bool Part2NeighborhoodComputation(vector<vector<char>> previousLayout, int i, int j, int xBound, int yBound, int* neighborsOccupiedTotal)
+bool ComputeNeighborhood(vector<vector<char>> previousLayout, int i, int j, int xBound, int yBound, int* neighborsOccupiedTotal, int sightLength = -1)
 {
     bool allNeighborsEmpty = true;
 
@@ -49,43 +55,45 @@ bool Part2NeighborhoodComputation(vector<vector<char>> previousLayout, int i, in
 
     int minYBounds = max(0, j - 1);
     int maxYBounds = min(j + 1, yBound);
-    //cout << "study neighbors" << endl;
+
+    // Determine the bound to study more or less further neighbors.
+    int sightXMinBounds = 0;
+    int sightXMaxBounds = xBound;
+    int sightYMinBounds = 0;
+    int sightYMaxBounds = yBound;
+    if (sightLength > 0)
+    {
+        sightXMinBounds = i - sightLength;
+        sightXMaxBounds = i + sightLength;
+        sightYMinBounds = j - sightLength;
+        sightYMaxBounds = j + sightLength;
+    }
+
     for (int neighborJ = minYBounds; neighborJ <= maxYBounds; neighborJ++)
     {
         for (int neighborI = minXBounds; neighborI <= maxXBounds; neighborI++)
         {
             if (neighborJ != j || neighborI != i)
             {
-                //cout << "Here" << endl;
-
-                bool found = false;
-                int currentI = neighborI;
-                int currentJ = neighborJ;
-                while (!found &&
-                    currentI >= 0 && currentI <= xBound &&
-                    currentJ >= 0 && currentJ <= yBound)
+                int* currentI = new int(neighborI);
+                int* currentJ = new int(neighborJ);
+                if (HasNonEmptyNeighbor(
+                    previousLayout, 
+                    (*currentI - i), 
+                    (*currentJ - j), 
+                    currentI, 
+                    currentJ, 
+                    sightXMinBounds, 
+                    sightXMaxBounds, 
+                    sightYMinBounds,
+                    sightYMaxBounds))
                 {
-                    // Find it
-                    found = previousLayout[currentJ][currentI] != '.';
-
-                    if (!found)
+                    if (previousLayout[*currentJ][*currentI] == '#')
                     {
-                        // Update
-                        currentI += (neighborI - i);
-                        currentJ += (neighborJ - j);
-                    }
-                }
-
-                if (found)
-                {
-                    //cout << "(" << currentI << "," << currentJ << ")" << endl;
-                    if (previousLayout[currentJ][currentI] == '#')
-                    {
-                        //cout << "neigbor found ! " << seatLayout[neighborJ][neighborI];
                         (*neighborsOccupiedTotal)++;
                     }
 
-                    allNeighborsEmpty = allNeighborsEmpty && previousLayout[currentJ][currentI] != '#';
+                    allNeighborsEmpty = allNeighborsEmpty && previousLayout[*currentJ][*currentI] != '#';
                 }
             }
         }
@@ -94,17 +102,14 @@ bool Part2NeighborhoodComputation(vector<vector<char>> previousLayout, int i, in
     return allNeighborsEmpty;
 }
 
-
-
-int Part1(vector<vector<char>> seatLayout, int nbSeatOccupiedBeforeEmpty)
+int ApplyRulesToSeats(vector<vector<char>> seatLayout, int nbSeatOccupiedBeforeEmpty)
 {
-    int nbOccupiedSeats = 0;
-
-    int nbLoop = 0;
-    bool hasChanged = false;
+    bool hasChanged = true;
     do
     {
         hasChanged = false;
+
+        // Make a copy to swap all seat "at the same time".
         vector<vector<char>> previousLayout = seatLayout;
 
         for (int j = 0; j < previousLayout.size(); j++)
@@ -113,17 +118,19 @@ int Part1(vector<vector<char>> seatLayout, int nbSeatOccupiedBeforeEmpty)
             {
                 if (previousLayout[j][i] != '.')
                 {
-
-                    //cout << "(" << i << "," << j << ") => " << previousLayout[j][i] << endl;
-
                     // tag the seat has occupied
                     int neighborsOccupiedTotal = 0;
-                    // Leave the seat empty
-                    bool hasOccupiedNeighbors = false;
 
                     // Find neighbors
-                    //bool allNeighborsEmpty = Part1NeighborhoodComputation(previousLayout, i, j, (int)previousLayout[0].size() - 1, (int)previousLayout.size() - 1, &neighborsOccupiedTotal);
-                    bool allNeighborsEmpty = Part2NeighborhoodComputation(previousLayout, i, j, (int)seatLayout[0].size() - 1, (int)seatLayout.size() - 1, &neighborsOccupiedTotal);
+                    bool allNeighborsEmpty = false;
+                    if (nbSeatOccupiedBeforeEmpty == 4)
+                    {
+                        allNeighborsEmpty = ComputeNeighborhood(previousLayout, i, j, (int)seatLayout[0].size() - 1, (int)seatLayout.size() - 1, &neighborsOccupiedTotal, 1);
+                    }
+                    else
+                    {
+                        allNeighborsEmpty = ComputeNeighborhood(previousLayout, i, j, (int)seatLayout[0].size() - 1, (int)seatLayout.size() - 1, &neighborsOccupiedTotal);
+                    }
 
                     if (previousLayout[j][i] == 'L' && allNeighborsEmpty)
                     {
@@ -139,31 +146,10 @@ int Part1(vector<vector<char>> seatLayout, int nbSeatOccupiedBeforeEmpty)
                 }
             }
         }
-        nbLoop++;
+    } 
+    while (hasChanged);
 
-        //// DEBUG: Display
-        //cout << "Display current" << endl;
-        //for (size_t i = 0; i < seatLayout.size(); i++)
-        //{
-        //    for (size_t j = 0; j < seatLayout[i].size(); j++)
-        //    {
-        //        if (seatLayout[i][j] == '#')
-        //        {
-        //            nbOccupiedSeats++;
-        //        }
-        //        cout << seatLayout[i][j];
-        //    }
-
-        //    cout << endl;
-        //}
-
-
-    } while (hasChanged && nbLoop < 500);
-    cout << nbLoop << endl;
-
-
-    // DEBUG: Display
-    cout << "Display current" << endl;
+    int nbOccupiedSeats = 0;
     for (size_t i = 0; i < seatLayout.size(); i++)
     {
         for (size_t j = 0; j < seatLayout[i].size(); j++)
@@ -172,32 +158,37 @@ int Part1(vector<vector<char>> seatLayout, int nbSeatOccupiedBeforeEmpty)
             {
                 nbOccupiedSeats++;
             }
-            cout << seatLayout[i][j];
         }
-
-        cout << endl;
     }
 
     return nbOccupiedSeats;
 }
 
+void DisplaySeats(vector<vector<char>> seatLayout)
+{
+    for (size_t j = 0; j < seatLayout.size(); j++)
+    {
+        for (size_t i = 0; i < seatLayout[j].size(); i++)
+        {
+            cout << seatLayout[j][i];
+        }
+        cout << endl;
+    }
+}
 
-int main()
+vector<vector<char>> RetrieveInputs(string fileName)
 {
     vector<vector<char>> seatLayout = vector<vector<char>>();
 
-    string line;
+    
     ifstream  myfile;
-
-    int nbSpotLeft = 0;
-
-    myfile.open("input.txt");
+    myfile.open(fileName);
     if (myfile.is_open())
     {
+        string line;
         int lineIndex = 0;
         while (getline(myfile, line))
         {
-            //cout << line.c_str() << endl;
             seatLayout.push_back(vector<char>());
             for (size_t i = 0; i < line.size(); i++)
             {
@@ -209,26 +200,20 @@ int main()
     }
     myfile.close();
 
-    // DEBUG: Display
-    cout << "Display" << endl;
-    for (size_t j = 0; j < seatLayout.size(); j++)
-    {
-        for (size_t i = 0; i < seatLayout[j].size(); i++)
-        {
-            cout << seatLayout[j][i];
-        }
+    return seatLayout;
+}
 
-        cout << endl;
-    }
-    cout << "end" << endl;
-    // END DEBUG
+int main()
+{
+    cout << "Day 11 - Seating System" << endl;
 
-    cout << "TEST 1 " << seatLayout.size() << endl;
-    cout << "TEST 2 " << seatLayout[0].size() << endl;
+    // Use of vector<char> instead of string because easier to iterate over neighbors in any directions.
+    vector<vector<char>> seatLayout = RetrieveInputs("input.txt");
+    DisplaySeats(seatLayout);
 
-    // Part1(seatLayout, 4)
-    int nbOccupiedSeats = Part1(seatLayout, 5);
+    int nbOccupiedSeatsPart1 = ApplyRulesToSeats(seatLayout, 4);
+    cout << "Result for part 1 is : " << nbOccupiedSeatsPart1 << endl;
 
-    
-    cout << "Result is : " << nbOccupiedSeats << endl;
+    int nbOccupiedSeatsPart2 = ApplyRulesToSeats(seatLayout, 5);
+    cout << "Result for part 2 is : " << nbOccupiedSeatsPart2 << endl;
 }
