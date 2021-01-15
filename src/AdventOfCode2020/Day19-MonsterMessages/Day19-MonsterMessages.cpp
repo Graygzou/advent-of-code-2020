@@ -24,7 +24,6 @@ string SanitizeRule(string rule)
     return ruleSanitized;
 }
 
-
 map<int, vector<string>> ExtractRuleFromFile(ifstream* file)
 {
     map<int, vector<string>> inputRules;
@@ -32,10 +31,7 @@ map<int, vector<string>> ExtractRuleFromFile(ifstream* file)
     string line;
     while (getline(*file, line) && !line.empty())
     {
-        std::cout << line << std::endl;
-
         int index = line.find(":");
-
         int key = atoi(line.substr(0, index).c_str());
 
         string allRules = line.substr(index + 2);
@@ -44,8 +40,6 @@ map<int, vector<string>> ExtractRuleFromFile(ifstream* file)
         do
         {
             int spaceIndex = allRules.find(" ");
-
-            //cout << allRules << "  " << spaceIndex << endl;
 
             if (spaceIndex != string::npos)
             {
@@ -60,22 +54,7 @@ map<int, vector<string>> ExtractRuleFromFile(ifstream* file)
         }
         while (!done && !allRules.empty());
 
-        for (size_t i = 0; i < subRules.size(); i++)
-        {
-            cout << "Test " << subRules[i] << endl;
-        }
-
         inputRules.insert(make_pair(key, subRules));
-    }
-
-    for (std::map<int, vector<string>>::iterator it = inputRules.begin(); it != inputRules.end(); ++it)
-    {
-        std::cout << it->first << " => ";
-        for (size_t k = 0; k < it->second.size(); k++)
-        {
-            cout << it->second[k] << "//";
-        }
-        cout << endl;
     }
 
     return inputRules;
@@ -90,9 +69,7 @@ vector<string> BuildRules(ifstream* file)
     for (size_t i = 0; i < inputRules.size(); i++)
     {
         bool finished = false;
-        int loopIndex = 0;
-        int maxLoop = 1000;
-        while (!finished && loopIndex < maxLoop)
+        while (!finished)
         {
             finished = true;
 
@@ -107,7 +84,6 @@ vector<string> BuildRules(ifstream* file)
 
                     if (key > 0)
                     {
-                        //cout << key << endl;
                         auto it = inputRules.find(key);
                         if (it != inputRules.end())
                         {
@@ -139,30 +115,23 @@ vector<string> BuildRules(ifstream* file)
                     }
                 }
             }
-
-            loopIndex++;
         }
     }
 
-    cout << "++++++++++++++++++" << endl;
     for (std::map<int, vector<string>>::iterator it = inputRules.begin(); it != inputRules.end(); ++it)
     {
         string currentRule("");
-        std::cout << it->first << " => " ;
         for (size_t k = 0; k < it->second.size(); k++)
         {
-            std::cout << it->second[k];
             currentRule += it->second[k];
         }
-        std::cout << endl;
-
         rules.push_back(currentRule);
     }
 
     return rules;
 }
 
-int NbMessageMatchRule(ifstream* file, vector<string> rules, int ruleIndex)
+int CountMessagesMatchingRule(ifstream* file, vector<string> rules, int ruleIndex)
 {
     int result = 0;
 
@@ -178,11 +147,16 @@ int NbMessageMatchRule(ifstream* file, vector<string> rules, int ruleIndex)
             string currentRule = rules[ruleIndex];
 
             int index = currentRule.find("@");
-            currentRule.replace(index, 1, to_string(i));
+            if (index != string::npos)
+            {
+                currentRule.replace(index, 1, to_string(i));
+            }
+            
             index = currentRule.find("@", index + 1);
-            currentRule.replace(index, 1, to_string(i));
-
-            //cout << currentRule << endl;
+            if (index != string::npos)
+            {
+                currentRule.replace(index, 1, to_string(i));
+            }
 
             matched = std::regex_match(line, regex(currentRule));
             i++;
@@ -190,7 +164,6 @@ int NbMessageMatchRule(ifstream* file, vector<string> rules, int ruleIndex)
 
         if (matched)
         {
-            std::cout << "string object matched\n";
             result++;
         }
     }
@@ -198,31 +171,36 @@ int NbMessageMatchRule(ifstream* file, vector<string> rules, int ruleIndex)
     return result;
 }
 
-void Part1(string fileName)
+int CountMessageMatchingRuleZero(string fileName)
 {
     std::ifstream file;
 
+    int result = 0;
     file.open(fileName);
     if (file.is_open())
     {
+        // Build rules with first part of the file.
         vector<string> rules = BuildRules(&file);
 
-        cout << "============" << endl;
-        /*for (size_t i = 0; i < rules.size(); i++)
-        {
-            cout << "at index " << i << " " <<< endl;
-        }
-        cout << "============" << endl;*/
-
-        int result = NbMessageMatchRule(&file, rules, 0);
-
-        std::cout << "Result for part 1 is " << result << std::endl;
+        // Study each messages with the rest of the file.
+        result = CountMessagesMatchingRule(&file, rules, 0);
     }
+
+    return result;
 }
 
+
+/// <summary>
+/// WARNING: For this solution you need to edit your input.
+/// Basically, adding regexp pattern directy or pattern to be able to add some later on.
+/// </summary>
 int main()
 {
-    cout << "Monster Messages" << endl;
-    Part1("inputModified.txt");
+    cout << "Day 19 - Monster Messages" << endl;
 
+    int result = CountMessageMatchingRuleZero("input.txt");
+    std::cout << "Result for part 1 is " << result << std::endl;
+
+    result = CountMessageMatchingRuleZero("inputModified.txt");
+    std::cout << "Result for part 2 is " << result << std::endl;
 }
