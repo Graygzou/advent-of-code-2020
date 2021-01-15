@@ -11,8 +11,10 @@
 
 using namespace std;
 
+const int MASK_TEXT = 7;
 const int BITMASK_SIZE = 36;
 
+#pragma region Helpers
 bitset<BITMASK_SIZE> ConvertNumberToBitset(unsigned long long number)
 {
     std::bitset<BITMASK_SIZE> bitmask;
@@ -28,7 +30,6 @@ bitset<BITMASK_SIZE> ConvertNumberToBitset(unsigned long long number)
 
     return bitmask;
 }
-
 
 int CountNumberOfX(string adresse)
 {
@@ -57,7 +58,7 @@ void ComputeAllPossibilities(string addr, int nbPossibilities, vector<string> *r
         {
             int half = nbPossibilities / pow(2, nbXMeet + 1);
             int end = nbPossibilities / pow(2, nbXMeet);
-            //cout << "Half " << half << endl;
+
             // Duplicated all possibilities and add 0 to half of them and 1 to the other half
             for (size_t j = 0; j < half; j++)
             {
@@ -91,12 +92,6 @@ void ComputeAllPossibilities(string addr, int nbPossibilities, vector<string> *r
                 results[j].push_back(c);
             }
         }
-
-        //cout << "Intermediate result " << endl;
-        //for (size_t acc = 0; acc < results.size(); acc++)
-        //{
-        //    cout << results[acc] << endl;
-        //}
     }
 
     *res = results;
@@ -143,11 +138,6 @@ string Concat(string addr1, string addr2)
         {
             result[i] = addr1[i];
         }
-        else
-        {
-            // floating value
-            //bitmaskApplied[i] = 'X';
-        }
     }
 
     return result;
@@ -155,7 +145,6 @@ string Concat(string addr1, string addr2)
 
 int RemoveCommunAddresses(vector<string> *possibilitiesLeft, vector<string> possibilitieFound)
 {
-    
     int nbDuplicateFound = 0;
 
     vector<string> temp = *possibilitiesLeft;
@@ -182,41 +171,28 @@ int RemoveCommunAddresses(vector<string> *possibilitiesLeft, vector<string> poss
     }
 
     *possibilitiesLeft = temp;
-
     return nbDuplicateFound;
 }
+#pragma endregion
 
-
-int main()
+vector<string> CompleteProgram(string fileName, map<string, unsigned long long> *adresses, int decoderVersion)
 {
     vector<string> indexes = vector<string>();
-    map<string, unsigned long long> adresses = map<string, unsigned long long>();
-
-    string line;
+    
     ifstream  myfile;
-
-    cout << (ConvertNumberToBitset(11).to_string() == "000000000000000000000000000000001011") << endl;
-    cout << (ConvertNumberToBitset(101).to_string() == "000000000000000000000000000001100101") << endl;
-    cout << (ConvertNumberToBitset(349000485).to_string() == "000000010100110011010101001100100101") << endl;
-    cout << (ConvertNumberToBitset(517650454).to_string() == "000000011110110110101011100000010110") << endl;
-
-    unsigned long long result = 0;
-    myfile.open("input.txt");
+    myfile.open(fileName);
     if (myfile.is_open())
     {
-
         bitset<BITMASK_SIZE> bitmask = 0;
         string bitmaskStr = "";
-
-        int lineIndex = 0;
+        
+        string line;
         while (getline(myfile, line))
         {
             size_t pos;
             if ((pos = line.find("mask")) != string::npos)
             {
-                //replace(line.begin(), line.end(), 'X', '0');
-                bitmaskStr = line.substr(pos + 7);
-                //cout << "MASK IS =>         "<< bitmaskStr << endl;
+                bitmaskStr = line.substr(pos + MASK_TEXT);
             }
             else
             {
@@ -227,101 +203,137 @@ int main()
                 unsigned long long storageAddr = _atoi64(cm[1].str().c_str());
                 unsigned long long numberToStore = _atoi64(cm[2].str().c_str());
 
-                cout << "Found " << storageAddr << ", " << numberToStore << endl;
+                bitset<BITMASK_SIZE> comvertedBitsetAddr;
+                string bitmaskApplied;
 
-                bitset<BITMASK_SIZE> comvertedBitsetAddr = ConvertNumberToBitset(storageAddr);
-                cout << "Value              " << comvertedBitsetAddr << endl;
-                cout << "bitSet defined     " << bitmaskStr << endl;
+                if (decoderVersion == 1)
+                {
+                    bitmaskApplied = to_string(storageAddr);
+                    comvertedBitsetAddr = ConvertNumberToBitset(numberToStore);
+                }
+                else if (decoderVersion == 2)
+                {
+                    comvertedBitsetAddr = ConvertNumberToBitset(storageAddr);
+                    bitmaskApplied = comvertedBitsetAddr.to_string();
+                }
 
-                string bitmaskApplied = comvertedBitsetAddr.to_string();
                 for (size_t i = 0; i < bitmaskStr.size(); i++)
                 {
-                    if (bitmaskStr[i] == '0')
+                    if (decoderVersion == 1)
                     {
-                        // unchanged
-                        //bitmaskApplied[i] = '0';
+                        if (bitmaskStr[i] == '0')
+                        {
+                            comvertedBitsetAddr.set(bitmaskStr.size() - 1 - i, 0);
+                        }
+                        else if (bitmaskStr[i] == '1')
+                        {
+                            comvertedBitsetAddr.set(bitmaskStr.size() - 1 - i);
+                        }
+                        else
+                        {
+                            // Leave unchanged
+                        }
                     }
-                    else if (bitmaskStr[i] == '1')
+                    else if (decoderVersion == 2)
                     {
-                        bitmaskApplied[i] = '1';
-                    }
-                    else
-                    {
-                        // floating value
-                        bitmaskApplied[i] = 'X';
+                        if (bitmaskStr[i] == '0')
+                        {
+                            // unchanged
+                        }
+                        else if (bitmaskStr[i] == '1')
+                        {
+                            bitmaskApplied[i] = '1';
+                        }
+                        else
+                        {
+                            // floating value
+                            bitmaskApplied[i] = 'X';
+                        }
                     }
                 }
 
-                //bitset<BITMASK_SIZE> bitmaskApplied = comvertedBitset | bitmask;
-                cout << "Final bitmask      " << bitmaskApplied << endl;
-                //cout << "Converted value is " << bitmaskApplied.to_ullong() << endl;
-                adresses[bitmaskApplied] = numberToStore;
-                indexes.push_back(bitmaskApplied);
+                if (decoderVersion == 1)
+                {
+                    (*adresses)[bitmaskApplied] = comvertedBitsetAddr.to_ullong();
+                    if (find(indexes.begin(), indexes.end(), bitmaskApplied) == indexes.end())
+                    {
+                        indexes.push_back(bitmaskApplied);
+                    }
+                }
+                else if (decoderVersion == 2)
+                {
+                    (*adresses)[bitmaskApplied] = numberToStore;
+                    indexes.push_back(bitmaskApplied);
+                }
             }
         }
     }
     myfile.close();
 
-    string concatenedFloatingAddress = "";
-    for (int i = indexes.size() - 1; i >= 0; i--)
+    return indexes;
+}
+
+unsigned long long SumValuesInMemory(vector<string> memory, map<string, unsigned long long> adresses)
+{
+    unsigned long long result = 0;
+
+    for (int i = memory.size() - 1; i >= 0; i--)
     {
-        std::cout << i << endl;
+        auto it = adresses.find(memory[i]);
 
-        auto it = adresses.find(indexes[i]);
-        std::cout << it->first << "  =>    " << it->second << endl;
-        std::cout << CountNumberOfX(it->first) << endl;
-        unsigned long long nbFloatingValues = pow(2, CountNumberOfX(it->first));
+        unsigned long long finalNumberOfAddressed = 1;
 
-        //std::cout << "Nb floating values " << nbFloatingValues << endl;
-
-        vector<string> possibilitiesLeft = vector<string>(nbFloatingValues);
-        ComputeAllPossibilities(it->first, nbFloatingValues, &possibilitiesLeft);
-
-       /* cout << "Nb possibilities is " << possibilitiesLeft.size() << endl;
-        for (size_t acc = 0; acc < possibilitiesLeft.size(); acc++)
+        int numberOfXs = CountNumberOfX(it->first);
+        if (numberOfXs > 0)
         {
-            cout << possibilitiesLeft[acc] << endl;
-        }
-        cout << endl;*/
+            unsigned long long nbFloatingValues = pow(2, numberOfXs);
+            vector<string> possibilitiesLeft = vector<string>(nbFloatingValues);
+            ComputeAllPossibilities(it->first, nbFloatingValues, &possibilitiesLeft);
 
-
-        //bool hasCommunAdresses = false;
-        //int sumOfAllCommunX = 0;
-        for (size_t j = indexes.size() - 1; j > i; j--)
-        {
-            auto it2 = adresses.find(indexes[j]);
-            if (ContainsCommunAdresses(it->first, it2->first))
+            for (size_t j = memory.size() - 1; j > i; j--)
             {
-                int nbPoss = pow(2, CountNumberOfX(it2->first));
+                auto it2 = adresses.find(memory[j]);
+                if (ContainsCommunAdresses(it->first, it2->first))
+                {
+                    int nbPoss = pow(2, CountNumberOfX(it2->first));
 
-                vector<string> possibilities = vector<string>(nbPoss);
-                ComputeAllPossibilities(it2->first, nbPoss, &possibilities);
-                int nbDuplicated = RemoveCommunAddresses(&possibilitiesLeft, possibilities);
-
-                std::cout << "nb duplicate found are " << nbDuplicated << endl;
-                //hasCommunAdresses = true;
-
-                //sumOfAllCommunX += CountNumberOfCommunX(it->first, it2->first);
+                    vector<string> possibilities = vector<string>(nbPoss);
+                    ComputeAllPossibilities(it2->first, nbPoss, &possibilities);
+                    int nbDuplicated = RemoveCommunAddresses(&possibilitiesLeft, possibilities);
+                }
             }
+            finalNumberOfAddressed = possibilitiesLeft.size();
         }
-        //std::cout << "Contains commun addresses is " << hasCommunAdresses << " / And Sum of commun X = " << sumOfAllCommunX << endl;
 
-        //unsigned long long nbAddressesAlreadyAssigned = 0;
-        //if (hasCommunAdresses)
-        //{
-        //    nbAddressesAlreadyAssigned = pow(2, sumOfAllCommunX);
-        //}
-        cout << "Final nb possibilities is " << possibilitiesLeft.size() << endl;
-
-        unsigned long long finalNumberOfAddressed = possibilitiesLeft.size();
-
-        //std::cout << "final number of addresses impacted " << finalNumberOfAddressed << endl;
-        //std::cout << "Final value added " << it->second * finalNumberOfAddressed << endl;
         result += it->second * finalNumberOfAddressed;
-
-        // Concatenated
-        //concatenedFloatingAddress = Concat(concatenedFloatingAddress, it->first);
     }
 
-    cout << "Result is : " << result << endl;
+    return result;
+}
+
+void Tests()
+{
+    cout << (ConvertNumberToBitset(11).to_string() == "000000000000000000000000000000001011") << endl;
+    cout << (ConvertNumberToBitset(101).to_string() == "000000000000000000000000000001100101") << endl;
+    cout << (ConvertNumberToBitset(349000485).to_string() == "000000010100110011010101001100100101") << endl;
+    cout << (ConvertNumberToBitset(517650454).to_string() == "000000011110110110101011100000010110") << endl;
+}
+
+int main()
+{
+    cout << "Day 14 - Docking Data" << endl;
+    
+    string fileName = "input.txt";
+    map<string, unsigned long long> adresses = map<string, unsigned long long>();
+
+    vector<string> memory = CompleteProgram(fileName, &adresses, 1);
+    unsigned long long resultPart1 = SumValuesInMemory(memory, adresses);
+    cout << "Result for part 1 is : " << resultPart1 << endl;
+
+    // Reset
+    adresses.clear();
+
+    memory = CompleteProgram(fileName, &adresses, 2);
+    unsigned long long resultPart2 = SumValuesInMemory(memory, adresses);
+    cout << "Result for part 2 is : " << resultPart2 << endl;
 }
