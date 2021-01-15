@@ -45,12 +45,8 @@ void GetInputsFromPassword(string line, string* password, int* minBound, int* ma
     string bornesPolicy = line.substr(0, firstIndexOfDelimiter);
 
     getBoundsPolicy(bornesPolicy, minBound, maxBound);
-    //cout << minBound << endl;
-    //cout << maxBound << endl;
 
     *charToFind = line.substr(firstIndexOfDelimiter + 1, 1);
-    //cout << "char to find " << charToFind << endl;
-
     *password = line.substr(firstIndexOfDelimiter + 4);
 }
 
@@ -58,8 +54,8 @@ bool ComputeIfPasswordLegitPart1(string line)
 {
     int minBound = -1;
     int maxBound = -1;
-    string* password = new string;
-    string* charToFind = new string;
+    string* password = new string("");
+    string* charToFind = new string("");
     GetInputsFromPassword(line, password, &minBound, &maxBound, charToFind);
 
     int nbOccurences = CountOccurenceOfCharInPassword(*password, *(*charToFind).c_str());
@@ -74,8 +70,8 @@ bool ComputeIfPasswordLegitPart2(string line)
 {
     int minBound = -1;
     int maxBound = -1;
-    string* password = new string;
-    string* charToFind = new string;
+    string* password = new string("");
+    string* charToFind = new string("");
     GetInputsFromPassword(line, password, &minBound, &maxBound, charToFind);
 
     bool result = IsPasswordLegitPart2(minBound, maxBound, *password, *charToFind->c_str())
@@ -87,9 +83,8 @@ bool ComputeIfPasswordLegitPart2(string line)
     return result;
 }
 
-int main()
+void Tests()
 {
-    // TESTS
     string test = "9-12 q: qqqxhnhdmqqqqjz";
     if (ComputeIfPasswordLegitPart1(test))
     {
@@ -101,9 +96,11 @@ int main()
     {
         cout << "Password legit for part 2 !" << endl;
     }
-    // END TESTS
+}
 
-    cout << "===== Password Philosophy" << endl;
+int main()
+{
+    cout << "Day 2 - Password Philosophy" << endl;
 
     string* array = new string[1000];
     int arrayLength = Utils::CreateStringArrayFromInputFile("input.txt", array);
