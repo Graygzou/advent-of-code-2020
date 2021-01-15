@@ -436,7 +436,6 @@ int CountSeaMonsters(Tile* fullImage)
     {
         for (size_t i = 0; i <= fullImage->lines.size() - seaMonsterHeight; i++)
         {
-            //cout << i << endl;
             for (size_t j = 0; j <= fullImage->lines[i].size() - seaMonsterLength; j++)
             {
                 if (regex_match(fullImage->lines[i].substr(j, seaMonsterLength), seaMonsterPattern[0]) &&

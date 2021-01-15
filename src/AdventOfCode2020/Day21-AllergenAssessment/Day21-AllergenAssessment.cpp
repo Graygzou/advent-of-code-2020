@@ -110,7 +110,7 @@ vector<string> FindAllergen(string line)
     return allergens;
 }
 
-void Part1(string fileName)
+void RunDay21(string fileName)
 {
     vector<string> allIngredientsListedWithoutAllergens = vector<string>();
     vector<string> cumulatedSafeFood = vector<string>();
@@ -209,7 +209,7 @@ void Tests()
 
 int main()
 {
-    cout << "Allergen Assessment" << endl;
+    cout << "Day 21 - Allergen Assessment" << endl;
     //Tests();
-    Part1("input.txt");
+    RunDay21("input.txt");
 }
