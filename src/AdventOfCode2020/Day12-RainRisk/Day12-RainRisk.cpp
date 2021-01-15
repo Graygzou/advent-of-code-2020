@@ -112,9 +112,6 @@ int main()
         {
             ApplyNavigationInstruction(line.c_str(), &positionPart1, &direction, false);
             ApplyNavigationInstruction(line.c_str(), &positionPart2, &waypoint, true);
-
-            //cout << "POSITION IS NOW " << positionPart2.first << ", " << positionPart2.second << endl;
-            //cout << "DIRECTION IS NOW " << waypoint.first << ", " << waypoint.second << endl;
         }
     }
     myfile.close();

@@ -111,7 +111,6 @@ int ApplyRulesToSeats(vector<vector<char>> seatLayout, int nbSeatOccupiedBeforeE
 
         // Make a copy to swap all seat "at the same time".
         vector<vector<char>> previousLayout = seatLayout;
-
         for (int j = 0; j < previousLayout.size(); j++)
         {
             for (int i = 0; i < previousLayout[0].size(); i++)
@@ -146,8 +145,7 @@ int ApplyRulesToSeats(vector<vector<char>> seatLayout, int nbSeatOccupiedBeforeE
                 }
             }
         }
-    } 
-    while (hasChanged);
+    } while (hasChanged);
 
     int nbOccupiedSeats = 0;
     for (size_t i = 0; i < seatLayout.size(); i++)
@@ -180,7 +178,6 @@ vector<vector<char>> RetrieveInputs(string fileName)
 {
     vector<vector<char>> seatLayout = vector<vector<char>>();
 
-    
     ifstream  myfile;
     myfile.open(fileName);
     if (myfile.is_open())
