@@ -48,6 +48,12 @@ vector<string> ConstructInstructionsFromFile(string fileName)
 }
 #pragma endregion
 
+/// <summary>
+/// Run list instructions contains in the vector until we meet twice the same instruction. 
+/// 
+/// Can also swap a nop +0 to jmp +0 if the parameters are provided to do so. This will allows to reach the end of the program
+/// </summary>
+/// <returns>true if the programs finished, false otherwise</returns>
 bool RunBootCode(vector<string> instructions, int* result, bool swapWhenIndexMet = false, int swapIndex = -1)
 {
     vector<int> visitedInstructionPointer = vector<int>();
