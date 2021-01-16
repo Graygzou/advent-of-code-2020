@@ -11,6 +11,45 @@ using namespace std;
 static const int NB_FIELDS = 8;
 static const string PASSPORTS_FIELDS[] = { "byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid", "cid" };
 
+
+bool IsCurrentPassportValid(ifstream* file, string line, bool isDataValidationEnable);
+
+int main()
+{
+    cout << "Day 4 - Passport Processing" << endl;
+
+    int nbPassportsValidPart1 = 0;
+    int nbPassportsValidPart2 = 0;
+    
+    ifstream myfile;
+    myfile.open("input.txt");
+    if (myfile.is_open())
+    {
+        string line;
+
+        // Part 1
+        bool checkDataAccuracy = false;
+        while (getline(myfile, line))
+        {
+            nbPassportsValidPart1 = IsCurrentPassportValid(&myfile, line, checkDataAccuracy) ? nbPassportsValidPart1 + 1 : nbPassportsValidPart1;
+        }
+        cout << "Result for Part 2 : " << nbPassportsValidPart1 << endl;
+
+        // Start again at the beginning of the file
+        myfile.clear();
+        myfile.seekg(ios::beg);
+
+        // Part 2
+        checkDataAccuracy = true;
+        while (getline(myfile, line))
+        {
+            nbPassportsValidPart2 = IsCurrentPassportValid(&myfile, line, checkDataAccuracy) ? nbPassportsValidPart2 + 1 : nbPassportsValidPart2;
+        }
+        cout << "Result for Part 2 : " << nbPassportsValidPart2 << endl;
+    }
+    myfile.close();
+}
+
 bool IsFieldValid(const char* field, string currentField)
 {
     cmatch cm;
@@ -103,10 +142,13 @@ bool IsPassportValid(bool checks[])
     return isValid;
 }
 
+
+/// <summary>
+/// Count how many passports are valid. We can activate the data check (more accurate) with the last boolean (part 2)  
+/// </summary>
 bool IsCurrentPassportValid(ifstream* file, string line, bool isDataValidationEnable)
 {
     bool fieldsValidationState[NB_FIELDS] = { false };
-
     do
     {
         for (size_t i = 0; i < NB_FIELDS; i++)
@@ -117,7 +159,6 @@ bool IsCurrentPassportValid(ifstream* file, string line, bool isDataValidationEn
                 int indexOfNextSpace = line.substr(indexOfField).find(" ");
                 if (isDataValidationEnable == false || IsFieldValid(PASSPORTS_FIELDS[i].c_str(), line.substr(indexOfField, indexOfNextSpace)))
                 {
-                    //cout << "Found " << PASSPORTS_FIELDS[i] << " / ";
                     fieldsValidationState[i] = true;
                 }
             }
@@ -131,58 +172,5 @@ bool IsCurrentPassportValid(ifstream* file, string line, bool isDataValidationEn
 
     } while (!line.empty());
 
-    //cout << endl << "Passport is valid = " << (IsPassportValid(fieldsValidationState) ? "true" : "False") << endl;
     return IsPassportValid(fieldsValidationState);
-}
-
-void Part1()
-{
-    int nbPassportsValid = 0;
-
-    string line;
-    ifstream  myfile;
-    myfile.open("input.txt");
-    if (myfile.is_open())
-    {
-        while (getline(myfile, line))
-        {
-            if (IsCurrentPassportValid(&myfile, line, false))
-            {
-                nbPassportsValid++;
-            }
-        }
-    }
-    myfile.close();
-
-    cout << "Result for Part 1 : " << nbPassportsValid << endl;
-}
-
-void Part2()
-{
-    int nbPassportsValid = 0;
-
-    string line;
-    ifstream  myfile;
-    myfile.open("input.txt");
-    if (myfile.is_open())
-    {
-        while (getline(myfile, line))
-        {
-            if (IsCurrentPassportValid(&myfile, line, true))
-            {
-                nbPassportsValid++;
-            }
-        }
-    }
-    myfile.close();
-
-    cout << "Result for Part 2 : " << nbPassportsValid << endl;
-}
-
-int main()
-{
-    cout << "Passport Processing" << endl;
-
-    Part1();
-    Part2();
 }
