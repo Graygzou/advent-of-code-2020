@@ -10,6 +10,25 @@
 
 using namespace std;
 
+int CountMessageMatchingRuleZero(string fileName);
+
+/// <summary>
+/// WARNING: For this solution you need to edit your input.
+/// 
+/// Basically, adding regexp pattern directy or pattern to be able to add some later on.
+/// Take a look at inputModified.txt and the two line specified in the problem statement to know the modification needed.
+/// </summary>
+int main()
+{
+    cout << "Day 19 - Monster Messages" << endl;
+
+    int result = CountMessageMatchingRuleZero("input.txt");
+    std::cout << "Result for part 1 is " << result << std::endl;
+
+    result = CountMessageMatchingRuleZero("inputModified.txt");
+    std::cout << "Result for part 2 is " << result << std::endl;
+}
+
 string SanitizeRule(string rule)
 {
     string ruleSanitized("");
@@ -187,20 +206,4 @@ int CountMessageMatchingRuleZero(string fileName)
     }
 
     return result;
-}
-
-
-/// <summary>
-/// WARNING: For this solution you need to edit your input.
-/// Basically, adding regexp pattern directy or pattern to be able to add some later on.
-/// </summary>
-int main()
-{
-    cout << "Day 19 - Monster Messages" << endl;
-
-    int result = CountMessageMatchingRuleZero("input.txt");
-    std::cout << "Result for part 1 is " << result << std::endl;
-
-    result = CountMessageMatchingRuleZero("inputModified.txt");
-    std::cout << "Result for part 2 is " << result << std::endl;
 }

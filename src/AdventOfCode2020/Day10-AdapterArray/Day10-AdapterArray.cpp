@@ -11,6 +11,57 @@
 
 using namespace std;
 
+vector<int> RetrieveAdapterVoltageFromFile(string fileName);
+int ComputeFollowingGroup(vector<int> arrangementSegment, int maxNumber);
+
+int main()
+{
+    cout << "Day 10 - Adapter Array" << endl;
+
+    vector<int> adapters = RetrieveAdapterVoltageFromFile("input.txt");
+    map<int, int> numberOfSameJoltDiff = map<int, int>
+    {
+        make_pair(1,0),
+        make_pair(2,0),
+        make_pair(3,0),
+    };
+
+    // Add the charing outlet voltage
+    adapters.push_back(0);
+
+    sort(adapters.begin(), adapters.end());
+
+    long long numberOfDistinctCombinaisons = 1;
+    vector<int> currentArrangement = vector<int>();
+    for (int i = 0; i < adapters.size() - 1; i++)
+    {
+        int currentNumber = adapters[i];
+
+        int currentJoltDiff = adapters[i + 1] - currentNumber;
+        numberOfSameJoltDiff[currentJoltDiff] += 1;
+
+        // if the currentJoltDiff is three, we're guaranteed that all arrangements will have it.
+        // We can study how many possibilities will generate the segment of arrangement we gather.
+        currentArrangement.push_back(currentNumber);
+        if (currentJoltDiff == 3)
+        {
+            // The segment arrangement can be found "N" times where N is the result of the function.
+            numberOfDistinctCombinaisons *= ComputeFollowingGroup(currentArrangement, currentNumber);
+            currentArrangement.clear();
+        }
+    }
+
+    // our device's built-in adapter is always 3 higher than the highest adapter
+    numberOfSameJoltDiff[3]++;
+    cout << "Result for part 1 is : " << numberOfSameJoltDiff[1] * numberOfSameJoltDiff[3] << endl;
+
+    // Apply to last arrangement
+    int lastNumber = adapters[adapters.size() - 1];
+    currentArrangement.push_back(lastNumber);
+    numberOfDistinctCombinaisons *= ComputeFollowingGroup(currentArrangement, lastNumber);
+    cout << "Result for part 2 is : " << numberOfDistinctCombinaisons << endl;
+}
+
 void DisplayVoltageRating(vector<int> voltageRating)
 {
     cout << "Display vector - Size = " << voltageRating.size() << endl;
@@ -86,52 +137,4 @@ vector<int> RetrieveAdapterVoltageFromFile(string fileName)
     myfile.close();
 
     return adapterVotages;
-}
-
-int main()
-{
-    cout << "Day 10 - Adapter Array" << endl;
-    vector<int> adapters = RetrieveAdapterVoltageFromFile("input.txt");
-    map<int, int> numberOfSameJoltDiff = map<int, int>
-    {
-        make_pair(1,0),
-        make_pair(2,0),
-        make_pair(3,0),
-    };
-
-    // Add the charing outlet voltage
-    adapters.push_back(0);
-
-    sort(adapters.begin(), adapters.end());
-
-    long long numberOfDistinctCombinaisons = 1;
-    vector<int> currentArrangement = vector<int>();
-    for (int i = 0; i < adapters.size() - 1; i++)
-    {
-        int currentNumber = adapters[i];
-
-        int currentJoltDiff = adapters[i + 1] - currentNumber;
-        numberOfSameJoltDiff[currentJoltDiff] += 1;
-
-        // if the currentJoltDiff is three, we're guaranteed that all arrangements will have it.
-        // We can study how many possibilities will generate the segment of arrangement we gather.
-        currentArrangement.push_back(currentNumber);
-        if (currentJoltDiff == 3)
-        {
-            // The segment arrangement can be found "N" times where N is the result of the function.
-            numberOfDistinctCombinaisons *= ComputeFollowingGroup(currentArrangement, currentNumber);
-            currentArrangement.clear();
-        }
-    }
-
-    // Apply to last arrangement
-    int lastNumber = adapters[adapters.size() - 1];
-    currentArrangement.push_back(lastNumber);
-    numberOfDistinctCombinaisons *= ComputeFollowingGroup(currentArrangement, lastNumber);
-
-    // our device's built-in adapter is always 3 higher than the highest adapter
-    numberOfSameJoltDiff[3]++;
-
-    cout << "Result for part 1 is : " << numberOfSameJoltDiff[1] * numberOfSameJoltDiff[3] << endl;
-    cout << "Result for part 2 is : " << numberOfDistinctCombinaisons << endl;
 }

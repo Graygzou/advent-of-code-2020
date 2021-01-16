@@ -9,6 +9,42 @@
 
 enum CurrentOperation { NONE, ADD, MULT };
 
+unsigned long long EvaluateExpression(std::string expression, int* offset);
+std::string AddParenthesis(std::string expression, char ope);
+
+int main()
+{
+    std::cout << "Day 18 - Operation Order" << std::endl;
+
+    std::ifstream file;
+    file.open("input.txt");
+
+    if (file.is_open())
+    {
+        unsigned long long part1Result = 0;
+        unsigned long long part2Result = 0;
+        int* offset = new int(0);
+
+        std::string line;
+        while (getline(file, line))
+        {
+            // Part 1
+            *offset = 0;
+            unsigned long long currentResult = EvaluateExpression(line, offset);
+            part1Result += currentResult;
+
+            // Part 2
+            line = AddParenthesis(line, '+');
+            *offset = 0;
+            currentResult = EvaluateExpression(line, offset);
+            part2Result += currentResult;
+        }
+
+        std::cout << "Result for part 1 is " << part1Result << std::endl;
+        std::cout << "Result for part 2 is " << part2Result << std::endl;
+    }
+}
+
 unsigned long long EvaluateExpression(std::string expression, int *offset)
 {
     unsigned long long result = 0;
@@ -225,37 +261,4 @@ void TestsPart2()
     std::cout << AddParenthesis("((2 + 4 * 9) * (6 + 9 * 8 + 6) + 6) + 2 + 4 * 2", '+') << std::endl;
     std::cout << AddParenthesis("((2 + 4 * 9) * (6 + 9 * 8 + 6) + 6) + 2 + 4 * 2", '+') << std::endl;
     std::cout << AddParenthesis("5 + (8 * 3 + 9 + 3 * 4 * 3)", '+') << std::endl;
-}
-
-int main()
-{
-    std::cout << "Day 18 - Operation Order" << std::endl;
-
-    std::ifstream file;
-    file.open("input.txt");
-
-    if (file.is_open())
-    {
-        unsigned long long part1Result = 0;
-        unsigned long long part2Result = 0;
-        int* offset = new int(0);
-
-        std::string line;
-        while (getline(file, line))
-        {
-            // Part 1
-            *offset = 0;
-            unsigned long long currentResult = EvaluateExpression(line, offset);
-            part1Result += currentResult;
-
-            // Part 2
-            line = AddParenthesis(line, '+');
-            *offset = 0;
-            currentResult = EvaluateExpression(line, offset);
-            part2Result += currentResult;
-        }
-
-        std::cout << "Result for part 1 is " << part1Result << std::endl;
-        std::cout << "Result for part 2 is " << part2Result << std::endl;
-    }
 }

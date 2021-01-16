@@ -10,6 +10,44 @@
 
 using namespace std;
 
+void ApplyNavigationInstruction(string instruction, pair<int, int>* position, pair<int, int>* direction, bool useWaypoint);
+
+int main()
+{
+    cout << "Day 12 - Rain Risk" << endl;
+
+    // Starting position
+    pair<int, int> startingPosition = make_pair(0, 0);
+
+    // Part 1
+    pair<int, int> positionPart1 = startingPosition;
+    pair<int, int> direction = make_pair(1, 0);
+
+    // Part 2
+    pair<int, int> positionPart2 = startingPosition;
+    pair<int, int> waypoint = make_pair(10, 1);
+
+    string line;
+    ifstream  myfile;
+    myfile.open("input.txt");
+    if (myfile.is_open())
+    {
+        int lineIndex = 0;
+        while (getline(myfile, line))
+        {
+            ApplyNavigationInstruction(line.c_str(), &positionPart1, &direction, false);
+            ApplyNavigationInstruction(line.c_str(), &positionPart2, &waypoint, true);
+        }
+    }
+    myfile.close();
+
+    int manhattanDistanceFromStart = abs(startingPosition.first - positionPart1.first) + abs(startingPosition.second - positionPart1.second);
+    std::cout << "Part 1 result is " << manhattanDistanceFromStart << endl;
+
+    int part2Result = abs(startingPosition.first - positionPart2.first) + abs(startingPosition.second - positionPart2.second);
+    std::cout << "Part 2 result is " << part2Result << endl;
+}
+
 static double degreeToRadian(double d) {
     return (d / 180.0) * ((double)M_PI);
 }
@@ -86,39 +124,4 @@ void ApplyNavigationInstruction(string instruction, pair<int, int> *position, pa
         direction->first = previousX * round(cos(amount)) - previousY * round(sin(amount));
         direction->second = previousX * round(sin(amount)) + previousY * round(cos(amount));
     }
-}
-
-
-int main()
-{
-    // Starting position
-    pair<int, int> startingPosition = make_pair(0, 0);
-
-    // Part 1
-    pair<int, int> positionPart1 = startingPosition;
-    pair<int, int> direction = make_pair(1, 0);
-
-    // Part 2
-    pair<int, int> positionPart2 = startingPosition;
-    pair<int, int> waypoint = make_pair(10, 1);
-
-    string line;
-    ifstream  myfile;
-    myfile.open("input.txt");
-    if (myfile.is_open())
-    {
-        int lineIndex = 0;
-        while (getline(myfile, line))
-        {
-            ApplyNavigationInstruction(line.c_str(), &positionPart1, &direction, false);
-            ApplyNavigationInstruction(line.c_str(), &positionPart2, &waypoint, true);
-        }
-    }
-    myfile.close();
-
-    int manhattanDistanceFromStart = abs(startingPosition.first - positionPart1.first) + abs(startingPosition.second - positionPart1.second);
-    std::cout << "Part 1 result is " << manhattanDistanceFromStart << endl;
-
-    int part2Result = abs(startingPosition.first - positionPart2.first) + abs(startingPosition.second - positionPart2.second);
-    std::cout << "Part 2 result is " << part2Result << endl;
 }

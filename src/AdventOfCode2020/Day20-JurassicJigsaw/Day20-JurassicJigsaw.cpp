@@ -15,6 +15,29 @@
 
 using namespace std;
 
+map<pair<int, int>, Tile*> ConstructFullGrid(string fileName);
+unsigned long long MultiplyCornerIds(map<pair<int, int>, Tile*> grid);
+Tile* CreateMergedImage(map<pair<int, int>, Tile*> grid);
+int CountDialsInPicture(Tile* fullImage, char dialPattern);
+int CountSeaMonsters(Tile* fullImage);
+
+int main()
+{
+    cout << "Jurassic Jigsaw " << endl;
+    map<pair<int, int>, Tile*> finalGrid = ConstructFullGrid("input.txt");
+
+    // Part 1
+    unsigned long long part1Result = MultiplyCornerIds(finalGrid);
+    std::cout << "Result for part 1 is " << part1Result << std::endl;
+
+    // Part 2
+    const int dialIncludedInSeaMonster = 15;
+    Tile* fullImage = CreateMergedImage(finalGrid);
+    int totalNumberOfDial = CountDialsInPicture(fullImage, '#');
+    int seaMonstersCount = CountSeaMonsters(fullImage);
+    std::cout << "Result for part 2 is " << totalNumberOfDial - seaMonstersCount * dialIncludedInSeaMonster << std::endl;
+}
+
 string ReverseString(string str)
 {
     reverse(str.begin(), str.end());
@@ -534,21 +557,4 @@ int CountDialsInPicture(Tile* fullImage, char dialPattern)
     }
 
     return totalNumberOfDial;
-}
-
-int main()
-{
-    cout << "Jurassic Jigsaw " << endl;
-    map<pair<int, int>, Tile*> finalGrid = ConstructFullGrid("input.txt");
-
-    // Part 1
-    unsigned long long part1Result = MultiplyCornerIds(finalGrid);
-    std::cout << "Result for part 1 is " << part1Result << std::endl;
-
-    // Part 2
-    const int dialIncludedInSeaMonster = 15;
-    Tile* fullImage = CreateMergedImage(finalGrid);
-    int totalNumberOfDial = CountDialsInPicture(fullImage, '#');
-    int seaMonstersCount = CountSeaMonsters(fullImage);
-    std::cout << "Result for part 2 is " << totalNumberOfDial - seaMonstersCount * dialIncludedInSeaMonster << std::endl;
 }

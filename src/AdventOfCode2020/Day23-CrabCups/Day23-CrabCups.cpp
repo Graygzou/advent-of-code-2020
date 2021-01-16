@@ -9,6 +9,8 @@
 
 using namespace std;
 
+void PlayGame(string fileName, bool useExtraCups, int nbTurns);
+
 class Cup 
 {
 private:
@@ -22,6 +24,13 @@ public:
     int GetValue() { return value; }
     Cup* GetNext() { return nextNeigbors; }
 };
+
+int main()
+{
+    std::cout << "Crab Cups" << endl;
+    PlayGame("input.txt", false, 100);
+    PlayGame("input.txt", true, 10000000);
+}
 
 void DisplayCups(Cup* currentCup)
 {
@@ -79,7 +88,7 @@ void PlayGame(string fileName, bool useExtraCups, int nbTurns)
         }
     }
 
-    // Add missing cups
+    // Add missing cups for part 2
     if (useExtraCups)
     {
         int nbCups = 1000000;
@@ -151,11 +160,4 @@ void PlayGame(string fileName, bool useExtraCups, int nbTurns)
         __int64 result = static_cast<__int64>(theOneCup->GetNext()->GetValue()) * static_cast<__int64>(theOneCup->GetNext()->GetNext()->GetValue());
         cout << "Result part 2 is " << result << endl;
     }
-}
-
-int main()
-{
-    std::cout << "Crab Cups" << endl;
-    PlayGame("input.txt", false, 100);
-    PlayGame("input.txt", true, 10000000);
 }

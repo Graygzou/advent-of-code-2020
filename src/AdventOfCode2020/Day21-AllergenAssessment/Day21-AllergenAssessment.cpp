@@ -10,6 +10,15 @@
 
 using namespace std;
 
+void RunDay21(string fileName);
+
+int main()
+{
+    cout << "Day 21 - Allergen Assessment" << endl;
+    //Tests();
+    RunDay21("input.txt");
+}
+
 vector<string> RemoveFromFirstVector(vector<string> vec1, vector<string> vec2)
 {
     vector<string> updateVec = vec1;
@@ -205,11 +214,4 @@ void Tests()
     vector<string> res2{ "a", "d" };
     cout << "Test => " << (IntersectionVectors(v1, v2) == res1) << endl;
     cout << "Test => " << (DifferenceVectors(v1, v2) == res2) << endl;
-}
-
-int main()
-{
-    cout << "Day 21 - Allergen Assessment" << endl;
-    //Tests();
-    RunDay21("input.txt");
 }

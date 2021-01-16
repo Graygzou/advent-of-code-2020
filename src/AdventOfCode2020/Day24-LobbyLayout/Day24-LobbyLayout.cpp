@@ -14,12 +14,14 @@ typedef pair<float, float> Position;
 #pragma region function signatures defs
 void ProcessInput(string fileName);
 
+Position ProcessDirection(string line);
+int CountTotalBlackTiles(map<Position, bool> tilePositions);
+int CountBlackNeighbor(Position position, map<Position, bool> tilePositions);
+
 void FlipTiles(map<Position, bool>* tilePositions);
 vector<Position> FindCandidates(map<Position, bool> tilePositions, vector<Position>* futureWhiteTile);
 vector<Position> FindFinalCandidates(vector<Position> candidates, map<Position, bool> tilePositions);
 void FlipFinalCandidatesToBlack(vector<Position> nextBlackTiles, map<Position, bool>* tilePositions);
-int CountBlackNeighbor(Position position, map<Position, bool> tilePositions);
-
 void FlipBlackTileToWhite(vector<Position> nextwhiteTiles, map<Position, bool>* tilePositions);
 #pragma endregion
 
@@ -34,6 +36,45 @@ const Position NEIGHBORS_RELATIVE_POS[]
         Position(-0.5,-1), Position(0.5,-1) 
 };
 #pragma endregion
+
+int main()
+{
+    std::cout << "Day 24 - Lobby Layout" << endl;
+    //Tests();
+    
+    string fileName = "input.txt";
+    map<Position, bool> tilePositions;
+
+    ifstream file;
+    file.open(fileName);
+    if (file.is_open())
+    {
+        string line;
+        while (getline(file, line))
+        {
+            Position position = ProcessDirection(line);
+            if (tilePositions.find(position) == tilePositions.end())
+            {
+                tilePositions[position] = false;
+            }
+
+            tilePositions[position] = !tilePositions[position];
+        }
+    }
+
+    cout << "Result part 1 is " << CountTotalBlackTiles(tilePositions) << endl;
+
+    int nbDays = 100;
+    for (size_t day = 0; day < nbDays; day++)
+    {
+        FlipTiles(&tilePositions);
+        cout << "Day " << (day + 1) << ":" << CountTotalBlackTiles(tilePositions) << endl;
+    }
+
+    cout << "Result part 2 is " << CountTotalBlackTiles(tilePositions) << endl;
+
+}
+
 
 #pragma region Position ope
 Position SumPair(Position pair1, Position pair2)
@@ -114,48 +155,6 @@ void Tests()
 {
     cout << "Test 1 = " << (ProcessDirection("eeseww") == ProcessDirection("se") ? "true" : "false") << endl;
     cout << "Test 2 = " << (ProcessDirection("se") == ProcessDirection("swe") ? "true" : "false") << endl;
-}
-
-int main()
-{
-    std::cout << "Lobby Layout" << endl;
-    //Tests();
-    ProcessInput("input.txt");
-}
-
-void ProcessInput(string fileName)
-{
-    ifstream file;
-    string line;
-
-    map<Position, bool> tilePositions;
-
-    int maxValue = 0;
-    file.open(fileName);
-    if (file.is_open())
-    {
-        while (getline(file, line))
-        {
-            Position position = ProcessDirection(line);
-            if (tilePositions.find(position) == tilePositions.end())
-            {
-                tilePositions[position] = false;
-            }
-
-            tilePositions[position] = !tilePositions[position];
-        }
-    }
-
-    cout << "Result part 1 is " << CountTotalBlackTiles(tilePositions) << endl;
-
-    int nbDays = 100;
-    for (size_t day = 0; day < nbDays; day++)
-    {
-        FlipTiles(&tilePositions);
-        cout << "Day " << (day + 1) << ":" << CountTotalBlackTiles(tilePositions) << endl;
-    }
-
-    cout << "Result part 2 is " << CountTotalBlackTiles(tilePositions) << endl;
 }
 
 #pragma region Part 2 functions

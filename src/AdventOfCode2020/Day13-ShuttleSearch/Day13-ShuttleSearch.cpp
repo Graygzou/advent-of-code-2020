@@ -8,6 +8,41 @@
 
 using namespace std;
 
+pair<int, int> FindEarlistedAirportBus(string busSchedule, int earlistDepartPossible);
+unsigned long long SolveEquationWithChineseRemainderTheoreme(string busSchedule);
+
+int main()
+{
+    std::cout << "Day 13 - Shuttle Search" << endl;
+
+    ifstream file;
+    file.open("input.txt");
+    if (file.is_open())
+    {
+        int earliestTimestamp = -1;
+
+        int lineNumber = 0;
+        string line("");
+        while (getline(file, line))
+        {
+            if (lineNumber == 0)
+            {
+                earliestTimestamp = atoi(line.c_str());
+                lineNumber++;
+            }
+            else
+            {
+                pair<int, int> earliestBusIDAndWaitingTime = FindEarlistedAirportBus(line, earliestTimestamp);
+                int resultPart1 = earliestBusIDAndWaitingTime.first * earliestBusIDAndWaitingTime.second;
+                std::cout << "Part 1 result = " << resultPart1 << endl;
+
+                unsigned long long resultPart2 = SolveEquationWithChineseRemainderTheoreme(line);
+                std::cout << "Part 2 result = " << resultPart2 << endl;
+            }
+        }
+    }
+}
+
 pair<int, int> FindEarlistedAirportBus(string busSchedule, int earlistDepartPossible)
 {
     int busID(0);
@@ -160,36 +195,4 @@ unsigned long long SolveEquationWithChineseRemainderTheoreme(string busSchedule)
     // We want the smallest answer so apply the modulo directly.
     result %= productOfMod;
     return result;
-}
-
-int main()
-{
-    std::cout << "Day 13 - Shuttle Search" << endl;
-
-    ifstream file;
-    file.open("input.txt");
-    if (file.is_open())
-    {
-        int earliestTimestamp = -1;
-
-        int lineNumber = 0;
-        string line("");
-        while (getline(file, line))
-        {
-            if (lineNumber == 0)
-            {
-                earliestTimestamp = atoi(line.c_str());
-                lineNumber++;
-            }
-            else
-            {
-                pair<int, int> earliestBusIDAndWaitingTime = FindEarlistedAirportBus(line, earliestTimestamp);
-                int resultPart1 = earliestBusIDAndWaitingTime.first * earliestBusIDAndWaitingTime.second;
-                std::cout << "Part 1 result = " << resultPart1 << endl;
-
-                unsigned long long resultPart2 = SolveEquationWithChineseRemainderTheoreme(line);
-                std::cout << "Part 2 result = " << resultPart2 << endl;
-            }
-        }
-    }
 }

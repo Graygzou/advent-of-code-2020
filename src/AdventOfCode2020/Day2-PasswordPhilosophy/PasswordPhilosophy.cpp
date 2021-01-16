@@ -8,6 +8,34 @@
 
 using namespace std;
 
+bool ComputeIfPasswordLegitPart1(string line);
+
+int main()
+{
+    cout << "Day 2 - Password Philosophy" << endl;
+
+    string* array = new string[1000];
+    int arrayLength = Utils::CreateStringArrayFromInputFile("input.txt", array);
+
+    int nbPasswordLegitPart1 = 0;
+    int nbPasswordLegitPart2 = 0;
+    for (size_t i = 0; i < arrayLength; i++)
+    {
+        if (ComputeIfPasswordLegitPart1(array[i]))
+        {
+            nbPasswordLegitPart1++;
+        }
+
+        if (ComputeIfPasswordLegitPart2(array[i]))
+        {
+            nbPasswordLegitPart2++;
+        }
+    }
+
+    cout << "Result Part 1 is " << nbPasswordLegitPart1 << endl;
+    cout << "Result Part 2 is " << nbPasswordLegitPart2 << endl;
+}
+
 void getBoundsPolicy(string line, int* minBound, int* maxBound)
 {
     string spaceDelimiter = "-";
@@ -98,28 +126,3 @@ void Tests()
     }
 }
 
-int main()
-{
-    cout << "Day 2 - Password Philosophy" << endl;
-
-    string* array = new string[1000];
-    int arrayLength = Utils::CreateStringArrayFromInputFile("input.txt", array);
-
-    int nbPasswordLegitPart1 = 0;
-    int nbPasswordLegitPart2 = 0;
-    for (size_t i = 0; i < arrayLength; i++)
-    {
-        if (ComputeIfPasswordLegitPart1(array[i]))
-        {
-            nbPasswordLegitPart1++;
-        }
-
-        if (ComputeIfPasswordLegitPart2(array[i]))
-        {
-            nbPasswordLegitPart2++;
-        }
-    }
-
-    cout << "Result Part 1 is " << nbPasswordLegitPart1 << endl;
-    cout << "Result Part 2 is " << nbPasswordLegitPart2 << endl;
-}

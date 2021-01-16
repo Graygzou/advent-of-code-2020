@@ -14,6 +14,28 @@ using namespace std;
 const int MASK_TEXT = 7;
 const int BITMASK_SIZE = 36;
 
+vector<string> CompleteProgram(string fileName, map<string, unsigned long long>* adresses, int decoderVersion);
+unsigned long long SumValuesInMemory(vector<string> memory, map<string, unsigned long long> adresses);
+
+int main()
+{
+    cout << "Day 14 - Docking Data" << endl;
+
+    string fileName = "input.txt";
+    map<string, unsigned long long> adresses = map<string, unsigned long long>();
+
+    vector<string> memory = CompleteProgram(fileName, &adresses, 1);
+    unsigned long long resultPart1 = SumValuesInMemory(memory, adresses);
+    cout << "Result for part 1 is : " << resultPart1 << endl;
+
+    // Reset
+    adresses.clear();
+
+    memory = CompleteProgram(fileName, &adresses, 2);
+    unsigned long long resultPart2 = SumValuesInMemory(memory, adresses);
+    cout << "Result for part 2 is : " << resultPart2 << endl;
+}
+
 #pragma region Helpers
 bitset<BITMASK_SIZE> ConvertNumberToBitset(unsigned long long number)
 {
@@ -317,23 +339,4 @@ void Tests()
     cout << (ConvertNumberToBitset(101).to_string() == "000000000000000000000000000001100101") << endl;
     cout << (ConvertNumberToBitset(349000485).to_string() == "000000010100110011010101001100100101") << endl;
     cout << (ConvertNumberToBitset(517650454).to_string() == "000000011110110110101011100000010110") << endl;
-}
-
-int main()
-{
-    cout << "Day 14 - Docking Data" << endl;
-    
-    string fileName = "input.txt";
-    map<string, unsigned long long> adresses = map<string, unsigned long long>();
-
-    vector<string> memory = CompleteProgram(fileName, &adresses, 1);
-    unsigned long long resultPart1 = SumValuesInMemory(memory, adresses);
-    cout << "Result for part 1 is : " << resultPart1 << endl;
-
-    // Reset
-    adresses.clear();
-
-    memory = CompleteProgram(fileName, &adresses, 2);
-    unsigned long long resultPart2 = SumValuesInMemory(memory, adresses);
-    cout << "Result for part 2 is : " << resultPart2 << endl;
 }

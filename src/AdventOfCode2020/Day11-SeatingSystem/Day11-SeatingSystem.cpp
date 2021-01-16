@@ -9,6 +9,25 @@
 
 using namespace std;
 
+vector<vector<char>> RetrieveInputs(string fileName);
+void DisplaySeats(vector<vector<char>> seatLayout);
+int ApplyRulesToSeats(vector<vector<char>> seatLayout, int nbSeatOccupiedBeforeEmpty);
+
+int main()
+{
+    cout << "Day 11 - Seating System" << endl;
+
+    // Use of vector<char> instead of string because easier to iterate over neighbors in any directions.
+    vector<vector<char>> seatLayout = RetrieveInputs("input.txt");
+    DisplaySeats(seatLayout);
+
+    int nbOccupiedSeatsPart1 = ApplyRulesToSeats(seatLayout, 4);
+    cout << "Result for part 1 is : " << nbOccupiedSeatsPart1 << endl;
+
+    int nbOccupiedSeatsPart2 = ApplyRulesToSeats(seatLayout, 5);
+    cout << "Result for part 2 is : " << nbOccupiedSeatsPart2 << endl;
+}
+
 bool HasNonEmptyNeighbor(
     vector<vector<char>> previousLayout, 
     int xDirection, 
@@ -198,19 +217,4 @@ vector<vector<char>> RetrieveInputs(string fileName)
     myfile.close();
 
     return seatLayout;
-}
-
-int main()
-{
-    cout << "Day 11 - Seating System" << endl;
-
-    // Use of vector<char> instead of string because easier to iterate over neighbors in any directions.
-    vector<vector<char>> seatLayout = RetrieveInputs("input.txt");
-    DisplaySeats(seatLayout);
-
-    int nbOccupiedSeatsPart1 = ApplyRulesToSeats(seatLayout, 4);
-    cout << "Result for part 1 is : " << nbOccupiedSeatsPart1 << endl;
-
-    int nbOccupiedSeatsPart2 = ApplyRulesToSeats(seatLayout, 5);
-    cout << "Result for part 2 is : " << nbOccupiedSeatsPart2 << endl;
 }

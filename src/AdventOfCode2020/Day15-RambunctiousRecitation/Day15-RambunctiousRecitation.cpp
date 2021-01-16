@@ -9,6 +9,41 @@
 
 using namespace std;
 
+vector<int> SplitWithDelimiter(string str, string delimiter);
+int RunMemoryGame(vector<int> numbers, map<int, pair<int, int>> wordsSpokenCount, int nbTurns);
+
+int main()
+{
+    ifstream file;
+
+    vector<int> numbers;
+
+    file.open("input.txt");
+    if (file.is_open())
+    {
+        string line;
+        while (getline(file, line))
+        {
+            numbers = SplitWithDelimiter(line, ",");
+        }
+    }
+
+    // Store as key the number and has value his last position met.
+    map<int, pair<int, int>> wordsSpokenCount;
+    for (size_t i = 0; i < numbers.size(); i++)
+    {
+        wordsSpokenCount[numbers[i]] = make_pair(i + 1, 0);
+    }
+
+    // Part 1
+    int part1Result = RunMemoryGame(numbers, wordsSpokenCount, 2020);
+    cout << "Result Part 1 is " << part1Result << endl;
+
+    // Part 2
+    int part2Result = RunMemoryGame(numbers, wordsSpokenCount, 30000000);
+    cout << "Result Part 2 is " << part2Result << endl;
+}
+
 // Should be moved to Utils.cpp
 vector<int> SplitWithDelimiter(string str, string delimiter)
 {
@@ -57,37 +92,4 @@ int RunMemoryGame(vector<int> numbers, map<int, pair<int, int>> wordsSpokenCount
     }
 
     return mostRecentSpokenNumber;
-}
-
-int main()
-{
-    ifstream file;
-    
-    vector<int> numbers;
-
-    file.open("input.txt");
-    if (file.is_open())
-    {
-        string line;
-        while (getline(file, line))
-        {
-            numbers = SplitWithDelimiter(line, ",");
-        }
-    }
-
-    // Store as key the number and has value his last position met.
-    map<int, pair<int, int>> wordsSpokenCount;
-    for (size_t i = 0; i < numbers.size(); i++)
-    {
-        wordsSpokenCount[numbers[i]] = make_pair(i+1, 0);
-    }
-
-    // Part 1
-    int part1Result = RunMemoryGame(numbers, wordsSpokenCount, 2020);
-    cout << "Result Part 1 is " << part1Result << endl;
-
-    // Part 2
-    int part2Result = RunMemoryGame(numbers, wordsSpokenCount, 30000000);
-    cout << "Result Part 2 is " << part2Result << endl;
-
 }

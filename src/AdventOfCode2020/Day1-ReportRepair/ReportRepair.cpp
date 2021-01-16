@@ -8,8 +8,39 @@
 
 using namespace std;
 
-void Part1(int arrayLength, int totalSum, int* array)
+pair<int, int> FindTwoEntryThatSumToValue(int arrayLength, int totalSum, int* array);
+int* FindThreeEntryThatSumToValue(int arrayLength, int totalSum, int* array);
+
+int main()
 {
+    cout << "Report Repair" << endl;
+
+    int* array = new int[256];
+    int arrayLength = Utils::CreateIntArrayFromInputFile("input.txt", array);
+
+    // Part 1
+    int totalSum = 2020;
+    pair<int, int> twoEntries = FindTwoEntryThatSumToValue(arrayLength, totalSum, array);
+    cout << "result for part 1 is = " << twoEntries.first * twoEntries.second << endl;
+
+    // Part 2
+    int *threeEntries = FindThreeEntryThatSumToValue(arrayLength, totalSum, array);
+    if (threeEntries != nullptr)
+    {
+        cout << "result for part 2 is = " << threeEntries[0] * threeEntries[1] * threeEntries[2] << endl;
+    }
+
+    array = NULL;
+    delete array;
+}
+
+/// <summary>
+/// Find the two entries that sum to the given number (equals to 2020 fro part 1)
+/// </summary>
+pair<int, int> FindTwoEntryThatSumToValue(int arrayLength, int totalSum, int* array)
+{
+    pair<int, int> result = make_pair(0, 0);
+
     for (size_t i = 0; i < arrayLength; i++)
     {
         int currentValue = totalSum - array[i];
@@ -17,15 +48,21 @@ void Part1(int arrayLength, int totalSum, int* array)
         {
             if (array[j] == currentValue)
             {
-                cout << "found match for = " << array[i] << " + " << array[j] << " = " << totalSum << endl;
-                cout << "result is = " << array[i] * array[j] << endl;
+                result = make_pair(array[i], array[j]);
             }
         }
     }
+
+    return result;
 }
 
-void Part2(int arrayLength, int totalSum, int* array)
+/// <summary>
+/// Find the three entries that sum to the given number (equals to 2020 fro part 1)
+/// </summary>
+int* FindThreeEntryThatSumToValue(int arrayLength, int totalSum, int* array)
 {
+    int* result = nullptr;
+
     for (size_t i = 0; i < arrayLength; i++)
     {
         int currentValue = totalSum - array[i];
@@ -35,29 +72,11 @@ void Part2(int arrayLength, int totalSum, int* array)
             {
                 if (array[j] + array[k] == currentValue)
                 {
-                    cout << "found match for = " << array[i] << " + " << array[j] << " + " << array[k] << " = " << totalSum << endl;
-                    cout << "result is = " << array[i] * array[j] * array[k] << endl;
+                    result = new int[] { array[i], array[j], array[k] };
                 }
             }
         }
     }
-}
 
-int main()
-{
-    cout << "Report Repair" << endl;
-
-    int* array = new int[256];
-    int arrayLength = Utils::CreateIntArrayFromInputFile("input.txt", array);
-
-    cout << "nb lines = " << arrayLength << endl;
-
-    int totalSum = 2020;
-
-    // Part 1
-    Part1(arrayLength, totalSum, array);
-    Part2(arrayLength, totalSum, array);
-
-    array = NULL;
-    delete array;
+    return result;
 }

@@ -9,6 +9,18 @@
 
 using namespace std;
 
+int PlayCombatGame(string fileName, bool allowRecursion);
+
+int main()
+{
+    std::cout << "Crab Combat" << endl;
+    int resultPart1 = PlayCombatGame("input.txt", false);
+    std::cout << "Part 1 result is " << resultPart1 << endl;
+
+    int resultPart2 = PlayCombatGame("input.txt", true);
+    std::cout << "Part 2 result is " << resultPart2 << endl;
+}
+
 queue<int> CreateNewQueueFrom(queue<int> deck, int size)
 {
     queue<int> result;
@@ -221,14 +233,4 @@ int PlayCombatGame(string fileName, bool allowRecursion)
     }
 
     return result;
-}
-
-int main()
-{
-    std::cout << "Crab Combat" << endl;
-    int resultPart1 = PlayCombatGame("example.txt", false);
-    std::cout << "Part 1 result is " << resultPart1 << endl;
-
-    int resultPart2 = PlayCombatGame("example.txt", true);
-    std::cout << "Part 2 result is " << resultPart2 << endl;
 }

@@ -10,6 +10,55 @@
 
 using namespace std;
 
+vector<vector<pair<int, int>>> GatherRules(ifstream* file);
+vector<int> GetPersonalTicketInfos(ifstream* file);
+vector<vector<int>> GatherAllOtherTickets(ifstream* file);
+vector<vector<bool>> FindPossibilitiesWithOtherTickets(vector<vector<pair<int, int>>> rules, vector<vector<int>> tickets, vector<int>* errors);
+map<int, int> MapPossibilitiesLeft(vector<vector<bool>> possibilitiesPerSpot);
+
+int main()
+{
+    cout << "Day 16 - Ticket Translation" << endl;
+
+    ifstream file;
+
+    file.open("input.txt");
+    if (!file.is_open())
+    {
+        return 0;
+    }
+
+    vector<vector<pair<int, int>>> rules = GatherRules(&file);
+    vector<int> myTicketNumbers = GetPersonalTicketInfos(&file);
+    vector<vector<int>> gatherAllOtherTickets = GatherAllOtherTickets(&file);
+
+    vector<int> errors = vector<int>();
+    vector<vector<bool>> possibilitiesPerSpot = FindPossibilitiesWithOtherTickets(rules, gatherAllOtherTickets, &errors);
+
+    // Part 1
+    int resultPart1 = 0;
+    for (size_t i = 0; i < errors.size(); i++)
+    {
+        resultPart1 += errors[i];
+    }
+    cout << "Result part 1 is " << resultPart1 << endl;
+
+    // Part 2
+    // rule => ticket index
+    map<int, int> finalRules = MapPossibilitiesLeft(possibilitiesPerSpot);
+
+    unsigned long long resultPart2 = 1;
+    for (std::map<int, int>::iterator it = finalRules.begin(); it != finalRules.end(); ++it)
+    {
+        // Luckily, The first 6 rules are the one with the word "departure"
+        if (it->first < 6)
+        {
+            resultPart2 *= myTicketNumbers[it->second];
+        }
+    }
+    cout << "Result part 2 is " << resultPart2 << endl;
+}
+
 vector<int> SplitWithDelimiter(string str, string delimiter)
 {
     vector<int> results = vector<int>();
@@ -204,47 +253,4 @@ map<int, int> MapPossibilitiesLeft(vector<vector<bool>> possibilitiesPerSpot)
     }
 
     return finalRules;
-}
-
-int main()
-{
-    cout << "Day 16 - Ticket Translation" << endl;
-
-    ifstream file;
-
-    file.open("input.txt");
-    if (!file.is_open())
-    {
-        return 0;
-    }
-
-    vector<vector<pair<int, int>>> rules = GatherRules(&file);
-    vector<int> myTicketNumbers = GetPersonalTicketInfos(&file);
-    vector<vector<int>> gatherAllOtherTickets = GatherAllOtherTickets(&file);
-
-    vector<int> errors = vector<int>();
-    vector<vector<bool>> possibilitiesPerSpot = FindPossibilitiesWithOtherTickets(rules, gatherAllOtherTickets, &errors);
-
-    // Part 1
-    int resultPart1 = 0;
-    for (size_t i = 0; i < errors.size(); i++)
-    {
-        resultPart1 += errors[i];
-    }
-    cout << "Result part 1 is " << resultPart1 << endl;
-
-    // Part 2
-    // rule => ticket index
-    map<int, int> finalRules = MapPossibilitiesLeft(possibilitiesPerSpot);
-
-    unsigned long long resultPart2 = 1;
-    for (std::map<int, int>::iterator it = finalRules.begin(); it != finalRules.end(); ++it)
-    {
-        // Luckily, The first 6 rules are the one with the word "departure"
-        if (it->first < 6)
-        {
-            resultPart2 *= myTicketNumbers[it->second];
-        }
-    }
-    cout << "Result part 2 is " << resultPart2 << endl;
 }
