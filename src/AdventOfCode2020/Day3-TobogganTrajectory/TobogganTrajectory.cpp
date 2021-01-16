@@ -10,6 +10,32 @@ using namespace std;
 
 constexpr char TREE_SYMBOL = '#';
 
+long long CountNumberOfTreeHitForTrajectories(tuple<int, int> slopes[], int nbSlopes);
+
+int main()
+{
+    cout << "Day 3 - Toboggan Trajectory" << endl;
+
+    tuple<int, int> slopesPart1[] = { make_tuple(3, 1) };
+    int nbSlopes = 1;
+
+    long long resultPart1 = CountNumberOfTreeHitForTrajectories(slopesPart1, nbSlopes);
+    cout << "Result for part 1 is : " << resultPart1 << endl;
+
+    tuple<int, int> slopesPart2[] =
+    {
+        make_tuple(1, 1),
+        make_tuple(3, 1),
+        make_tuple(5, 1),
+        make_tuple(7, 1),
+        make_tuple(1, 2),
+    };
+    nbSlopes = 5;
+
+    long long resultPart2 = CountNumberOfTreeHitForTrajectories(slopesPart2, nbSlopes);
+    cout << "Result for part 2 is : " << resultPart2 << endl;
+}
+
 int CountNumberOfTreeHit(ifstream* file, tuple<int, int> slope)
 {
     int nbTreesMet = 0;
@@ -39,42 +65,19 @@ int CountNumberOfTreeHit(ifstream* file, tuple<int, int> slope)
     return nbTreesMet;
 }
 
-void Part1()
+/// <summary>
+/// Count how many trees we hit for each slope trajectory we take and multiply them.
+/// </summary>
+/// <returns>Multiplication of all tree hit per slope.</returns>
+long long CountNumberOfTreeHitForTrajectories(tuple<int, int> slopes[], int nbSlopes)
 {
     ifstream inputFile;
     inputFile.open("input");
     if (!inputFile.is_open())
     {
         cout << "Error: can't open inputs.txt" << endl;
-        return;
+        return -1;
     }
-
-    tuple<int, int> part1Slope = make_tuple(3, 1);
-    int resultPart1 = CountNumberOfTreeHit(&inputFile, part1Slope);
-    cout << "Result for part 1 is : " << resultPart1 << endl;
-
-    inputFile.close();
-}
-
-void Part2()
-{
-    ifstream inputFile;
-    inputFile.open("input");
-    if (!inputFile.is_open())
-    {
-        cout << "Error: can't open inputs.txt" << endl;
-        return;
-    }
-
-    int nbSlopes = 5;
-    tuple<int, int> slopes[] =
-    {
-        make_tuple(1, 1),
-        make_tuple(3, 1),
-        make_tuple(5, 1),
-        make_tuple(7, 1),
-        make_tuple(1, 2),
-    };
 
     long long resultPart2 = 1;
     for (size_t i = 0; i < nbSlopes; i++)
@@ -86,17 +89,7 @@ void Part2()
         inputFile.clear();
         inputFile.seekg(ios::beg);
     }
-
-    cout << "Result for part 2 is : " << resultPart2 << endl;
-
     inputFile.close();
-}
 
-
-int main()
-{
-    cout << "Toboggan Trajectory" << endl;
-
-    Part1();
-    Part2();
+    return resultPart2;
 }
