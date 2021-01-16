@@ -48,7 +48,7 @@ vector<string> ConstructInstructionsFromFile(string fileName)
 }
 #pragma endregion
 
-bool Part1(vector<string> instructions, int* result, bool swapWhenIndexMet = false, int swapIndex = -1)
+bool RunBootCode(vector<string> instructions, int* result, bool swapWhenIndexMet = false, int swapIndex = -1)
 {
     vector<int> visitedInstructionPointer = vector<int>();
 
@@ -63,8 +63,6 @@ bool Part1(vector<string> instructions, int* result, bool swapWhenIndexMet = fal
     {
         visitedInstructionPointer.push_back(instructionPointer);
 
-        //cout << instructionPointer << " And size of vector " << instructions.size() << endl;
-
         string currentInstruction = instructions[instructionPointer];
         int number = GetArgumentFromInstruction(currentInstruction);
 
@@ -73,14 +71,11 @@ bool Part1(vector<string> instructions, int* result, bool swapWhenIndexMet = fal
             if ((currentInstruction.substr(0, 3) == "jmp" || currentInstruction.substr(0, 3) == "nop") 
                 && (nbJmpAndNopMet + 1) == swapIndex)
             {
-                //cout << "CHANGE IT !" << endl;
                 string newInstruction = currentInstruction.substr(0, 3) == "nop" ? "jmp" : "nop";
                 instructions[instructionPointer].replace(0, 3, newInstruction);
                 currentInstruction = instructions[instructionPointer];
             }
         }
-
-        //cout << "Instruction is " << currentInstruction << " number is " << number << endl;
 
         if (currentInstruction.substr(0, 3) == "acc")
         {
@@ -108,36 +103,28 @@ bool Part1(vector<string> instructions, int* result, bool swapWhenIndexMet = fal
     return instructionPointer >= instructions.size();
 }
 
-int Part2(vector<string> instructions)
+int main()
 {
-    int accumulator = 0;
-    int nextJmpOrNopToChange = 0;
+    cout << "Day 8 - Handheld Halting" << endl;
 
+    vector<string> instructions = ConstructInstructionsFromFile("input.txt");
+
+    // Part 1
+    cout << "Start Part 1 ..." << endl;
+    int resultPart1 = 0;
+    RunBootCode(instructions, &resultPart1);
+    cout << "Result for part 1 is : " << resultPart1 << endl;
+
+    // Part 2
+    cout << "Start Part 2 ..." << endl;
+    int resultPart2 = 0;
+    int nextJmpOrNopToChange = 0;
     bool hasProgramFinished = false;
-    int mainLoopIndex = 0;
-    while (mainLoopIndex < SAFE_GUARD && !hasProgramFinished)
+    while (nextJmpOrNopToChange < SAFE_GUARD && !hasProgramFinished)
     {
         nextJmpOrNopToChange++;
         vector<string> tempInstructions = vector<string>(instructions);
-        hasProgramFinished = Part1(tempInstructions, &accumulator, true, nextJmpOrNopToChange);
-
-        mainLoopIndex++;
+        hasProgramFinished = RunBootCode(tempInstructions, &resultPart2, true, nextJmpOrNopToChange);
     }
-
-    return accumulator;
-}
-
-int main()
-{
-    vector<string> instructions = ConstructInstructionsFromFile("input.txt");
-
-    cout << "Start Part 1 ..." << endl;
-    int resultPart1 = 0;
-    Part1(instructions, &resultPart1);
-
-    cout << "Start Part 2 ..." << endl;
-    int resultPart2 = Part2(instructions);
-
-    cout << "Result for part 1 is : " << resultPart1 << endl;
     cout << "Result for part 2 is : " << resultPart2 << endl;
 }
