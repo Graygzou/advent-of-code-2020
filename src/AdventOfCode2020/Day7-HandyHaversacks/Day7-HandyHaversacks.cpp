@@ -9,6 +9,25 @@
 
 using namespace std;
 
+void CreateColorsStructures(string fileName, map<string, vector<string>>* colorsWithParents, map<string, vector<pair<int, string>>>* colorsWithChildren);
+int CountParentOfBagGivenColor(string bagColor, map<string, vector<string>> bagColors);
+int CountChildrenOfBagColor(string bagColor, map<string, vector<pair<int, string>>> bagColors);
+
+int main()
+{
+    map<string, vector<string>> colorsWithParents;
+    map<string, vector<pair<int, string>>> colorsWithChildren;
+
+    CreateColorsStructures("input.txt", &colorsWithParents, &colorsWithChildren);
+
+    int resultPart1 = CountParentOfBagGivenColor("shiny gold", colorsWithParents);
+    cout << "Result for part 1 is " << resultPart1 << endl;
+
+    int resultPart2 = CountChildrenOfBagColor("shiny gold", colorsWithChildren);
+    cout << "Result for part 2 is " << resultPart2 << endl;
+}
+
+#pragma region Helpers
 void DisplayMap(map<string, vector<string>> structureToDisplay)
 {
     for (std::map<string, vector<string>>::iterator it = structureToDisplay.begin(); it != structureToDisplay.end(); ++it)
@@ -26,64 +45,6 @@ void DisplayMap(map<string, vector<string>> structureToDisplay)
     system("pause");
 }
 
-#pragma region Part 1
-// Part 1
-int CountParentOfBagColor(string bagColor, map<string, vector<string>> bagColors)
-{
-    int result = 0;
-    vector<string> colorLeft({ bagColor });
-    vector<string> visitedColor = vector<string>();
-
-    while (!colorLeft.empty())
-    {
-        string lastColor = colorLeft[colorLeft.size() - 1];
-        cout << "Current color is " << lastColor << endl;
-
-        visitedColor.push_back(lastColor);
-        colorLeft.pop_back();
-
-        for (std::vector<string>::iterator it2 = bagColors[lastColor].begin(); it2 != bagColors[lastColor].end(); ++it2)
-        {
-            string nextColor = it2->c_str();
-            cout << "Next color is " << nextColor << endl;
-
-            bool alreadyVisitedColor = find(visitedColor.begin(), visitedColor.end(), nextColor) != visitedColor.end();
-            bool alreadyTagged = find(colorLeft.begin(), colorLeft.end(), nextColor) != colorLeft.end();
-
-            cout << "Add color " << (find(visitedColor.begin(), visitedColor.end(), nextColor) == visitedColor.end()) << endl;
-            cout << "Add color " << it2->c_str() << endl;
-
-            if (!alreadyVisitedColor && !alreadyTagged)
-            {
-                result++;
-                colorLeft.push_back(nextColor);
-            }
-        }
-
-        /*if (colorLeft.size() <= 0)
-        {
-            break;
-        }*/
-
-        /*for (std::vector<string>::iterator it8 = visitedColor.begin(); it8 != visitedColor.end(); ++it8)
-        {
-            std::cout << it8->c_str() << '\n';
-        }
-        cout << "===========" << endl;*/
-        for (std::vector<string>::iterator it8 = colorLeft.begin(); it8 != colorLeft.end(); ++it8)
-        {
-            std::cout << it8->c_str() << '\n';
-        }
-        //system("pause");
-
-        cout << "COLOR LEFT SIZE = " << colorLeft.size() << endl;
-    }
-
-    return result;
-}
-#pragma endregion
-
-#pragma region Part 2
 void DisplayMapPart2(map<string, vector<pair<int, string>>> structureToDisplay)
 {
     for (std::map<string, vector<pair<int, string>>>::iterator it = structureToDisplay.begin(); it != structureToDisplay.end(); ++it)
@@ -102,165 +63,137 @@ void DisplayMapPart2(map<string, vector<pair<int, string>>> structureToDisplay)
 }
 #pragma endregion
 
+/// <summary>
+/// Count how many bag colors can eventually contain at least one bag of the specified color.
+/// </summary>
+int CountParentOfBagGivenColor(string bagColor, map<string, vector<string>> bagColors)
+{
+    int result = 0;
+    vector<string> colorLeft({ bagColor });
+    vector<string> visitedColor = vector<string>();
 
+    while (!colorLeft.empty())
+    {
+        string lastColor = colorLeft[colorLeft.size() - 1];
+
+        visitedColor.push_back(lastColor);
+        colorLeft.pop_back();
+
+        // Study all the parents of the current color
+        for (vector<string>::iterator it2 = bagColors[lastColor].begin(); it2 != bagColors[lastColor].end(); ++it2)
+        {
+            string parentColor = it2->c_str();
+
+            // We do not want to deal with the same color twice.
+            bool alreadyVisitedColor = find(visitedColor.begin(), visitedColor.end(), parentColor) != visitedColor.end();
+            // We do not want to add twice a color already queued.
+            bool alreadyTagged = find(colorLeft.begin(), colorLeft.end(), parentColor) != colorLeft.end();
+
+            if (!alreadyVisitedColor && !alreadyTagged)
+            {
+                result++;
+                colorLeft.push_back(parentColor);
+            }
+        }
+    }
+
+    return result;
+}
+
+/// <summary>
+/// Cout how many individual bags are required inside a bag of the given color.
+/// </summary>
 int CountChildrenOfBagColor(string bagColor, map<string, vector<pair<int, string>>> bagColors)
 {
     int result = 0;
     vector<pair<int, string>> colorLeft({ make_pair(1, bagColor) });
-    //vector<string> visitedColor = vector<string>();
 
     while (!colorLeft.empty())
     {
         pair<int, string> lastColor = colorLeft[colorLeft.size() - 1];
-        cout << "Current color is " << lastColor.second << "with factor " << lastColor.first << endl;
-
-        //visitedColor.push_back(lastColor.second);
         colorLeft.pop_back();
 
+        // Study the nested bags of the current bag-color.
+        // We multiplied the amount a those bag by "lastColor.first" since we study, at the same time, all the bag of the same color.
         int sumOfChidren = 0;
         for (std::vector<pair<int, string>>::iterator it2 = bagColors[lastColor.second].begin(); it2 != bagColors[lastColor.second].end(); ++it2)
         {
             string nextColor = it2->second.c_str();
-            cout << "Next color is " << nextColor << endl;
+            colorLeft.push_back(make_pair(it2->first * lastColor.first, nextColor));
 
             sumOfChidren += it2->first;
-            cout << "next value is " << it2->first * lastColor.first << endl;
-            colorLeft.push_back(make_pair(it2->first * lastColor.first, nextColor));
         }
 
-        cout << "Sum of children " << sumOfChidren << endl;
-        result += (lastColor.first * sumOfChidren);
-        cout << "Result is currently " << result << endl;
-
-        /*if (colorLeft.size() <= 0)
-        {
-            break;
-        }*/
-
-        /*for (std::vector<string>::iterator it8 = visitedColor.begin(); it8 != visitedColor.end(); ++it8)
-        {
-            std::cout << it8->c_str() << '\n';
-        }
-        cout << "===========" << endl;*/
-        for (std::vector<pair<int, string>>::iterator it8 = colorLeft.begin(); it8 != colorLeft.end(); ++it8)
-        {
-            std::cout << it8->second.c_str() << "with factor " << it8->first << '\n';
-        }
-        //system("pause");
-
-        cout << "COLOR LEFT SIZE = " << colorLeft.size() << endl;
+        result += lastColor.first * sumOfChidren;
     }
 
     return result;
 }
 
 
-int main()
+void CreateColorsStructures(string fileName, map<string, vector<string>> *colorsWithParents, map<string, vector<pair<int, string>>> *colorsWithChildren)
 {
-    map<string, vector<string>> colorsWithParents;
-    map<string, vector<pair<int, string>>> colorsWithChildren;
-
-    string line;
     ifstream  myfile;
-    myfile.open("input.txt");
+    myfile.open(fileName);
     if (myfile.is_open())
     {
+        string line;
         while (getline(myfile, line))
         {
-            //cout << line.c_str() << endl;
-
             cmatch cm;
-            //regex e("(.*) bags contain(?: ([1-9]) ([\ a-z]*) bags?(?:\,|\.))+");
             regex e("(.*) bags contain (.*)");
             if (!regex_match(line.c_str(), cm, e))
             {
-                std::cout << "string object did not matched\n";
+                cout << "string object did not matched" << endl;
             }
 
             string currentColor = cm[1];
             string containedColors = cm[2];
 
             // Add the current color
-            if (colorsWithParents.find(currentColor) == colorsWithParents.end())
+            if (colorsWithParents->find(currentColor) == colorsWithParents->end())
             {
-                colorsWithParents.insert(pair<string, vector<string>>(currentColor, vector<string>()));
-                colorsWithChildren.insert(pair<string, vector<pair<int, string>>>(currentColor, vector<pair<int, string>>()));
+                colorsWithParents->insert(pair<string, vector<string>>(currentColor, vector<string>()));
+                colorsWithChildren->insert(pair<string, vector<pair<int, string>>>(currentColor, vector<pair<int, string>>()));
             }
 
-            std::string delimiter = ", ";
+            string delimiter = ", ";
 
             size_t pos = 0;
             int quantity = 0;
-            string token;
-            while ((pos = containedColors.find(delimiter)) != std::string::npos) {
-                token = containedColors.substr(0, pos);
-                //std::cout << token << std::endl;
+            while (!containedColors.empty()) 
+            {
+                string subStr = "";
+                if ((pos = containedColors.find(delimiter)) != std::string::npos)
+                {
+                    subStr = containedColors.substr(0, pos);
+                    pos += delimiter.length();
+                }
+                else
+                {
+                    subStr = containedColors;
+                    pos = containedColors.size();
+                }
 
                 cmatch cm;
                 regex e("([1-9]) ([\ a-z]*) bags?\.?");
-                regex_match(token.c_str(), cm, e);
+                regex_match(subStr.c_str(), cm, e);
 
                 quantity = atoi(cm[1].str().c_str());
-                token = cm[2];
-                //std::cout << "Token parsed  " << token << std::endl;
+                string token = cm[2];
 
-                if (colorsWithParents.find(token) == colorsWithParents.end())
+                if (colorsWithParents->find(token) == colorsWithParents->end())
                 {
-                    colorsWithParents.insert(pair<string, vector<string>>(token, vector<string>()));
-                    colorsWithChildren.insert(pair<string, vector<pair<int, string>>>(token, vector<pair<int, string>>()));
+                    colorsWithParents->insert(pair<string, vector<string>>(token, vector<string>()));
+                    colorsWithChildren->insert(pair<string, vector<pair<int, string>>>(token, vector<pair<int, string>>()));
                 }
-                colorsWithParents[token].push_back(currentColor);
 
-                // Part 2
-                colorsWithChildren[currentColor].push_back(pair<int, string>(quantity, token));
+                (*colorsWithParents)[token].push_back(currentColor);
+                (*colorsWithChildren)[currentColor].push_back(pair<int, string>(quantity, token));
 
-                containedColors.erase(0, pos + delimiter.length());
+                containedColors.erase(0, pos);
             }
-
-            //std::cout << "END" << containedColors << std::endl;
-
-            e = "([1-9]) ([\ a-z]*) bags?\.?";
-            if (regex_match(containedColors.c_str(), cm, e))
-            {
-                quantity = atoi(cm[1].str().c_str());
-                containedColors = cm[2];
-                //std::cout << "Token parsed" << containedColors << std::endl;
-
-                if (colorsWithParents.find(containedColors) == colorsWithParents.end())
-                {
-                    colorsWithParents.insert(pair<string, vector<string>>(containedColors, vector<string>()));
-                }
-                colorsWithParents[containedColors].push_back(currentColor);
-
-                // Part 2
-                colorsWithChildren[currentColor].push_back(pair<int, string>(quantity, containedColors));
-            }
-
-            cout << "here" << endl;
         }
-
-        // Display everything
-        DisplayMap(colorsWithParents);
-        DisplayMapPart2(colorsWithChildren);
-
-        // result part 1
-        //int resultPart1 = CountParentOfBagColor("shiny gold", colorsWithParents);
-        int resultPart2 = CountChildrenOfBagColor("shiny gold", colorsWithChildren);
-
-        //cout << "Result for part 1 is " << resultPart1 << endl;
-        cout << "Result for part 2 is " << resultPart2 << endl;
     }
-
     myfile.close();
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
