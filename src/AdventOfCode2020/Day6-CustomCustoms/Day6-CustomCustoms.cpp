@@ -9,12 +9,40 @@
 
 using namespace std;
 
+int CountCumulatedGroupsPositiveAnswers(ifstream* fileStream);
+int CountCumulatedGroupsPositiveAnswersForEveryone(ifstream* fileStream);
+
+int main()
+{
+    std::cout << "Day 6 - Custom Customes" << endl;
+
+    const char* fileName = "input.txt";
+
+    ifstream  fileStream;
+    fileStream.open(fileName);
+    if (fileStream.is_open())
+    {
+        // Part 1
+        int part1Result = CountCumulatedGroupsPositiveAnswers(&fileStream);
+        std::cout << "Part 1 result is " << part1Result << endl;
+
+        // Start again at the beginning of the file
+        fileStream.clear();
+        fileStream.seekg(ios::beg);
+
+        // Part 2
+        int part2Result = CountCumulatedGroupsPositiveAnswersForEveryone(&fileStream);
+        std::cout << "Part 2 result is " << part2Result << endl;
+    }
+
+    fileStream.close();
+}
+
 int ConcatenateGroupAnswers(ifstream* fileStream, string* concatenatedAnswers)
 {
     int nbPersonInGroup = 0;
 
     string line;
-    
     // A group is composed of at least of 1 person
     getline(*fileStream, line);
     do
@@ -24,19 +52,15 @@ int ConcatenateGroupAnswers(ifstream* fileStream, string* concatenatedAnswers)
         getline(*fileStream, line);
     } while (!fileStream->eof() && line.size() > 0);
 
-    //std::cout << "For " << nbPersonInGroup << " person answers are = " << *concatenatedAnswers << endl;
     return nbPersonInGroup;
 }
 
-
-#pragma region Functions for part 1
 int ComputeGroupPositiveAnswers(ifstream* fileStream)
 {
-    int totalPositiveAnswers = 0;
-
     string concatenatedAnswers = "";
     ConcatenateGroupAnswers(fileStream, &concatenatedAnswers);
 
+    int totalPositiveAnswers = 0;
     for (size_t i = 'a'; i <= 'z'; i++)
     {
         totalPositiveAnswers += concatenatedAnswers.find(i) != string::npos ? 1 : 0;
@@ -45,6 +69,10 @@ int ComputeGroupPositiveAnswers(ifstream* fileStream)
     return totalPositiveAnswers;
 }
 
+/// <summary>
+/// count the number of questions to which anyone answered "yes" in a group and sum them.
+/// </summary>
+/// <returns>The sum of the count</returns>
 int CountCumulatedGroupsPositiveAnswers(ifstream* fileStream)
 {
     int cumulativeGroupAnswers = 0;
@@ -54,13 +82,9 @@ int CountCumulatedGroupsPositiveAnswers(ifstream* fileStream)
         cumulativeGroupAnswers += ComputeGroupPositiveAnswers(fileStream);
     } while (!fileStream->eof());
 
-    std::cout << "cumulative group " << cumulativeGroupAnswers << endl;
     return cumulativeGroupAnswers;
 }
-#pragma endregion
 
-
-#pragma region Functions for part 2
 int ComputeGroupPositiveAnswersForEveryone(ifstream* fileStream)
 {
     int totalPositiveAnswersForEveryone = 0;
@@ -85,6 +109,10 @@ int ComputeGroupPositiveAnswersForEveryone(ifstream* fileStream)
     return totalPositiveAnswersForEveryone;
 }
 
+/// <summary>
+/// Count the number of questions to which everyone answered "yes" and sum them for all the groups.
+/// </summary>
+/// <returns>The sum of the count</returns>
 int CountCumulatedGroupsPositiveAnswersForEveryone(ifstream* fileStream)
 {
     int cumulativeGroupAnswers = 0;
@@ -94,39 +122,6 @@ int CountCumulatedGroupsPositiveAnswersForEveryone(ifstream* fileStream)
         cumulativeGroupAnswers += ComputeGroupPositiveAnswersForEveryone(fileStream);
     } while (!fileStream->eof());
 
-    std::cout << "cumulative group " << cumulativeGroupAnswers << endl;
     return cumulativeGroupAnswers;
 }
 #pragma endregion
-
-
-int main()
-{
-    std::cout << "Custom Customes" << endl;
-
-    const char* fileName = "input.txt";
-
-    int part1Result = 0;
-    int part2Result = 0;
-
-    ifstream  fileStream;
-    fileStream.open(fileName);
-    if (fileStream.is_open())
-    {
-        // Part 1
-        part1Result = CountCumulatedGroupsPositiveAnswers(&fileStream);
-        std::cout << "Part 1 result is " << part1Result << endl;
-
-        // Start again at the beginning of the file
-        fileStream.clear();
-        fileStream.seekg(ios::beg);
-
-        // Part 2
-        part2Result = CountCumulatedGroupsPositiveAnswersForEveryone(&fileStream);
-        std::cout << "Part 2 result is " << part2Result << endl;
-    }
-    fileStream.close();
-
-    
-    
-}
