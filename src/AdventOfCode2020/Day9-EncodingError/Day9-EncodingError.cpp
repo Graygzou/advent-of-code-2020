@@ -6,17 +6,18 @@
 
 using namespace std;
 
+/// <summary>
+/// Warning: preambule is expected to be sorted here.
+/// </summary>
 bool PairFound(vector<long long> preambule, int number)
 {
     for (size_t i = 0; i < preambule.size(); i++)
     {
         int secondaryNumberToFind = number - preambule[i];
-        //cout << secondaryNumberToFind << endl;
         for (size_t j = i; j < preambule.size(); j++)
         {
             if (secondaryNumberToFind == preambule[j])
             {
-                //cout << "Pair found : " << preambule[i] << ", " << preambule[j] << endl;
                 return true;
             }
             else if (secondaryNumberToFind < preambule[j])
@@ -30,7 +31,11 @@ bool PairFound(vector<long long> preambule, int number)
     return false;
 }
 
-int Part1(vector<long long> numbers, int preambuleLength)
+/// <summary>
+/// Find the first number in the list (after the preamble) which is not the sum of two of the 25 numbers before it.
+/// </summary>
+/// <returns>The first number that does not have this property</returns>
+int FindFirstNumberInListNotSumOfPrevious(vector<long long> numbers, int preambuleLength)
 {
     vector<long long> preambule = vector<long long>();
     int result = 0;
@@ -39,7 +44,7 @@ int Part1(vector<long long> numbers, int preambuleLength)
     bool found = false;
     do
     {
-        // Get preambule
+        // Get current preambule
         preambule.clear();
         for (size_t i = index; i < index + preambuleLength; i++)
         {
@@ -52,8 +57,8 @@ int Part1(vector<long long> numbers, int preambuleLength)
         int maxSum = preambule[preambule.size() - 2] + preambule[preambule.size() - 1];
 
         // Check the current number
+        // If min and max fits, check all the possibilities.
         int currentNumber = numbers[index + preambuleLength];
-
         if (currentNumber < minSum || currentNumber > maxSum || !PairFound(preambule, currentNumber))
         {
             found = true;
@@ -67,7 +72,24 @@ int Part1(vector<long long> numbers, int preambuleLength)
     return result;
 }
 
-int Part2(vector<long long> numbers, int numberToDecomposed)
+pair<int, int> FindMinAndMaxOfSerie(vector<long long> numbers, int i, int j)
+{
+    int min = numbers[j];
+    int max = numbers[j];
+    for (size_t k = j; k < i; k++)
+    {
+        min = min > numbers[k] ? numbers[k] : min;
+        max = max < numbers[k] ? numbers[k] : max;
+    }
+
+    return make_pair(min, max);
+}
+
+/// <summary>
+/// Find a contiguous set of at least two numbers in your list which sum to the invalid number from part 1.
+/// </summary>
+/// <returns>The sum of the smallest and largest number in this contiguous range</returns>
+int FindEncryptionWeakness(vector<long long> numbers, int numberToDecomposed)
 {
     int result = 0;
 
@@ -80,13 +102,11 @@ int Part2(vector<long long> numbers, int numberToDecomposed)
         return -1;
     }
 
-    long long index = distance(numbers.begin(), it);
-
     bool found = false;
-    size_t i = index;
+    size_t i = distance(numbers.begin(), it);
     while(!found && i > 0)
     {
-        // try to add up following number
+        // try to add up following numbers until the sum is >= to the number we try to reach
         long long currentSum = 0;
         int j = i;
         do
@@ -97,18 +117,8 @@ int Part2(vector<long long> numbers, int numberToDecomposed)
 
         if (currentSum == numberToDecomposed)
         {
-            int min = numbers[j];
-            int max = numbers[j];
-            int sum = 0;
-            for (size_t k = j; k < i; k++)
-            {
-                min = min > numbers[k] ? numbers[k] : min;
-                max = max < numbers[k] ? numbers[k] : max;
-                sum += numbers[k];
-            }
-            cout << "should be equals to zero = " << numberToDecomposed - sum << endl;
-
-            result = min + max;
+            pair<int, int> minMax = FindMinAndMaxOfSerie(numbers, i, j);
+            result = minMax.first + minMax.second;
             found = true;
         }
 
@@ -120,14 +130,15 @@ int Part2(vector<long long> numbers, int numberToDecomposed)
 
 int main()
 {
-    vector<long long> lines = vector<long long>();
-
-    string line;
+    cout << "Day 9 - Encoding Error" << endl;
+    
     ifstream  myfile;
-
     myfile.open("input.txt");
+
+    vector<long long> lines = vector<long long>();
     if (myfile.is_open())
     {
+        string line;
         while (getline(myfile, line))
         {
             lines.push_back(_atoi64(line.c_str()));
@@ -136,9 +147,9 @@ int main()
     myfile.close();
     
     int preambuleLength = 25;
-    int part1Result = Part1(lines, preambuleLength);
+    int part1Result = FindFirstNumberInListNotSumOfPrevious(lines, preambuleLength);
     cout << "Result for part 1 is : " << part1Result << endl;
 
-    int part2Result = Part2(lines, part1Result);
+    int part2Result = FindEncryptionWeakness(lines, part1Result);
     cout << "Result for part 2 is : " << part2Result << endl;
 }
