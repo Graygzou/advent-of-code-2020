@@ -24,6 +24,28 @@ struct Node
         positonW = w;
     }
 
+    Node(vector<int> positions)
+    {
+        positonX = positions.size() > 0 ? positions[0] : 0;
+        positonY = positions.size() > 1 ? positions[1] : 0;
+        positonZ = positions.size() > 2 ? positions[2] : 0;
+        positonW = positions.size() > 3 ? positions[3] : 0;
+    }
+
+    int GetPosition(int index)
+    {
+        if (index == 0)
+            return positonX;
+        else if (index == 1)
+            return positonY;
+        else if (index == 2)
+            return positonZ;
+        else if (index == 3)
+            return positonW;
+        else
+            throw new exception("Can't get position of index > 3");
+    }
+
     float SquaredMagnitude(Node destination)
     {
         int vectorX = destination.positonX - positonX;
@@ -74,80 +96,128 @@ struct Node
     }
 };
 
-void DisplayGrid(vector<Node> activeCubes, pair<int, int> xBounds, pair<int, int> yBounds, pair<int, int> zBounds, pair<int, int> wBounds)
+vector<Node> SimulateConwayCycles(string fileName, int dimensions, int nbCycles);
+Node MoveToNextCandidate(Node currentCandidate, vector<pair<int, int>> boundsCoordinates, int nbDimensions);
+
+int main()
 {
-    int gridSize = 5;
+    std::cout << "Day 17 - Conway Cubes" << endl;
 
-    for (int w = wBounds.first; w <= wBounds.second; w++)
+    string fileName = "input.txt";
+    int dimensions = 3;
+    vector<Node> activeCubes = SimulateConwayCycles(fileName, dimensions, 6);
+    cout << "Result for part 1 is " << activeCubes.size() << endl;
+
+    activeCubes.clear();
+    dimensions++;
+    activeCubes = SimulateConwayCycles(fileName, dimensions, 6);
+    cout << "Result for part 2 is " << activeCubes.size() << endl;
+}
+
+void DisplayGrid(vector<Node> activeCubes, vector<pair<int, int>> boundsCoordinates)
+{
+    vector<int> minBounds;
+    int nbCandidates = 1;
+    for (size_t i = 0; i < boundsCoordinates.size(); i++)
     {
-        for (int z = zBounds.first; z <= zBounds.second; z++)
+        nbCandidates *= (boundsCoordinates[i].second - boundsCoordinates[i].first) + 1;
+        minBounds.push_back(boundsCoordinates[i].first);
+    }
+
+    Node candidate = Node(minBounds);
+    for (size_t i = 0; i < nbCandidates; i++)
+    {
+        bool found = false;
+        for (int j = 0; !found && j < activeCubes.size(); j++)
         {
-            std::cout << "z=" << z << "  w=" << w << endl;
-
-            for (int x = xBounds.first; x <= xBounds.second; x++)
+            if (activeCubes[j].Equals(candidate))
             {
-                for (int y = yBounds.first; y <= yBounds.second; y++)
-                {
-                    bool found = false;
-                    for (int i = 0; !found && i < activeCubes.size(); i++)
-                    {
-                        if (activeCubes[i].Equals(x, y, z, w))
-                        {
-                            std::cout << "#";
-                            found = true;
-                        }
-                    }
+                std::cout << "#";
+                found = true;
+            }
+        }
 
-                    if (!found)
-                    {
-                        std::cout << ".";
-                    }
-                }
-                std::cout << endl;
+        if (!found)
+        {
+            std::cout << ".";
+        }
+
+        int oldY = candidate.positonY;
+        int oldZ = candidate.positonZ;
+        candidate = MoveToNextCandidate(candidate, boundsCoordinates, boundsCoordinates.size());
+
+        if (candidate.positonY != oldY
+            || candidate.positonZ != oldZ)
+        {
+            cout << endl;
+            if (candidate.positonZ != oldZ)
+            {
+                cout << endl;
+                cout << "Z = " << candidate.positonZ << endl;
             }
         }
     }
+
+    cout << endl;
+    cout << "=====================" << endl;
 }
 
-void UpdateBounds(vector<Node> activeCubes, pair<int, int>* xBounds, pair<int, int>* yBounds, pair<int, int>* zBounds, pair<int, int>* wBounds)
+void UpdateBounds(vector<Node> activeCubes, vector<pair<int, int>>* boundsCoordinates)
 {
     for (size_t i = 0; i < activeCubes.size(); i++)
     {
-        if (activeCubes[i].positonX < xBounds->first)
-            xBounds->first = activeCubes[i].positonX;
-        else if (activeCubes[i].positonX > xBounds->second)
-            xBounds->second = activeCubes[i].positonX;
-
-        if (activeCubes[i].positonY < yBounds->first)
-            yBounds->first = activeCubes[i].positonY;
-        else if (activeCubes[i].positonY > yBounds->second)
-            yBounds->second = activeCubes[i].positonY;
-
-        if (activeCubes[i].positonZ < zBounds->first)
-            zBounds->first = activeCubes[i].positonZ;
-        else if (activeCubes[i].positonZ > zBounds->second)
-            zBounds->second = activeCubes[i].positonZ;
-
-        if (activeCubes[i].positonW < wBounds->first)
-            wBounds->first = activeCubes[i].positonW;
-        else if (activeCubes[i].positonW > wBounds->second)
-            wBounds->second = activeCubes[i].positonW;
+        for (size_t j = 0; j < boundsCoordinates->size(); j++)
+        {
+            if (activeCubes[i].GetPosition(j) < (*boundsCoordinates)[j].first)
+            {
+                (*boundsCoordinates)[j].first = activeCubes[i].GetPosition(j);
+            }
+            else if (activeCubes[i].GetPosition(j) > (*boundsCoordinates)[j].second)
+            {
+                (*boundsCoordinates)[j].second = activeCubes[i].GetPosition(j);
+            }
+        }
     }
 
-    xBounds->first--;
-    xBounds->second++;
-
-    yBounds->first--;
-    yBounds->second++;
-
-    zBounds->first--;
-    zBounds->second++;
-
-    wBounds->first--;
-    wBounds->second++;
+    // Since we want to consider neigbors, we substract or add one to each new bounds found.
+    for (size_t i = 0; i < boundsCoordinates->size(); i++)
+    {
+        (*boundsCoordinates)[i].first--;
+        (*boundsCoordinates)[i].second++;
+    }
 }
 
-vector<Node> RunCycle(vector<Node> activeCubes, pair<int, int> *xBounds, pair<int, int> *yBounds, pair<int, int> *zBounds, pair<int, int> *wBounds)
+
+Node MoveToNextCandidate(Node currentCandidate, vector<pair<int, int>> boundsCoordinates, int nbDimensions)
+{
+    Node nextCandidate = currentCandidate;
+
+    nextCandidate.positonX++;
+    if (nbDimensions >= 2 && nextCandidate.positonX > boundsCoordinates[0].second)
+    {
+        nextCandidate.positonX = boundsCoordinates[0].first;
+        nextCandidate.positonY++;
+
+        if (nbDimensions >= 3 && nextCandidate.positonY > boundsCoordinates[1].second)
+        {
+            nextCandidate.positonY = boundsCoordinates[1].first;
+            nextCandidate.positonZ++;
+
+            if (nbDimensions >= 4 && nextCandidate.positonZ > boundsCoordinates[2].second)
+            {
+                nextCandidate.positonZ = boundsCoordinates[2].first;
+                nextCandidate.positonW++;
+            }
+        }
+    }
+
+    return nextCandidate;
+}
+
+vector<Node> RunCycle(
+    vector<Node> activeCubes, 
+    vector<pair<int, int>> *boundsCoordinates, 
+    int dimensions)
 {
     vector<Node> tempActiveCubes = vector<Node>();
 
@@ -173,77 +243,71 @@ vector<Node> RunCycle(vector<Node> activeCubes, pair<int, int> *xBounds, pair<in
         }
     }
 
-    // Check if we should activate new nodes.
-    for (int w = wBounds->first; w <= wBounds->second; w++)
+    
+    vector<int> minBounds;
+    int nbCandidates = 1;
+    for (size_t i = 0; i < boundsCoordinates->size(); i++)
     {
-        for (int z = zBounds->first; z <= zBounds->second; z++)
-        {
-            for (int x = xBounds->first; x <= xBounds->second; x++)
-            {
-                for (int y = yBounds->first; y <= yBounds->second; y++)
-                {
-                    Node candidate = Node(x, y, z, w);
-
-                    auto it = find(activeCubes.begin(), activeCubes.end(), candidate);
-                    // Node not active yet.
-                    if (it == activeCubes.end())
-                    {
-                        int NeigborsCount = 0;
-                        for (size_t i = 0; i < activeCubes.size(); i++)
-                        {
-                            // sqrt(3) == 1,73205081
-                            // sqrt(3.8) == 1,94935887
-                            float magnitude = candidate.Magnitude(activeCubes[i]);
-                            if (magnitude < 1.75 && candidate.WeigthDifferByOne(activeCubes[i]))
-                            {
-                                NeigborsCount++;
-                            }
-                        }
-
-                        //std::cout << "Neighbors count " << NeigborsCount << endl;
-                        if (NeigborsCount == 3)
-                        {
-                            tempActiveCubes.push_back(candidate);
-                        }
-                    }
-                }
-            }
-        }
+        nbCandidates *= ((*boundsCoordinates)[i].second - (*boundsCoordinates)[i].first) + 1;
+        minBounds.push_back((*boundsCoordinates)[i].first);
     }
 
-    // Debug
-    //DisplayGrid(tempActiveCubes, *xBounds, *yBounds, *zBounds, *wBounds);
+    Node candidate = Node(minBounds);
+    for (size_t i = 0; i < nbCandidates; i++)
+    {
+        auto it = find(activeCubes.begin(), activeCubes.end(), candidate);
+        // Node not active yet.
+        if (it == activeCubes.end())
+        {
+            int NeigborsCount = 0;
+            for (size_t i = 0; i < activeCubes.size(); i++)
+            {
+                // sqrt(3) == 1,73205081
+                // sqrt(3.8) == 1,94935887
+                float magnitude = candidate.Magnitude(activeCubes[i]);
+                if (magnitude < 1.75 && candidate.WeigthDifferByOne(activeCubes[i]))
+                {
+                    NeigborsCount++;
+                }
+            }
 
-    UpdateBounds(tempActiveCubes, xBounds, yBounds, zBounds, wBounds);
+            if (NeigborsCount == 3)
+            {
+                tempActiveCubes.push_back(candidate);
+            }
+        }
+
+        candidate = MoveToNextCandidate(candidate, *boundsCoordinates, boundsCoordinates->size());
+    }
+
+    UpdateBounds(tempActiveCubes, boundsCoordinates);
 
     return tempActiveCubes;
 }
 
 /// <summary>
-/// Construct the list of nodes to iters over.
+/// Construct the list of nodes already actives since calculations are based on them.
 /// </summary>
-vector<Node> GetStartingActiveNodes(pair<int, int> *xBounds, pair<int, int> *yBounds, pair<int, int> *zBounds, pair<int, int> *wBounds)
+vector<Node> GetStartingActiveNodes(string fileName, vector<pair<int, int>> *boundsCoordinates)
 {
     vector<Node> activeCubes;
 
     ifstream file;
-    string line;
-    file.open("input.txt");
+    file.open(fileName);
     if (file.is_open())
     {
-        int w = 0;
-        int z = 0;
-        int x = 0;
-        xBounds->first = x - 1;
-        zBounds->first = z - 1;
-        wBounds->first = w - 1;
+        int w = 0, z = 0, y = 0;
+        for (size_t i = 0; i < boundsCoordinates->size(); i++)
+        {
+            (*boundsCoordinates)[i].first = -1;
+        }
 
+        string line;
         while (getline(file, line))
         {
-            std::cout << line << endl;
-            for (size_t y = 0; y < line.size(); y++)
+            for (int x = 0; x < line.size(); x++)
             {
-                if (line[y] == '#')
+                if (line[x] == '#')
                 {
                     Node node = Node(x, y, z, w);
 
@@ -254,64 +318,53 @@ vector<Node> GetStartingActiveNodes(pair<int, int> *xBounds, pair<int, int> *yBo
                         int magnitude = node.Magnitude(activeCubes[activeIndex]);
                         if (magnitude < 1.75)
                         {
-                            if (yBounds->first > y)
-                                yBounds->first = y;
-                            else if (yBounds->second < y)
-                                yBounds->second = y;
+                            if ((*boundsCoordinates)[0].first > x)
+                                (*boundsCoordinates)[0].first = x;
+                            else if ((*boundsCoordinates)[0].second < x)
+                                (*boundsCoordinates)[0].second = x;
 
-                            if (zBounds->first > z)
-                                zBounds->first = z;
-                            else if (zBounds->second < z)
-                                zBounds->second = z;
-
-                            //std::cout << i << y << endl;
-                            //std::cout << "Neighbor with (" << activeCubes[i].positonX << "," << activeCubes[i].positonY << "," << activeCubes[i].positonZ << ")" << endl;
-
-                            // Know each other
-                            //node.neighbors.push_back(activeCubes[activeIndex]);
-                            //activeCubes[activeIndex].neighbors.push_back(node);
+                            if ((*boundsCoordinates)[1].first > y)
+                                (*boundsCoordinates)[1].first = y;
+                            else if ((*boundsCoordinates)[1].second < y)
+                                (*boundsCoordinates)[1].second = y;
                         }
                     }
 
                     activeCubes.push_back(node);
                 }
             }
-            x++;
+            y++;
         }
-        yBounds->first -= 1;
 
-        xBounds->second = x;
-        yBounds->second += 1;
-        zBounds->second += 1;
-        wBounds->second += 1;
+        // We make sure we study all neighbors by increasing/decreasing bounds by one.
+        // We already increased "y" in the last loop run
+        (*boundsCoordinates)[1].second = y - 1;
+        for (size_t i = 0; i < boundsCoordinates->size(); i++)
+        {
+            (*boundsCoordinates)[i].second += 1;
+        }
     }
 
     return activeCubes;
 }
 
-void Part1()
+/// <summary>
+/// Find and return how many cubes are left in the active state after the N cycle
+/// </summary>
+vector<Node> SimulateConwayCycles(string fileName, int dimensions, int nbCycles)
 {
-    pair<int, int> xBounds, yBounds, zBounds, wBounds;
-    vector<Node> activeCubes = GetStartingActiveNodes(&xBounds, &yBounds, &zBounds, &wBounds);
+    // Pairs are in order => (x, y, z, w)
+    // We contruct the boundsCoordinates to only study the minimal numbers of nodes possibles (based on previous activated cubes)
+    // Bounds will create a cube (or hypercube) of coordinates to iterate over that could become new activate cubes.
+    vector<pair<int, int>> boundsCoordinates = vector<pair<int, int>>(dimensions, make_pair(0, 0));
+    vector<Node> activeCubes = GetStartingActiveNodes(fileName , &boundsCoordinates);
 
     // Run all cycles
-    int nbCycle = 6;
-    for (size_t i = 0; i < nbCycle; i++)
+    for (size_t i = 0; i < nbCycles; i++)
     {
-        vector<Node> finalNodes = RunCycle(activeCubes, &xBounds, &yBounds, &zBounds, &wBounds);
+        vector<Node> finalNodes = RunCycle(activeCubes, &boundsCoordinates, dimensions);
         activeCubes = finalNodes;
     }
 
-
-    cout << "Result 1 = " << activeCubes.size() << endl;
-
-    // Grid
-    //DisplayGrid(activeCubes, xBounds, yBounds, zBounds);
-}
-
-
-int main()
-{
-    std::cout << "Conway Cubes" << endl;
-    Part1();
+    return activeCubes;
 }
