@@ -9,6 +9,7 @@
 using namespace std;
 
 bool ComputeIfPasswordLegitPart1(string line);
+bool ComputeIfPasswordLegitPart2(string line);
 
 int main()
 {
