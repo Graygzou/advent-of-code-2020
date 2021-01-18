@@ -146,6 +146,11 @@
     <Text Include="mainExample.txt" />
     <Text Include="secondariesExamples.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Utils\Utils.vcxproj">
+      <Project>{41507584-cba4-4c22-b8c9-0ca2042e5aa3}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

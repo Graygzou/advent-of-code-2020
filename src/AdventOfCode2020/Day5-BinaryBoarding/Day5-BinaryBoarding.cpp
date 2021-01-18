@@ -3,8 +3,7 @@
 
 #include <iostream>
 #include <string>
-#include "../Utils/Utils.h"
-#include "../Utils/Utils.cpp"
+#include "../Utils/framework.h"
 
 using namespace std;
 
@@ -15,7 +14,7 @@ int main()
 {
     string* lines = new string[850];
 
-    int nbLines = Utils::CreateStringArrayFromInputFile("input.txt", lines);
+    int nbLines = CreateStringArrayFromInputFile("input.txt", lines);
 
     int maxSeatID = -1;
     int minSeatID = -1;

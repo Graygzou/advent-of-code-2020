@@ -4,7 +4,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <string>
-#include "../Utils/Utils.cpp"
+#include "../Utils/framework.h"
 
 using namespace std;
 
@@ -16,7 +16,7 @@ int main()
     cout << "Report Repair" << endl;
 
     int* array = new int[256];
-    int arrayLength = Utils::CreateIntArrayFromInputFile("input.txt", array);
+    int arrayLength = CreateIntArrayFromInputFile("input.txt", array);
 
     // Part 1
     int totalSum = 2020;

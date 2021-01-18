@@ -3,8 +3,7 @@
 
 #include <iostream>
 #include <string>
-#include "../Utils/Utils.h"
-#include "../Utils/Utils.cpp"
+#include "../Utils/framework.h"
 
 using namespace std;
 
@@ -16,7 +15,7 @@ int main()
     cout << "Day 2 - Password Philosophy" << endl;
 
     string* array = new string[1000];
-    int arrayLength = Utils::CreateStringArrayFromInputFile("input.txt", array);
+    int arrayLength = CreateStringArrayFromInputFile("input.txt", array);
 
     int nbPasswordLegitPart1 = 0;
     int nbPasswordLegitPart2 = 0;

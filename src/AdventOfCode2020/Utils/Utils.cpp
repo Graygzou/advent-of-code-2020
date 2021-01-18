@@ -1,13 +1,15 @@
-#include "Utils.h"
+// Utils.cpp : Defines the functions for the static library.
+//
 
-using namespace std;
+#include "pch.h"
+#include "framework.h"
 
-int Utils::CreateIntArrayFromInputFile(const char* fileName, int* intArray)
+int CreateIntArrayFromInputFile(const char* fileName, int* intArray)
 {
     int arrayLength = 0;
 
-    string line;
-    ifstream  myfile;
+    std::string line;
+    std::ifstream  myfile;
     myfile.open(fileName);
     if (myfile.is_open())
     {
@@ -25,12 +27,12 @@ int Utils::CreateIntArrayFromInputFile(const char* fileName, int* intArray)
     return arrayLength;
 }
 
-int Utils::CreateStringArrayFromInputFile(const char* fileName, string* intArray)
+int CreateStringArrayFromInputFile(const char* fileName, std::string* intArray)
 {
     int arrayLength = 0;
 
-    string line;
-    ifstream  myfile;
+    std::string line;
+    std::ifstream  myfile;
     myfile.open(fileName);
     if (myfile.is_open())
     {
