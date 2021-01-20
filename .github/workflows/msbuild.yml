@@ -12,7 +12,7 @@ env:
   BUILD_CONFIGURATION: Release
   
   # Platform used to run msbuild command
-  PLATFORM: Any CPU
+  PLATFORM: x64
 
 jobs:
   build:
@@ -38,13 +38,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: builds
-        path: ${{env.SOLUTION_FILE_PATH}}${{env.BUILD_CONFIGURATION}}
-        
-    - name: Upload builds
-      uses: actions/upload-artifact@v2
-      with:
-        name: builds
-        path: ${{env.SOLUTION_FILE_PATH}}x64/${{env.BUILD_CONFIGURATION}}
+        path: ${{env.SOLUTION_FILE_PATH}}${{env.PLATFORM}}/${{env.BUILD_CONFIGURATION}}
   
   execute:
     runs-on: windows-latest
