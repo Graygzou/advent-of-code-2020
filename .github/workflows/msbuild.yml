@@ -57,10 +57,11 @@ jobs:
           dir
           cd ..
           dir
-          cd $GITHUB_WORKSPACE
+          cd ${{ env.SOLUTION_FILE_PATH }}
           dir
           Get-Content Day10-AdapterArray/input.txt
         shell: pwsh
+        working-directory: ${{env.GITHUB_WORKSPACE}}
 
       - name: run test build
         run: |
