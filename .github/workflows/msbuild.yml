@@ -60,5 +60,4 @@ jobs:
         run: |
           .\Day10-AdapterArray.exe
         shell: pwsh
-        working-directory: ${{env.BUILD_CONFIGURATION}}/
       
