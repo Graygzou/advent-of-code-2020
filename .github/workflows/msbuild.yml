@@ -49,15 +49,17 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: builds
+          path: ${{env.BUILD_CONFIGURATION}}/
 
       - name: run test build
         run: |
           echo ${env:PATH}
           dir
+          Get-Content Day10-AdapterArray/input.txt
         shell: pwsh
 
       - name: run test build
         run: |
-          .\Day10-AdapterArray.exe
+          ./${{env.BUILD_CONFIGURATION}}/Day10-AdapterArray.exe
         shell: pwsh
       
