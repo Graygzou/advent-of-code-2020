@@ -53,6 +53,7 @@ jobs:
       - name: run test build
         run: |
           echo ${env:PATH}
+          dir
         shell: pwsh
 
       - name: run test build
