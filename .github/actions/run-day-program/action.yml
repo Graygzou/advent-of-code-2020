@@ -15,6 +15,7 @@ runs:
   steps:
     - name: save-the-current-time
       run: echo "::set-output name=start_time::strawberry"
+      shell: pwsh
 
     - name: run build with input
       run: ./${{ inputs.exe-folder }} ${{ inputs.input-path }}
@@ -22,6 +23,7 @@ runs:
 
     - name: try display the start time
       run: echo "${{ steps.save-the-current-time.outputs.start_time }}"
+      shell: pwsh
 
 branding:
   icon: play
