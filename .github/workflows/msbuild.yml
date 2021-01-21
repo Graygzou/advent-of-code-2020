@@ -59,7 +59,7 @@ jobs:
           input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}Day1-ReportRepair/input.txt
           exe-folder: ${{env.BUILD_CONFIGURATION}}/Day1-ReportRepair.exe
       
-    execute-day-10:
+  execute-day-10:
     runs-on: windows-latest
     needs: [build]
     steps:
