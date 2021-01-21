@@ -42,7 +42,7 @@ jobs:
         name: builds
         path: ${{env.SOLUTION_FILE_PATH}}${{env.PLATFORM}}/${{env.BUILD_CONFIGURATION}}
   
-  execute-day-1:
+  run-day-1:
     runs-on: windows-latest
     needs: [build]
     steps:
@@ -58,8 +58,10 @@ jobs:
         with:
           input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}Day1-ReportRepair/input.txt
           exe-folder: ${{env.BUILD_CONFIGURATION}}/Day1-ReportRepair.exe
+
+  # TODO add all the others days.
       
-  execute-day-10:
+  run-day-10:
     runs-on: windows-latest
     needs: [build]
     steps:
