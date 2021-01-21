@@ -55,6 +55,12 @@ jobs:
           name: builds
           path: ${{env.BUILD_CONFIGURATION}}/
 
+      - name: test-custom-action
+        uses: ./.github/actions/run-day-program
+        with:
+          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}Day10-AdapterArray/input.txt
+          exe-folder: ${{env.BUILD_CONFIGURATION}}/Day10-AdapterArray.exe
+
       - name: run test build
         run: |
           dir
