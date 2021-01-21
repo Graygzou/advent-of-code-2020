@@ -42,13 +42,28 @@ jobs:
         name: builds
         path: ${{env.SOLUTION_FILE_PATH}}${{env.PLATFORM}}/${{env.BUILD_CONFIGURATION}}
   
-  execute:
+  execute-day-1:
     runs-on: windows-latest
     needs: [build]
-
     steps:
       - uses: actions/checkout@v2
-        
+      - name: Download a single artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: builds
+          path: ${{env.BUILD_CONFIGURATION}}/
+
+      - name: test-custom-action
+        uses: ./.github/actions/run-day-program
+        with:
+          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}Day1-ReportRepair/input.txt
+          exe-folder: ${{env.BUILD_CONFIGURATION}}/Day1-ReportRepair.exe
+      
+    execute-day-10:
+    runs-on: windows-latest
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v2
       - name: Download a single artifact
         uses: actions/download-artifact@v2
         with:
@@ -60,16 +75,4 @@ jobs:
         with:
           input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}Day10-AdapterArray/input.txt
           exe-folder: ${{env.BUILD_CONFIGURATION}}/Day10-AdapterArray.exe
-
-      - name: run test build
-        run: |
-          dir
-          Get-Content ${{ env.SOLUTION_FILE_PATH }}Day10-AdapterArray/input.txt
-        shell: pwsh
-        working-directory: ${{env.GITHUB_WORKSPACE}}
-
-      - name: run test build
-        run: |
-          ./${{env.BUILD_CONFIGURATION}}/Day10-AdapterArray.exe
-        shell: pwsh
       
