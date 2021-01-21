@@ -18,7 +18,7 @@ runs:
       shell: pwsh
 
     - name: run build with input
-      run: ./${{ inputs.exe-folder }} ./${{ inputs.input-path }}
+      run: ./${{ inputs.exe-folder }} .${{ inputs.input-path }}
       shell: pwsh
 
     - name: try display the start time
