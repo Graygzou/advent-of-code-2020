@@ -14,11 +14,19 @@ using namespace std;
 vector<int> RetrieveAdapterVoltageFromFile(string fileName);
 int ComputeFollowingGroup(vector<int> arrangementSegment, int maxNumber);
 
-int main()
+int main(int argc, char** argv)
 {
     cout << "Day 10 - Adapter Array" << endl;
 
-    vector<int> adapters = RetrieveAdapterVoltageFromFile("input.txt");
+    const char* fileName = "input.txt";
+    if (argc >= 2)
+    {
+        fileName = argv[1];
+    }
+    cout << fileName << endl;
+    cout << argc << endl;
+
+    vector<int> adapters = RetrieveAdapterVoltageFromFile(fileName);
     map<int, int> numberOfSameJoltDiff = map<int, int>
     {
         make_pair(1,0),
