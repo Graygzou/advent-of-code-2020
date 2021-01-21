@@ -11,12 +11,20 @@ using namespace std;
 pair<int, int> FindTwoEntryThatSumToValue(int arrayLength, int totalSum, int* array);
 int* FindThreeEntryThatSumToValue(int arrayLength, int totalSum, int* array);
 
-int main()
+int main(int argc, char** argv)
 {
     cout << "Report Repair" << endl;
 
+    const char* fileName = "input.txt";
+    if (argc >= 2)
+    {
+        fileName = argv[1];
+    }
+    cout << fileName << endl;
+    cout << argc << endl;
+
     int* array = new int[256];
-    int arrayLength = CreateIntArrayFromInputFile("input.txt", array);
+    int arrayLength = CreateIntArrayFromInputFile(fileName, array);
 
     // Part 1
     int totalSum = 2020;
