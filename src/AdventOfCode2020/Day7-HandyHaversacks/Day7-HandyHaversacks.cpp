@@ -13,12 +13,20 @@ void CreateColorsStructures(string fileName, map<string, vector<string>>* colors
 int CountParentOfBagGivenColor(string bagColor, map<string, vector<string>> bagColors);
 int CountChildrenOfBagColor(string bagColor, map<string, vector<pair<int, string>>> bagColors);
 
-int main()
+int main(int argc, char** argv)
 {
+    cout << "Day 7 - Handy Haversacks" << endl;
+    
+    const char* fileName = "input.txt";
+    if (argc >= 2)
+    {
+        fileName = argv[1];
+    }
+    
     map<string, vector<string>> colorsWithParents;
     map<string, vector<pair<int, string>>> colorsWithChildren;
 
-    CreateColorsStructures("input.txt", &colorsWithParents, &colorsWithChildren);
+    CreateColorsStructures(fileName, &colorsWithParents, &colorsWithChildren);
 
     int resultPart1 = CountParentOfBagGivenColor("shiny gold", colorsWithParents);
     cout << "Result for part 1 is " << resultPart1 << endl;
