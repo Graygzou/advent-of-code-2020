@@ -10,11 +10,17 @@ using namespace std;
 int ComputeSeatID(string binarySpaceRepart);
 int ComputeMissingSeatID(int maxSeatID, int minSeatID, int sumOfSeatID);
 
-int main()
+int main(int argc, char** argv)
 {
+    const char* fileName = "input.txt";
+    if (argc >= 2)
+    {
+        fileName = argv[1];
+    }
+    
     string* lines = new string[850];
 
-    int nbLines = CreateStringArrayFromInputFile("input.txt", lines);
+    int nbLines = CreateStringArrayFromInputFile(fileName, lines);
 
     int maxSeatID = -1;
     int minSeatID = -1;
