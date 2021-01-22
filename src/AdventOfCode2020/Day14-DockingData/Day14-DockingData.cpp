@@ -203,90 +203,93 @@ vector<string> CompleteProgram(string fileName, map<string, unsigned long long> 
     
     ifstream  myfile;
     myfile.open(fileName);
-    if (myfile.is_open())
+    if (!myfile.is_open())
     {
-        bitset<BITMASK_SIZE> bitmask = 0;
-        string bitmaskStr = "";
+        std::cout << "Can't open the file: " << fileName << std::endl;
+        exit(-1);
+    }
+
+    bitset<BITMASK_SIZE> bitmask = 0;
+    string bitmaskStr = "";
         
-        string line;
-        while (getline(myfile, line))
+    string line;
+    while (getline(myfile, line))
+    {
+        size_t pos;
+        if ((pos = line.find("mask")) != string::npos)
         {
-            size_t pos;
-            if ((pos = line.find("mask")) != string::npos)
+            bitmaskStr = line.substr(pos + MASK_TEXT);
+        }
+        else
+        {
+            cmatch cm;
+            regex e("(?:mem.)([0-9]*)(?:. = )([0-9]*)");
+            regex_match(line.c_str(), cm, e);
+
+            unsigned long long storageAddr = _atoi64(cm[1].str().c_str());
+            unsigned long long numberToStore = _atoi64(cm[2].str().c_str());
+
+            bitset<BITMASK_SIZE> comvertedBitsetAddr;
+            string bitmaskApplied;
+
+            if (decoderVersion == 1)
             {
-                bitmaskStr = line.substr(pos + MASK_TEXT);
+                bitmaskApplied = to_string(storageAddr);
+                comvertedBitsetAddr = ConvertNumberToBitset(numberToStore);
             }
-            else
+            else if (decoderVersion == 2)
             {
-                cmatch cm;
-                regex e("(?:mem.)([0-9]*)(?:. = )([0-9]*)");
-                regex_match(line.c_str(), cm, e);
+                comvertedBitsetAddr = ConvertNumberToBitset(storageAddr);
+                bitmaskApplied = comvertedBitsetAddr.to_string();
+            }
 
-                unsigned long long storageAddr = _atoi64(cm[1].str().c_str());
-                unsigned long long numberToStore = _atoi64(cm[2].str().c_str());
-
-                bitset<BITMASK_SIZE> comvertedBitsetAddr;
-                string bitmaskApplied;
-
+            for (size_t i = 0; i < bitmaskStr.size(); i++)
+            {
                 if (decoderVersion == 1)
                 {
-                    bitmaskApplied = to_string(storageAddr);
-                    comvertedBitsetAddr = ConvertNumberToBitset(numberToStore);
-                }
-                else if (decoderVersion == 2)
-                {
-                    comvertedBitsetAddr = ConvertNumberToBitset(storageAddr);
-                    bitmaskApplied = comvertedBitsetAddr.to_string();
-                }
-
-                for (size_t i = 0; i < bitmaskStr.size(); i++)
-                {
-                    if (decoderVersion == 1)
+                    if (bitmaskStr[i] == '0')
                     {
-                        if (bitmaskStr[i] == '0')
-                        {
-                            comvertedBitsetAddr.set(bitmaskStr.size() - 1 - i, 0);
-                        }
-                        else if (bitmaskStr[i] == '1')
-                        {
-                            comvertedBitsetAddr.set(bitmaskStr.size() - 1 - i);
-                        }
-                        else
-                        {
-                            // Leave unchanged
-                        }
+                        comvertedBitsetAddr.set(bitmaskStr.size() - 1 - i, 0);
                     }
-                    else if (decoderVersion == 2)
+                    else if (bitmaskStr[i] == '1')
                     {
-                        if (bitmaskStr[i] == '0')
-                        {
-                            // unchanged
-                        }
-                        else if (bitmaskStr[i] == '1')
-                        {
-                            bitmaskApplied[i] = '1';
-                        }
-                        else
-                        {
-                            // floating value
-                            bitmaskApplied[i] = 'X';
-                        }
+                        comvertedBitsetAddr.set(bitmaskStr.size() - 1 - i);
                     }
-                }
-
-                if (decoderVersion == 1)
-                {
-                    (*adresses)[bitmaskApplied] = comvertedBitsetAddr.to_ullong();
-                    if (find(indexes.begin(), indexes.end(), bitmaskApplied) == indexes.end())
+                    else
                     {
-                        indexes.push_back(bitmaskApplied);
+                        // Leave unchanged
                     }
                 }
                 else if (decoderVersion == 2)
                 {
-                    (*adresses)[bitmaskApplied] = numberToStore;
+                    if (bitmaskStr[i] == '0')
+                    {
+                        // unchanged
+                    }
+                    else if (bitmaskStr[i] == '1')
+                    {
+                        bitmaskApplied[i] = '1';
+                    }
+                    else
+                    {
+                        // floating value
+                        bitmaskApplied[i] = 'X';
+                    }
+                }
+            }
+
+            if (decoderVersion == 1)
+            {
+                (*adresses)[bitmaskApplied] = comvertedBitsetAddr.to_ullong();
+                if (find(indexes.begin(), indexes.end(), bitmaskApplied) == indexes.end())
+                {
                     indexes.push_back(bitmaskApplied);
                 }
+            }
+            else if (decoderVersion == 2)
+            {
+                (*adresses)[bitmaskApplied] = numberToStore;
+                indexes.push_back(bitmaskApplied);
             }
         }
     }

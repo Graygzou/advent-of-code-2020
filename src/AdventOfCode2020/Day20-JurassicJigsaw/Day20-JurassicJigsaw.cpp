@@ -352,9 +352,10 @@ map<pair<int, int>, Tile*> ConstructFullGrid(string fileName)
 
     std::ifstream file;
     file.open(fileName);
-    if (file.is_open() == false)
+    if (!file.is_open())
     {
-        return finalGrid;
+        std::cout << "Can't open the file: " << fileName << std::endl;
+        exit(-1);
     }
 
     vector<Tile*> tiles;

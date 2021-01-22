@@ -16,6 +16,16 @@ int main()
 {
     cout << "Day 12 - Rain Risk" << endl;
 
+    string fileName = "input.txt";
+
+    ifstream myfile;
+    myfile.open(fileName);
+    if (!myfile.is_open())
+    {
+        std::cout << "Can't open the file: " << fileName << std::endl;
+        exit(-1);
+    }
+
     // Starting position
     pair<int, int> startingPosition = make_pair(0, 0);
 
@@ -28,16 +38,11 @@ int main()
     pair<int, int> waypoint = make_pair(10, 1);
 
     string line;
-    ifstream  myfile;
-    myfile.open("input.txt");
-    if (myfile.is_open())
+    int lineIndex = 0;
+    while (getline(myfile, line))
     {
-        int lineIndex = 0;
-        while (getline(myfile, line))
-        {
-            ApplyNavigationInstruction(line.c_str(), &positionPart1, &direction, false);
-            ApplyNavigationInstruction(line.c_str(), &positionPart2, &waypoint, true);
-        }
+        ApplyNavigationInstruction(line.c_str(), &positionPart1, &direction, false);
+        ApplyNavigationInstruction(line.c_str(), &positionPart2, &waypoint, true);
     }
     myfile.close();
 

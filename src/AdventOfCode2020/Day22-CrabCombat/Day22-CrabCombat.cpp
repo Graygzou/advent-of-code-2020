@@ -68,22 +68,25 @@ int PlayCombatGame(string fileName, bool allowRecursion)
     queue<int> player2deck;
 
     file.open(fileName);
-    if (file.is_open())
+    if (!file.is_open())
     {
-        while (getline(file, line) && !line.empty())
-        {
-            if (line.size() > 0 && line.size() < 5)
-            {
-                player1deck.push(atoi(line.c_str()));
-            }
-        }
+        std::cout << "Can't open the file: " << fileName << std::endl;
+        exit(-1);
+    }
 
-        while (getline(file, line) && !line.empty())
+    while (getline(file, line) && !line.empty())
+    {
+        if (line.size() > 0 && line.size() < 5)
         {
-            if (line.size() > 0 && line.size() < 5)
-            {
-                player2deck.push(atoi(line.c_str()));
-            }
+            player1deck.push(atoi(line.c_str()));
+        }
+    }
+
+    while (getline(file, line) && !line.empty())
+    {
+        if (line.size() > 0 && line.size() < 5)
+        {
+            player2deck.push(atoi(line.c_str()));
         }
     }
 

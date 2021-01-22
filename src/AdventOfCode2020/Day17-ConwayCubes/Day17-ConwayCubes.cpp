@@ -294,55 +294,58 @@ vector<Node> GetStartingActiveNodes(string fileName, vector<pair<int, int>> *bou
 
     ifstream file;
     file.open(fileName);
-    if (file.is_open())
+    if (!file.is_open())
     {
-        int w = 0, z = 0, y = 0;
-        for (size_t i = 0; i < boundsCoordinates->size(); i++)
-        {
-            (*boundsCoordinates)[i].first = -1;
-        }
+        std::cout << "Can't open the file: " << fileName << std::endl;
+        exit(-1);
+    }
 
-        string line;
-        while (getline(file, line))
+    int w = 0, z = 0, y = 0;
+    for (size_t i = 0; i < boundsCoordinates->size(); i++)
+    {
+        (*boundsCoordinates)[i].first = -1;
+    }
+
+    string line;
+    while (getline(file, line))
+    {
+        for (int x = 0; x < line.size(); x++)
         {
-            for (int x = 0; x < line.size(); x++)
+            if (line[x] == '#')
             {
-                if (line[x] == '#')
+                Node node = Node(x, y, z, w);
+
+                // Find any neighbor active
+                for (int activeIndex = 0; activeIndex < activeCubes.size(); activeIndex++)
                 {
-                    Node node = Node(x, y, z, w);
-
-                    // Find any neighbor active
-                    for (int activeIndex = 0; activeIndex < activeCubes.size(); activeIndex++)
+                    // Compute squared magnitude of both cube
+                    int magnitude = node.Magnitude(activeCubes[activeIndex]);
+                    if (magnitude < 1.75)
                     {
-                        // Compute squared magnitude of both cube
-                        int magnitude = node.Magnitude(activeCubes[activeIndex]);
-                        if (magnitude < 1.75)
-                        {
-                            if ((*boundsCoordinates)[0].first > x)
-                                (*boundsCoordinates)[0].first = x;
-                            else if ((*boundsCoordinates)[0].second < x)
-                                (*boundsCoordinates)[0].second = x;
+                        if ((*boundsCoordinates)[0].first > x)
+                            (*boundsCoordinates)[0].first = x;
+                        else if ((*boundsCoordinates)[0].second < x)
+                            (*boundsCoordinates)[0].second = x;
 
-                            if ((*boundsCoordinates)[1].first > y)
-                                (*boundsCoordinates)[1].first = y;
-                            else if ((*boundsCoordinates)[1].second < y)
-                                (*boundsCoordinates)[1].second = y;
-                        }
+                        if ((*boundsCoordinates)[1].first > y)
+                            (*boundsCoordinates)[1].first = y;
+                        else if ((*boundsCoordinates)[1].second < y)
+                            (*boundsCoordinates)[1].second = y;
                     }
-
-                    activeCubes.push_back(node);
                 }
-            }
-            y++;
-        }
 
-        // We make sure we study all neighbors by increasing/decreasing bounds by one.
-        // We already increased "y" in the last loop run
-        (*boundsCoordinates)[1].second = y - 1;
-        for (size_t i = 0; i < boundsCoordinates->size(); i++)
-        {
-            (*boundsCoordinates)[i].second += 1;
+                activeCubes.push_back(node);
+            }
         }
+        y++;
+    }
+
+    // We make sure we study all neighbors by increasing/decreasing bounds by one.
+    // We already increased "y" in the last loop run
+    (*boundsCoordinates)[1].second = y - 1;
+    for (size_t i = 0; i < boundsCoordinates->size(); i++)
+    {
+        (*boundsCoordinates)[i].second += 1;
     }
 
     return activeCubes;

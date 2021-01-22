@@ -29,30 +29,33 @@ int main(int argc, char** argv)
     
     ifstream myfile;
     myfile.open(fileName);
-    if (myfile.is_open())
+    if (!myfile.is_open())
     {
-        string line;
-
-        // Part 1
-        bool checkDataAccuracy = false;
-        while (getline(myfile, line))
-        {
-            nbPassportsValidPart1 = IsCurrentPassportValid(&myfile, line, checkDataAccuracy) ? nbPassportsValidPart1 + 1 : nbPassportsValidPart1;
-        }
-        cout << "Result for Part 2 : " << nbPassportsValidPart1 << endl;
-
-        // Start again at the beginning of the file
-        myfile.clear();
-        myfile.seekg(ios::beg);
-
-        // Part 2
-        checkDataAccuracy = true;
-        while (getline(myfile, line))
-        {
-            nbPassportsValidPart2 = IsCurrentPassportValid(&myfile, line, checkDataAccuracy) ? nbPassportsValidPart2 + 1 : nbPassportsValidPart2;
-        }
-        cout << "Result for Part 2 : " << nbPassportsValidPart2 << endl;
+        std::cout << "Can't open the file: " << fileName << std::endl;
+        exit(-1);
     }
+
+    string line;
+
+    // Part 1
+    bool checkDataAccuracy = false;
+    while (getline(myfile, line))
+    {
+        nbPassportsValidPart1 = IsCurrentPassportValid(&myfile, line, checkDataAccuracy) ? nbPassportsValidPart1 + 1 : nbPassportsValidPart1;
+    }
+    cout << "Result for Part 2 : " << nbPassportsValidPart1 << endl;
+
+    // Start again at the beginning of the file
+    myfile.clear();
+    myfile.seekg(ios::beg);
+
+    // Part 2
+    checkDataAccuracy = true;
+    while (getline(myfile, line))
+    {
+        nbPassportsValidPart2 = IsCurrentPassportValid(&myfile, line, checkDataAccuracy) ? nbPassportsValidPart2 + 1 : nbPassportsValidPart2;
+    }
+    cout << "Result for Part 2 : " << nbPassportsValidPart2 << endl;
     myfile.close();
 }
 

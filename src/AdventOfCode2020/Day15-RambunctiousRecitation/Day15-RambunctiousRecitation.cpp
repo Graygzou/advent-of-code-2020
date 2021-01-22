@@ -14,18 +14,22 @@ int RunMemoryGame(vector<int> numbers, map<int, pair<int, int>> wordsSpokenCount
 
 int main()
 {
+    cout << "Day 15 - Rambunctious Recitation" << endl;
+
+    const char* fileName = "input.txt";
     ifstream file;
+    file.open(fileName);
+    if (!file.is_open())
+    {
+        std::cout << "Can't open the file: " << fileName << std::endl;
+        exit(-1);
+    }
 
     vector<int> numbers;
-
-    file.open("input.txt");
-    if (file.is_open())
+    string line;
+    while (getline(file, line))
     {
-        string line;
-        while (getline(file, line))
-        {
-            numbers = SplitWithDelimiter(line, ",");
-        }
+        numbers = SplitWithDelimiter(line, ",");
     }
 
     // Store as key the number and has value his last position met.

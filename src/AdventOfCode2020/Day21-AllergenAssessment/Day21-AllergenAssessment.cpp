@@ -127,41 +127,44 @@ void RunDay21(string fileName)
 
     std::ifstream file;
     file.open(fileName);
-    if (file.is_open())
+    if (!file.is_open())
     {
-        string line;
-        while (getline(file, line))
+        std::cout << "Can't open the file: " << fileName << std::endl;
+        exit(-1);
+    }
+
+    string line;
+    while (getline(file, line))
+    {
+        int index = line.find("(");
+        vector<string> ingredients = FindIngredients(line.substr(0, index - 1));
+        vector<string> allergens = FindAllergen(line.substr(index + 1, line.size() - 1));
+
+        for (size_t i = 0; i < ingredients.size(); i++)
         {
-            int index = line.find("(");
-            vector<string> ingredients = FindIngredients(line.substr(0, index - 1));
-            vector<string> allergens = FindAllergen(line.substr(index + 1, line.size() - 1));
+            allIngredientsListedWithoutAllergens.push_back(ingredients[i]);
+        }
 
-            for (size_t i = 0; i < ingredients.size(); i++)
+        for (size_t i = 0; i < allergens.size(); i++)
+        {
+            string currentAllergen = allergens[i];
+
+            if (possibleAllergensMapping[currentAllergen].size() <= 0)
             {
-                allIngredientsListedWithoutAllergens.push_back(ingredients[i]);
+                possibleAllergensMapping[currentAllergen] = ingredients;
             }
 
-            for (size_t i = 0; i < allergens.size(); i++)
-            {
-                string currentAllergen = allergens[i];
+            vector<string> candidateForAllergen = IntersectionVectors(ingredients, possibleAllergensMapping[currentAllergen]);
+            vector<string> safeFood = DifferenceVectors(ingredients, possibleAllergensMapping[currentAllergen]);
+            cumulatedSafeFood = ConcatVectorsWithoutDuplicates(cumulatedSafeFood, safeFood);  
 
-                if (possibleAllergensMapping[currentAllergen].size() <= 0)
-                {
-                    possibleAllergensMapping[currentAllergen] = ingredients;
-                }
+            possibleAllergensMapping[currentAllergen] = candidateForAllergen;
+        }
 
-                vector<string> candidateForAllergen = IntersectionVectors(ingredients, possibleAllergensMapping[currentAllergen]);
-                vector<string> safeFood = DifferenceVectors(ingredients, possibleAllergensMapping[currentAllergen]);
-                cumulatedSafeFood = ConcatVectorsWithoutDuplicates(cumulatedSafeFood, safeFood);  
-
-                possibleAllergensMapping[currentAllergen] = candidateForAllergen;
-            }
-
-            // Update the final list
-            for (auto it = possibleAllergensMapping.begin(); it != possibleAllergensMapping.end(); ++it)
-            {
-                cumulatedSafeFood = RemoveFromFirstVector(cumulatedSafeFood, it->second);
-            }
+        // Update the final list
+        for (auto it = possibleAllergensMapping.begin(); it != possibleAllergensMapping.end(); ++it)
+        {
+            cumulatedSafeFood = RemoveFromFirstVector(cumulatedSafeFood, it->second);
         }
     }
 

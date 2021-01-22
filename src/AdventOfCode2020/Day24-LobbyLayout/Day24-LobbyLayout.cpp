@@ -47,19 +47,22 @@ int main()
 
     ifstream file;
     file.open(fileName);
-    if (file.is_open())
+    if (!file.is_open())
     {
-        string line;
-        while (getline(file, line))
-        {
-            Position position = ProcessDirection(line);
-            if (tilePositions.find(position) == tilePositions.end())
-            {
-                tilePositions[position] = false;
-            }
+        std::cout << "Can't open the file: " << fileName << std::endl;
+        exit(-1);
+    }
 
-            tilePositions[position] = !tilePositions[position];
+    string line;
+    while (getline(file, line))
+    {
+        Position position = ProcessDirection(line);
+        if (tilePositions.find(position) == tilePositions.end())
+        {
+            tilePositions[position] = false;
         }
+
+        tilePositions[position] = !tilePositions[position];
     }
 
     cout << "Result part 1 is " << CountTotalBlackTiles(tilePositions) << endl;

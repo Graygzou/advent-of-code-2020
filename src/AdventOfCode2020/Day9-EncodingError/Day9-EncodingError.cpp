@@ -132,17 +132,21 @@ int main()
 {
     cout << "Day 9 - Encoding Error" << endl;
     
+    const char* fileName = "input.txt";
+
     ifstream  myfile;
-    myfile.open("input.txt");
+    myfile.open(fileName);
+    if (!myfile.is_open())
+    {
+        std::cout << "Can't open the file: " << fileName << std::endl;
+        exit(-1);
+    }
 
     vector<long long> lines = vector<long long>();
-    if (myfile.is_open())
+    string line;
+    while (getline(myfile, line))
     {
-        string line;
-        while (getline(myfile, line))
-        {
-            lines.push_back(_atoi64(line.c_str()));
-        }
+        lines.push_back(_atoi64(line.c_str()));
     }
     myfile.close();
     

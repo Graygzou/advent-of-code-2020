@@ -11,16 +11,19 @@ int CreateIntArrayFromInputFile(const char* fileName, int* intArray)
     std::string line;
     std::ifstream  myfile;
     myfile.open(fileName);
-    if (myfile.is_open())
+    if (!myfile.is_open())
     {
-        int inputNumber = 0;
-        while (getline(myfile, line))
-        {
-            inputNumber = atoi(line.c_str());
-            *intArray = inputNumber;
-            intArray++;
-            arrayLength++;
-        }
+        std::cout << "Can't open the file: " << fileName << std::endl;
+        exit(-1);
+    }
+
+    int inputNumber = 0;
+    while (getline(myfile, line))
+    {
+        inputNumber = atoi(line.c_str());
+        *intArray = inputNumber;
+        intArray++;
+        arrayLength++;
     }
     myfile.close();
 
@@ -34,14 +37,17 @@ int CreateStringArrayFromInputFile(const char* fileName, std::string* intArray)
     std::string line;
     std::ifstream  myfile;
     myfile.open(fileName);
-    if (myfile.is_open())
+    if (!myfile.is_open())
     {
-        while (getline(myfile, line))
-        {
-            *intArray = line.c_str();
-            intArray++;
-            arrayLength++;
-        }
+        std::cout << "Can't open the file: " << fileName << std::endl;
+        exit(-1);
+    }
+
+    while (getline(myfile, line))
+    {
+        *intArray = line.c_str();
+        intArray++;
+        arrayLength++;
     }
     myfile.close();
 

@@ -24,20 +24,23 @@ int main(int argc, char** argv)
 
     ifstream  fileStream;
     fileStream.open(fileName);
-    if (fileStream.is_open())
+    if (!fileStream.is_open())
     {
-        // Part 1
-        int part1Result = CountCumulatedGroupsPositiveAnswers(&fileStream);
-        std::cout << "Part 1 result is " << part1Result << endl;
-
-        // Start again at the beginning of the file
-        fileStream.clear();
-        fileStream.seekg(ios::beg);
-
-        // Part 2
-        int part2Result = CountCumulatedGroupsPositiveAnswersForEveryone(&fileStream);
-        std::cout << "Part 2 result is " << part2Result << endl;
+        std::cout << "Can't open the file: " << fileName << std::endl;
+        exit(-1);
     }
+
+    // Part 1
+    int part1Result = CountCumulatedGroupsPositiveAnswers(&fileStream);
+    std::cout << "Part 1 result is " << part1Result << endl;
+
+    // Start again at the beginning of the file
+    fileStream.clear();
+    fileStream.seekg(ios::beg);
+
+    // Part 2
+    int part2Result = CountCumulatedGroupsPositiveAnswersForEveryone(&fileStream);
+    std::cout << "Part 2 result is " << part2Result << endl;
 
     fileStream.close();
 }

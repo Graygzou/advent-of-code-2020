@@ -16,33 +16,37 @@ int main()
 {
     std::cout << "Day 18 - Operation Order" << std::endl;
 
+    std::string fileName = "input.txt";
+
     std::ifstream file;
-    file.open("input.txt");
-
-    if (file.is_open())
+    file.open(fileName);
+    if (!file.is_open())
     {
-        unsigned long long part1Result = 0;
-        unsigned long long part2Result = 0;
-        int* offset = new int(0);
-
-        std::string line;
-        while (getline(file, line))
-        {
-            // Part 1
-            *offset = 0;
-            unsigned long long currentResult = EvaluateExpression(line, offset);
-            part1Result += currentResult;
-
-            // Part 2
-            line = AddParenthesis(line, '+');
-            *offset = 0;
-            currentResult = EvaluateExpression(line, offset);
-            part2Result += currentResult;
-        }
-
-        std::cout << "Result for part 1 is " << part1Result << std::endl;
-        std::cout << "Result for part 2 is " << part2Result << std::endl;
+        std::cout << "Can't open the file: " << fileName << std::endl;
+        exit(-1);
     }
+
+    unsigned long long part1Result = 0;
+    unsigned long long part2Result = 0;
+    int* offset = new int(0);
+
+    std::string line;
+    while (getline(file, line))
+    {
+        // Part 1
+        *offset = 0;
+        unsigned long long currentResult = EvaluateExpression(line, offset);
+        part1Result += currentResult;
+
+        // Part 2
+        line = AddParenthesis(line, '+');
+        *offset = 0;
+        currentResult = EvaluateExpression(line, offset);
+        part2Result += currentResult;
+    }
+
+    std::cout << "Result for part 1 is " << part1Result << std::endl;
+    std::cout << "Result for part 2 is " << part2Result << std::endl;
 }
 
 unsigned long long EvaluateExpression(std::string expression, int *offset)

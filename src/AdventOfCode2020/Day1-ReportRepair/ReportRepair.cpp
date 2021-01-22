@@ -15,13 +15,11 @@ int main(int argc, char** argv)
 {
     cout << "Report Repair" << endl;
 
-    const char* fileName = "input.txt";
+    const char* fileName = "inpkut.txt";
     if (argc >= 2)
     {
         fileName = argv[1];
     }
-    cout << fileName << endl;
-    cout << argc << endl;
 
     int* array = new int[256];
     int arrayLength = CreateIntArrayFromInputFile(fileName, array);

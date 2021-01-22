@@ -15,30 +15,35 @@ int main()
 {
     std::cout << "Day 13 - Shuttle Search" << endl;
 
+    string fileName = "input.txt";
+
     ifstream file;
-    file.open("input.txt");
-    if (file.is_open())
+    file.open(fileName);
+    if (!file.is_open())
     {
-        int earliestTimestamp = -1;
+        std::cout << "Can't open the file: " << fileName << std::endl;
+        exit(-1);
+    }
 
-        int lineNumber = 0;
-        string line("");
-        while (getline(file, line))
+    int earliestTimestamp = -1;
+
+    int lineNumber = 0;
+    string line("");
+    while (getline(file, line))
+    {
+        if (lineNumber == 0)
         {
-            if (lineNumber == 0)
-            {
-                earliestTimestamp = atoi(line.c_str());
-                lineNumber++;
-            }
-            else
-            {
-                pair<int, int> earliestBusIDAndWaitingTime = FindEarlistedAirportBus(line, earliestTimestamp);
-                int resultPart1 = earliestBusIDAndWaitingTime.first * earliestBusIDAndWaitingTime.second;
-                std::cout << "Part 1 result = " << resultPart1 << endl;
+            earliestTimestamp = atoi(line.c_str());
+            lineNumber++;
+        }
+        else
+        {
+            pair<int, int> earliestBusIDAndWaitingTime = FindEarlistedAirportBus(line, earliestTimestamp);
+            int resultPart1 = earliestBusIDAndWaitingTime.first * earliestBusIDAndWaitingTime.second;
+            std::cout << "Part 1 result = " << resultPart1 << endl;
 
-                unsigned long long resultPart2 = SolveEquationWithChineseRemainderTheoreme(line);
-                std::cout << "Part 2 result = " << resultPart2 << endl;
-            }
+            unsigned long long resultPart2 = SolveEquationWithChineseRemainderTheoreme(line);
+            std::cout << "Part 2 result = " << resultPart2 << endl;
         }
     }
 }

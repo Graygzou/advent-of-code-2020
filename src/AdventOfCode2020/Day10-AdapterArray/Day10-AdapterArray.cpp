@@ -134,13 +134,16 @@ vector<int> RetrieveAdapterVoltageFromFile(string fileName)
 
     ifstream myfile;
     myfile.open(fileName);
-    if (myfile.is_open())
+    if (!myfile.is_open())
     {
-        string line;
-        while (getline(myfile, line))
-        {
-            adapterVotages.push_back(atoi(line.c_str()));
-        }
+        std::cout << "Can't open the file: " << fileName << std::endl;
+        exit(-1);
+    }
+
+    string line;
+    while (getline(myfile, line))
+    {
+        adapterVotages.push_back(atoi(line.c_str()));
     }
     myfile.close();
 

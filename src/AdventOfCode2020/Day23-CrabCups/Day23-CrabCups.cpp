@@ -27,9 +27,12 @@ public:
 
 int main()
 {
-    std::cout << "Crab Cups" << endl;
-    PlayGame("input.txt", false, 100);
-    PlayGame("input.txt", true, 10000000);
+    std::cout << "Day 23 - Crab Cups" << endl;
+
+    const char* fileName = "input.txt";
+
+    PlayGame(fileName, false, 100);
+    PlayGame(fileName, true, 10000000);
 }
 
 void DisplayCups(Cup* currentCup)
@@ -46,45 +49,46 @@ void DisplayCups(Cup* currentCup)
 void PlayGame(string fileName, bool useExtraCups, int nbTurns)
 {
     ifstream file;
-    
+    file.open(fileName);
+    if (!file.is_open())
+    {
+        std::cout << "Can't open the file: " << fileName << std::endl;
+        exit(-1);
+    }
+
     // vakue => index
     map<int, Cup*> cups;
 
     Cup* firstCup = nullptr;
     Cup* previousCup = nullptr;
 
-    // Add starting cups
     int maxValue = 0;
-    file.open(fileName);
-    if (file.is_open())
+    string line;
+    while (getline(file, line))
     {
-        string line;
-        while (getline(file, line))
+        maxValue = line.size();
+        for (size_t i = 0; i < line.size(); i++)
         {
-            maxValue = line.size();
-            for (size_t i = 0; i < line.size(); i++)
+            string s(1, line[i]);
+            int currentValue = atoi(s.c_str());
+            Cup* currentCup = new Cup(currentValue);
+
+            if (previousCup != nullptr)
             {
-                string s(1, line[i]);
-                int currentValue = atoi(s.c_str());
-                Cup* currentCup = new Cup(currentValue);
-
-                if (previousCup != nullptr)
-                {
-                    previousCup->SetNext(currentCup);
-                }
-
-                if (i == 0)
-                {
-                    firstCup = currentCup;
-                }
-                if (!useExtraCups && i == line.size() - 1)
-                {
-                    currentCup->SetNext(firstCup);
-                }
-                
-                cups.insert(make_pair(currentValue, currentCup));
-                previousCup = currentCup;
+                previousCup->SetNext(currentCup);
             }
+
+            if (i == 0)
+            {
+                firstCup = currentCup;
+            }
+            if (!useExtraCups && i == line.size() - 1)
+            {
+                currentCup->SetNext(firstCup);
+            }
+                
+            cups.insert(make_pair(currentValue, currentCup));
+            previousCup = currentCup;
         }
     }
 

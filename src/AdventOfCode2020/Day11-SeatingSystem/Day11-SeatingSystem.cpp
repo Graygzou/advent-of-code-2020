@@ -199,20 +199,23 @@ vector<vector<char>> RetrieveInputs(string fileName)
 
     ifstream  myfile;
     myfile.open(fileName);
-    if (myfile.is_open())
+    if (!myfile.is_open())
     {
-        string line;
-        int lineIndex = 0;
-        while (getline(myfile, line))
-        {
-            seatLayout.push_back(vector<char>());
-            for (size_t i = 0; i < line.size(); i++)
-            {
-                seatLayout[lineIndex].push_back(line[i]);
-            }
+        std::cout << "Can't open the file: " << fileName << std::endl;
+        exit(-1);
+    }
 
-            lineIndex++;
+    string line;
+    int lineIndex = 0;
+    while (getline(myfile, line))
+    {
+        seatLayout.push_back(vector<char>());
+        for (size_t i = 0; i < line.size(); i++)
+        {
+            seatLayout[lineIndex].push_back(line[i]);
         }
+
+        lineIndex++;
     }
     myfile.close();
 

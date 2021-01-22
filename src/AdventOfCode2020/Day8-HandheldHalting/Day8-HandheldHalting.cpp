@@ -35,12 +35,15 @@ vector<string> ConstructInstructionsFromFile(string fileName)
     ifstream  myfile;
 
     myfile.open(fileName);
-    if (myfile.is_open())
+    if (!myfile.is_open())
     {
-        while (getline(myfile, line))
-        {
-            instructions.push_back(line.c_str());
-        }
+        std::cout << "Can't open the file: " << fileName << std::endl;
+        exit(-1);
+    }
+
+    while (getline(myfile, line))
+    {
+        instructions.push_back(line.c_str());
     }
     myfile.close();
 

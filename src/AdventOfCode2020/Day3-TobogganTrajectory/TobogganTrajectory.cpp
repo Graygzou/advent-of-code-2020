@@ -81,8 +81,8 @@ long long CountNumberOfTreeHitForTrajectories(const char* fileName, tuple<int, i
     inputFile.open(fileName);
     if (!inputFile.is_open())
     {
-        cout << "Error: can't open inputs.txt" << endl;
-        return -1;
+        std::cout << "Can't open the file: " << fileName << std::endl;
+        exit(-1);
     }
 
     long long resultPart2 = 1;

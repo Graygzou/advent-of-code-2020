@@ -143,64 +143,67 @@ void CreateColorsStructures(string fileName, map<string, vector<string>> *colors
 {
     ifstream  myfile;
     myfile.open(fileName);
-    if (myfile.is_open())
+    if (!myfile.is_open())
     {
-        string line;
-        while (getline(myfile, line))
+        std::cout << "Can't open the file: " << fileName << std::endl;
+        exit(-1);
+    }
+
+    string line;
+    while (getline(myfile, line))
+    {
+        cmatch cm;
+        regex e("(.*) bags contain (.*)");
+        if (!regex_match(line.c_str(), cm, e))
         {
+            cout << "string object did not matched" << endl;
+        }
+
+        string currentColor = cm[1];
+        string containedColors = cm[2];
+
+        // Add the current color
+        if (colorsWithParents->find(currentColor) == colorsWithParents->end())
+        {
+            colorsWithParents->insert(pair<string, vector<string>>(currentColor, vector<string>()));
+            colorsWithChildren->insert(pair<string, vector<pair<int, string>>>(currentColor, vector<pair<int, string>>()));
+        }
+
+        string delimiter = ", ";
+
+        size_t pos = 0;
+        int quantity = 0;
+        while (!containedColors.empty()) 
+        {
+            string subStr = "";
+            if ((pos = containedColors.find(delimiter)) != std::string::npos)
+            {
+                subStr = containedColors.substr(0, pos);
+                pos += delimiter.length();
+            }
+            else
+            {
+                subStr = containedColors;
+                pos = containedColors.size();
+            }
+
             cmatch cm;
-            regex e("(.*) bags contain (.*)");
-            if (!regex_match(line.c_str(), cm, e))
+            regex e("([1-9]) ([\ a-z]*) bags?\.?");
+            regex_match(subStr.c_str(), cm, e);
+
+            quantity = atoi(cm[1].str().c_str());
+            string token = cm[2];
+
+            if (colorsWithParents->find(token) == colorsWithParents->end())
             {
-                cout << "string object did not matched" << endl;
+                colorsWithParents->insert(pair<string, vector<string>>(token, vector<string>()));
+                colorsWithChildren->insert(pair<string, vector<pair<int, string>>>(token, vector<pair<int, string>>()));
             }
 
-            string currentColor = cm[1];
-            string containedColors = cm[2];
+            (*colorsWithParents)[token].push_back(currentColor);
+            (*colorsWithChildren)[currentColor].push_back(pair<int, string>(quantity, token));
 
-            // Add the current color
-            if (colorsWithParents->find(currentColor) == colorsWithParents->end())
-            {
-                colorsWithParents->insert(pair<string, vector<string>>(currentColor, vector<string>()));
-                colorsWithChildren->insert(pair<string, vector<pair<int, string>>>(currentColor, vector<pair<int, string>>()));
-            }
-
-            string delimiter = ", ";
-
-            size_t pos = 0;
-            int quantity = 0;
-            while (!containedColors.empty()) 
-            {
-                string subStr = "";
-                if ((pos = containedColors.find(delimiter)) != std::string::npos)
-                {
-                    subStr = containedColors.substr(0, pos);
-                    pos += delimiter.length();
-                }
-                else
-                {
-                    subStr = containedColors;
-                    pos = containedColors.size();
-                }
-
-                cmatch cm;
-                regex e("([1-9]) ([\ a-z]*) bags?\.?");
-                regex_match(subStr.c_str(), cm, e);
-
-                quantity = atoi(cm[1].str().c_str());
-                string token = cm[2];
-
-                if (colorsWithParents->find(token) == colorsWithParents->end())
-                {
-                    colorsWithParents->insert(pair<string, vector<string>>(token, vector<string>()));
-                    colorsWithChildren->insert(pair<string, vector<pair<int, string>>>(token, vector<pair<int, string>>()));
-                }
-
-                (*colorsWithParents)[token].push_back(currentColor);
-                (*colorsWithChildren)[currentColor].push_back(pair<int, string>(quantity, token));
-
-                containedColors.erase(0, pos);
-            }
+            containedColors.erase(0, pos);
         }
     }
     myfile.close();

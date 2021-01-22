@@ -196,14 +196,17 @@ int CountMessageMatchingRuleZero(string fileName)
 
     int result = 0;
     file.open(fileName);
-    if (file.is_open())
+    if (!file.is_open())
     {
-        // Build rules with first part of the file.
-        vector<string> rules = BuildRules(&file);
-
-        // Study each messages with the rest of the file.
-        result = CountMessagesMatchingRule(&file, rules, 0);
+        std::cout << "Can't open the file: " << fileName << std::endl;
+        exit(-1);
     }
+
+    // Build rules with first part of the file.
+    vector<string> rules = BuildRules(&file);
+
+    // Study each messages with the rest of the file.
+    result = CountMessagesMatchingRule(&file, rules, 0);
 
     return result;
 }

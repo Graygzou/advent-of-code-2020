@@ -20,12 +20,14 @@ int main()
 {
     cout << "Day 16 - Ticket Translation" << endl;
 
-    ifstream file;
+    string fileName = "input.txt";
 
-    file.open("input.txt");
+    ifstream file;
+    file.open(fileName);
     if (!file.is_open())
     {
-        return 0;
+        std::cout << "Can't open the file: " << fileName << std::endl;
+        exit(-1);
     }
 
     vector<vector<pair<int, int>>> rules = GatherRules(&file);
