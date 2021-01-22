@@ -10,12 +10,18 @@ using namespace std;
 bool ComputeIfPasswordLegitPart1(string line);
 bool ComputeIfPasswordLegitPart2(string line);
 
-int main()
+int main(int argc, char** argv)
 {
     cout << "Day 2 - Password Philosophy" << endl;
+    
+    const char* fileName = "input.txt";
+    if (argc >= 2)
+    {
+        fileName = argv[1];
+    }
 
     string* array = new string[1000];
-    int arrayLength = CreateStringArrayFromInputFile("input.txt", array);
+    int arrayLength = CreateStringArrayFromInputFile(fileName, array);
 
     int nbPasswordLegitPart1 = 0;
     int nbPasswordLegitPart2 = 0;
