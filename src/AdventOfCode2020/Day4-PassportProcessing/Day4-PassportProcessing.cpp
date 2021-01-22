@@ -14,15 +14,21 @@ static const string PASSPORTS_FIELDS[] = { "byr", "iyr", "eyr", "hgt", "hcl", "e
 
 bool IsCurrentPassportValid(ifstream* file, string line, bool isDataValidationEnable);
 
-int main()
+int main(int argc, char** argv)
 {
     cout << "Day 4 - Passport Processing" << endl;
 
+    const char* fileName = "input.txt";
+    if (argc >= 2)
+    {
+        fileName = argv[1];
+    }
+    
     int nbPassportsValidPart1 = 0;
     int nbPassportsValidPart2 = 0;
     
     ifstream myfile;
-    myfile.open("input.txt");
+    myfile.open(fileName);
     if (myfile.is_open())
     {
         string line;
