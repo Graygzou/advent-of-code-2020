@@ -17,6 +17,11 @@ env:
   REPOSITORY_NAME: advent-of-code-2020
 
 jobs:
+  
+  # =========================================================================== #
+  # ============ Build the entire solution to create all the .exe ============= #
+  # =========================================================================== #
+
   build:
     runs-on: windows-latest
 
@@ -42,9 +47,15 @@ jobs:
         name: builds
         path: ${{env.SOLUTION_FILE_PATH}}${{env.PLATFORM}}/${{env.BUILD_CONFIGURATION}}
   
+  # =========================================================================== #
+  # =============== Start running all the days in separate jobs =============== #
+  # =========================================================================== #
+      
   run-day-1:
     runs-on: windows-latest
     needs: [build]
+    env:
+      DAY_NAME: Day1-ReportRepair
     steps:
       - uses: actions/checkout@v2
       - name: Download a single artifact
@@ -56,14 +67,167 @@ jobs:
       - name: test-custom-action
         uses: ./.github/actions/run-day-program
         with:
-          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}Day1-ReportRepair/input.txt
-          exe-folder: ${{env.BUILD_CONFIGURATION}}/Day1-ReportRepair.exe
+          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}{{ env.DAY_NAME }}/input.txt
+          exe-folder: ${{env.BUILD_CONFIGURATION}}/{{ env.DAY_NAME }}.exe
 
-  # TODO add all the others days.
+  run-day-2:
+    runs-on: windows-latest
+    needs: [build]
+    env:
+      DAY_NAME: Day2-PasswordPhilosophy
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download a single artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: builds
+          path: ${{env.BUILD_CONFIGURATION}}/
+
+      - name: test-custom-action
+        uses: ./.github/actions/run-day-program
+        with:
+          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}{{ env.DAY_NAME }}/input.txt
+          exe-folder: ${{env.BUILD_CONFIGURATION}}/{{ env.DAY_NAME }}.exe
+
+  run-day-3:
+    runs-on: windows-latest
+    needs: [build]
+    env:
+      DAY_NAME: Day3-TobogganTrajectory
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download a single artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: builds
+          path: ${{env.BUILD_CONFIGURATION}}/
+
+      - name: test-custom-action
+        uses: ./.github/actions/run-day-program
+        with:
+          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}{{ env.DAY_NAME }}/input.txt
+          exe-folder: ${{env.BUILD_CONFIGURATION}}/{{ env.DAY_NAME }}.exe
+
+  run-day-4:
+    runs-on: windows-latest
+    needs: [build]
+    env:
+      DAY_NAME: Day4-PassportProcessing
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download a single artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: builds
+          path: ${{env.BUILD_CONFIGURATION}}/
+
+      - name: test-custom-action
+        uses: ./.github/actions/run-day-program
+        with:
+          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}{{ env.DAY_NAME }}/input.txt
+          exe-folder: ${{env.BUILD_CONFIGURATION}}/{{ env.DAY_NAME }}.exe
+
+  run-day-5:
+    runs-on: windows-latest
+    needs: [build]
+    env:
+      DAY_NAME: Day5-BinaryBoarding
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download a single artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: builds
+          path: ${{env.BUILD_CONFIGURATION}}/
+
+      - name: test-custom-action
+        uses: ./.github/actions/run-day-program
+        with:
+          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}{{ env.DAY_NAME }}/input.txt
+          exe-folder: ${{env.BUILD_CONFIGURATION}}/{{ env.DAY_NAME }}.exe
+
+  run-day-6:
+    runs-on: windows-latest
+    needs: [build]
+    env:
+      DAY_NAME: Day6-CustomCustoms
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download a single artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: builds
+          path: ${{env.BUILD_CONFIGURATION}}/
+
+      - name: test-custom-action
+        uses: ./.github/actions/run-day-program
+        with:
+          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}{{ env.DAY_NAME }}/input.txt
+          exe-folder: ${{env.BUILD_CONFIGURATION}}/{{ env.DAY_NAME }}.exe
+
+  run-day-7:
+    runs-on: windows-latest
+    needs: [build]
+    env:
+      DAY_NAME: Day7-HandyHaversacks
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download a single artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: builds
+          path: ${{env.BUILD_CONFIGURATION}}/
+
+      - name: test-custom-action
+        uses: ./.github/actions/run-day-program
+        with:
+          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}{{ env.DAY_NAME }}/input.txt
+          exe-folder: ${{env.BUILD_CONFIGURATION}}/{{ env.DAY_NAME }}.exe
+
+  run-day-8:
+    runs-on: windows-latest
+    needs: [build]
+    env:
+      DAY_NAME: Day8-HandheldHalting
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download a single artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: builds
+          path: ${{env.BUILD_CONFIGURATION}}/
+
+      - name: test-custom-action
+        uses: ./.github/actions/run-day-program
+        with:
+          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}{{ env.DAY_NAME }}/input.txt
+          exe-folder: ${{env.BUILD_CONFIGURATION}}/{{ env.DAY_NAME }}.exe
+
+  run-day-9:
+    runs-on: windows-latest
+    needs: [build]
+    env:
+      DAY_NAME: Day9-EncodingError
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download a single artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: builds
+          path: ${{env.BUILD_CONFIGURATION}}/
+
+      - name: test-custom-action
+        uses: ./.github/actions/run-day-program
+        with:
+          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}{{ env.DAY_NAME }}/input.txt
+          exe-folder: ${{env.BUILD_CONFIGURATION}}/{{ env.DAY_NAME }}.exe
+
       
   run-day-10:
     runs-on: windows-latest
     needs: [build]
+    env:
+      DAY_NAME: Day10-AdapterArray
     steps:
       - uses: actions/checkout@v2
       - name: Download a single artifact
@@ -75,6 +239,6 @@ jobs:
       - name: test-custom-action
         uses: ./.github/actions/run-day-program
         with:
-          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}Day10-AdapterArray/input.txt
-          exe-folder: ${{env.BUILD_CONFIGURATION}}/Day10-AdapterArray.exe
+          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}{{ env.DAY_NAME }}/input.txt
+          exe-folder: ${{env.BUILD_CONFIGURATION}}/{{ env.DAY_NAME }}.exe
       
