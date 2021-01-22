@@ -12,11 +12,15 @@ using namespace std;
 int CountCumulatedGroupsPositiveAnswers(ifstream* fileStream);
 int CountCumulatedGroupsPositiveAnswersForEveryone(ifstream* fileStream);
 
-int main()
+int main(int argc, char** argv)
 {
     std::cout << "Day 6 - Custom Customes" << endl;
 
     const char* fileName = "input.txt";
+    if (argc >= 2)
+    {
+        fileName = argv[1];
+    }
 
     ifstream  fileStream;
     fileStream.open(fileName);
