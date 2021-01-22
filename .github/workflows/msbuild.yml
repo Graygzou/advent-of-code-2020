@@ -241,4 +241,290 @@ jobs:
         with:
           input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
           exe-folder: ${{env.BUILD_CONFIGURATION}}/${{ env.DAY_NAME }}.exe
-      
+          
+  run-day-11:
+    runs-on: windows-latest
+    needs: [build]
+    env:
+      DAY_NAME: Day11-SeatingSystem
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download a single artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: builds
+          path: ${{env.BUILD_CONFIGURATION}}/
+
+      - name: test-custom-action
+        uses: ./.github/actions/run-day-program
+        with:
+          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
+          exe-folder: ${{env.BUILD_CONFIGURATION}}/${{ env.DAY_NAME }}.exe
+          
+  run-day-12:
+    runs-on: windows-latest
+    needs: [build]
+    env:
+      DAY_NAME: Day12-RainRisk
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download a single artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: builds
+          path: ${{env.BUILD_CONFIGURATION}}/
+
+      - name: test-custom-action
+        uses: ./.github/actions/run-day-program
+        with:
+          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
+          exe-folder: ${{env.BUILD_CONFIGURATION}}/${{ env.DAY_NAME }}.exe
+          
+  run-day-13:
+    runs-on: windows-latest
+    needs: [build]
+    env:
+      DAY_NAME: Day13-ShuttleSearch
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download a single artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: builds
+          path: ${{env.BUILD_CONFIGURATION}}/
+
+      - name: test-custom-action
+        uses: ./.github/actions/run-day-program
+        with:
+          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
+          exe-folder: ${{env.BUILD_CONFIGURATION}}/${{ env.DAY_NAME }}.exe
+          
+  run-day-14:
+    runs-on: windows-latest
+    needs: [build]
+    env:
+      DAY_NAME: Day14-DockingData
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download a single artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: builds
+          path: ${{env.BUILD_CONFIGURATION}}/
+
+      - name: test-custom-action
+        uses: ./.github/actions/run-day-program
+        with:
+          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
+          exe-folder: ${{env.BUILD_CONFIGURATION}}/${{ env.DAY_NAME }}.exe
+          
+  run-day-15:
+    runs-on: windows-latest
+    needs: [build]
+    env:
+      DAY_NAME: Day15-RambunctiousRecitation
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download a single artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: builds
+          path: ${{env.BUILD_CONFIGURATION}}/
+
+      - name: test-custom-action
+        uses: ./.github/actions/run-day-program
+        with:
+          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
+          exe-folder: ${{env.BUILD_CONFIGURATION}}/${{ env.DAY_NAME }}.exe
+          
+  run-day-16:
+    runs-on: windows-latest
+    needs: [build]
+    env:
+      DAY_NAME: Day16-TicketTranslation
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download a single artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: builds
+          path: ${{env.BUILD_CONFIGURATION}}/
+
+      - name: test-custom-action
+        uses: ./.github/actions/run-day-program
+        with:
+          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
+          exe-folder: ${{env.BUILD_CONFIGURATION}}/${{ env.DAY_NAME }}.exe
+          
+  run-day-17:
+    runs-on: windows-latest
+    needs: [build]
+    env:
+      DAY_NAME: Day17-ConwayCubes
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download a single artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: builds
+          path: ${{env.BUILD_CONFIGURATION}}/
+
+      - name: test-custom-action
+        uses: ./.github/actions/run-day-program
+        with:
+          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
+          exe-folder: ${{env.BUILD_CONFIGURATION}}/${{ env.DAY_NAME }}.exe
+          
+  run-day-18:
+    runs-on: windows-latest
+    needs: [build]
+    env:
+      DAY_NAME: Day18-OperationOrder
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download a single artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: builds
+          path: ${{env.BUILD_CONFIGURATION}}/
+
+      - name: test-custom-action
+        uses: ./.github/actions/run-day-program
+        with:
+          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
+          exe-folder: ${{env.BUILD_CONFIGURATION}}/${{ env.DAY_NAME }}.exe
+          
+  run-day-19:
+    runs-on: windows-latest
+    needs: [build]
+    env:
+      DAY_NAME: Day19-MonsterMessages
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download a single artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: builds
+          path: ${{env.BUILD_CONFIGURATION}}/
+
+      - name: test-custom-action
+        uses: ./.github/actions/run-day-program
+        with:
+          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
+          exe-folder: ${{env.BUILD_CONFIGURATION}}/${{ env.DAY_NAME }}.exe
+          
+  run-day-20:
+    runs-on: windows-latest
+    needs: [build]
+    env:
+      DAY_NAME: Day20-JurassicJigsaw
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download a single artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: builds
+          path: ${{env.BUILD_CONFIGURATION}}/
+
+      - name: test-custom-action
+        uses: ./.github/actions/run-day-program
+        with:
+          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
+          exe-folder: ${{env.BUILD_CONFIGURATION}}/${{ env.DAY_NAME }}.exe
+          
+  run-day-21:
+    runs-on: windows-latest
+    needs: [build]
+    env:
+      DAY_NAME: Day21-AllergenAssessment
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download a single artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: builds
+          path: ${{env.BUILD_CONFIGURATION}}/
+
+      - name: test-custom-action
+        uses: ./.github/actions/run-day-program
+        with:
+          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
+          exe-folder: ${{env.BUILD_CONFIGURATION}}/${{ env.DAY_NAME }}.exe
+          
+  run-day-22:
+    runs-on: windows-latest
+    needs: [build]
+    env:
+      DAY_NAME: Day22-CrabCombat
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download a single artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: builds
+          path: ${{env.BUILD_CONFIGURATION}}/
+
+      - name: test-custom-action
+        uses: ./.github/actions/run-day-program
+        with:
+          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
+          exe-folder: ${{env.BUILD_CONFIGURATION}}/${{ env.DAY_NAME }}.exe
+          
+  run-day-23:
+    runs-on: windows-latest
+    needs: [build]
+    env:
+      DAY_NAME: Day23-CrabCups
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download a single artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: builds
+          path: ${{env.BUILD_CONFIGURATION}}/
+
+      - name: test-custom-action
+        uses: ./.github/actions/run-day-program
+        with:
+          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
+          exe-folder: ${{env.BUILD_CONFIGURATION}}/${{ env.DAY_NAME }}.exe
+          
+  run-day-24:
+    runs-on: windows-latest
+    needs: [build]
+    env:
+      DAY_NAME: Day24-LobbyLayout
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download a single artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: builds
+          path: ${{env.BUILD_CONFIGURATION}}/
+
+      - name: test-custom-action
+        uses: ./.github/actions/run-day-program
+        with:
+          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
+          exe-folder: ${{env.BUILD_CONFIGURATION}}/${{ env.DAY_NAME }}.exe
+          
+  run-day-25:
+    runs-on: windows-latest
+    needs: [build]
+    env:
+      DAY_NAME: Day25-ComboBreaker
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download a single artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: builds
+          path: ${{env.BUILD_CONFIGURATION}}/
+
+      - name: test-custom-action
+        uses: ./.github/actions/run-day-program
+        with:
+          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
+          exe-folder: ${{env.BUILD_CONFIGURATION}}/${{ env.DAY_NAME }}.exe
+          
+
