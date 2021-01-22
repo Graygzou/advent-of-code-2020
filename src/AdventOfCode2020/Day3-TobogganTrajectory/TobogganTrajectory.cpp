@@ -10,7 +10,7 @@ using namespace std;
 
 constexpr char TREE_SYMBOL = '#';
 
-long long CountNumberOfTreeHitForTrajectories(tuple<int, int> slopes[], int nbSlopes);
+long long CountNumberOfTreeHitForTrajectories(const char* fileName, tuple<int, int> slopes[], int nbSlopes);
 
 int main(int argc, char** argv)
 {
