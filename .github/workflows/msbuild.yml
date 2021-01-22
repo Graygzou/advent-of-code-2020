@@ -67,8 +67,8 @@ jobs:
       - name: test-custom-action
         uses: ./.github/actions/run-day-program
         with:
-          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}{{ env.DAY_NAME }}/input.txt
-          exe-folder: ${{env.BUILD_CONFIGURATION}}/{{ env.DAY_NAME }}.exe
+          input-path: "${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt"
+          exe-folder: "${{env.BUILD_CONFIGURATION}}/${{ env.DAY_NAME }}.exe"
 
   run-day-2:
     runs-on: windows-latest
@@ -86,8 +86,8 @@ jobs:
       - name: test-custom-action
         uses: ./.github/actions/run-day-program
         with:
-          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}{{ env.DAY_NAME }}/input.txt
-          exe-folder: ${{env.BUILD_CONFIGURATION}}/{{ env.DAY_NAME }}.exe
+          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
+          exe-folder: ${{env.BUILD_CONFIGURATION}}/${{ env.DAY_NAME }}.exe
 
   run-day-3:
     runs-on: windows-latest
@@ -105,8 +105,8 @@ jobs:
       - name: test-custom-action
         uses: ./.github/actions/run-day-program
         with:
-          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}{{ env.DAY_NAME }}/input.txt
-          exe-folder: ${{env.BUILD_CONFIGURATION}}/{{ env.DAY_NAME }}.exe
+          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
+          exe-folder: ${{env.BUILD_CONFIGURATION}}/${{ env.DAY_NAME }}.exe
 
   run-day-4:
     runs-on: windows-latest
@@ -124,8 +124,8 @@ jobs:
       - name: test-custom-action
         uses: ./.github/actions/run-day-program
         with:
-          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}{{ env.DAY_NAME }}/input.txt
-          exe-folder: ${{env.BUILD_CONFIGURATION}}/{{ env.DAY_NAME }}.exe
+          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
+          exe-folder: ${{env.BUILD_CONFIGURATION}}/${{ env.DAY_NAME }}.exe
 
   run-day-5:
     runs-on: windows-latest
@@ -143,8 +143,8 @@ jobs:
       - name: test-custom-action
         uses: ./.github/actions/run-day-program
         with:
-          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}{{ env.DAY_NAME }}/input.txt
-          exe-folder: ${{env.BUILD_CONFIGURATION}}/{{ env.DAY_NAME }}.exe
+          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
+          exe-folder: ${{env.BUILD_CONFIGURATION}}/${{ env.DAY_NAME }}.exe
 
   run-day-6:
     runs-on: windows-latest
@@ -162,8 +162,8 @@ jobs:
       - name: test-custom-action
         uses: ./.github/actions/run-day-program
         with:
-          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}{{ env.DAY_NAME }}/input.txt
-          exe-folder: ${{env.BUILD_CONFIGURATION}}/{{ env.DAY_NAME }}.exe
+          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
+          exe-folder: ${{env.BUILD_CONFIGURATION}}/${{ env.DAY_NAME }}.exe
 
   run-day-7:
     runs-on: windows-latest
@@ -181,8 +181,8 @@ jobs:
       - name: test-custom-action
         uses: ./.github/actions/run-day-program
         with:
-          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}{{ env.DAY_NAME }}/input.txt
-          exe-folder: ${{env.BUILD_CONFIGURATION}}/{{ env.DAY_NAME }}.exe
+          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
+          exe-folder: ${{env.BUILD_CONFIGURATION}}/${{ env.DAY_NAME }}.exe
 
   run-day-8:
     runs-on: windows-latest
@@ -200,8 +200,8 @@ jobs:
       - name: test-custom-action
         uses: ./.github/actions/run-day-program
         with:
-          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}{{ env.DAY_NAME }}/input.txt
-          exe-folder: ${{env.BUILD_CONFIGURATION}}/{{ env.DAY_NAME }}.exe
+          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
+          exe-folder: ${{env.BUILD_CONFIGURATION}}/${{ env.DAY_NAME }}.exe
 
   run-day-9:
     runs-on: windows-latest
@@ -219,8 +219,8 @@ jobs:
       - name: test-custom-action
         uses: ./.github/actions/run-day-program
         with:
-          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}{{ env.DAY_NAME }}/input.txt
-          exe-folder: ${{env.BUILD_CONFIGURATION}}/{{ env.DAY_NAME }}.exe
+          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
+          exe-folder: ${{env.BUILD_CONFIGURATION}}/${{ env.DAY_NAME }}.exe
 
       
   run-day-10:
@@ -239,6 +239,6 @@ jobs:
       - name: test-custom-action
         uses: ./.github/actions/run-day-program
         with:
-          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}{{ env.DAY_NAME }}/input.txt
-          exe-folder: ${{env.BUILD_CONFIGURATION}}/{{ env.DAY_NAME }}.exe
+          input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
+          exe-folder: ${{env.BUILD_CONFIGURATION}}/${{ env.DAY_NAME }}.exe
       
