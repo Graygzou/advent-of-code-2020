@@ -12,14 +12,20 @@ constexpr char TREE_SYMBOL = '#';
 
 long long CountNumberOfTreeHitForTrajectories(tuple<int, int> slopes[], int nbSlopes);
 
-int main()
+int main(int argc, char** argv)
 {
     cout << "Day 3 - Toboggan Trajectory" << endl;
 
+    const char* fileName = "input.txt";
+    if (argc >= 2)
+    {
+        fileName = argv[1];
+    }
+    
     tuple<int, int> slopesPart1[] = { make_tuple(3, 1) };
     int nbSlopes = 1;
 
-    long long resultPart1 = CountNumberOfTreeHitForTrajectories(slopesPart1, nbSlopes);
+    long long resultPart1 = CountNumberOfTreeHitForTrajectories(fileName, slopesPart1, nbSlopes);
     cout << "Result for part 1 is : " << resultPart1 << endl;
 
     tuple<int, int> slopesPart2[] =
@@ -32,7 +38,7 @@ int main()
     };
     nbSlopes = 5;
 
-    long long resultPart2 = CountNumberOfTreeHitForTrajectories(slopesPart2, nbSlopes);
+    long long resultPart2 = CountNumberOfTreeHitForTrajectories(fileName, slopesPart2, nbSlopes);
     cout << "Result for part 2 is : " << resultPart2 << endl;
 }
 
@@ -69,10 +75,10 @@ int CountNumberOfTreeHit(ifstream* file, tuple<int, int> slope)
 /// Count how many trees we hit for each slope trajectory we take and multiply them.
 /// </summary>
 /// <returns>Multiplication of all tree hit per slope.</returns>
-long long CountNumberOfTreeHitForTrajectories(tuple<int, int> slopes[], int nbSlopes)
+long long CountNumberOfTreeHitForTrajectories(const char* fileName, tuple<int, int> slopes[], int nbSlopes)
 {
     ifstream inputFile;
-    inputFile.open("input");
+    inputFile.open(fileName);
     if (!inputFile.is_open())
     {
         cout << "Error: can't open inputs.txt" << endl;
