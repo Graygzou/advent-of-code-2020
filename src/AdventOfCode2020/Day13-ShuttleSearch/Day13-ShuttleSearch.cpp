@@ -11,11 +11,15 @@ using namespace std;
 pair<int, int> FindEarlistedAirportBus(string busSchedule, int earlistDepartPossible);
 unsigned long long SolveEquationWithChineseRemainderTheoreme(string busSchedule);
 
-int main()
+int main(int argc, char** argv)
 {
     std::cout << "Day 13 - Shuttle Search" << endl;
 
-    string fileName = "input.txt";
+    const char* fileName = "input.txt";
+    if (argc >= 2)
+    {
+        fileName = argv[1];
+    }
 
     ifstream file;
     file.open(fileName);

@@ -12,11 +12,15 @@ using namespace std;
 
 void ApplyNavigationInstruction(string instruction, pair<int, int>* position, pair<int, int>* direction, bool useWaypoint);
 
-int main()
+int main(int argc, char** argv)
 {
     cout << "Day 12 - Rain Risk" << endl;
 
-    string fileName = "input.txt";
+    const char* fileName = "input.txt";
+    if (argc >= 2)
+    {
+        fileName = argv[1];
+    }
 
     ifstream myfile;
     myfile.open(fileName);

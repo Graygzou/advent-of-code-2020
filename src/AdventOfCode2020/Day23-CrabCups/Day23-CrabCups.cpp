@@ -25,11 +25,15 @@ public:
     Cup* GetNext() { return nextNeigbors; }
 };
 
-int main()
+int main(int argc, char** argv)
 {
     std::cout << "Day 23 - Crab Cups" << endl;
 
     const char* fileName = "input.txt";
+    if (argc >= 2)
+    {
+        fileName = argv[1];
+    }
 
     PlayGame(fileName, false, 100);
     PlayGame(fileName, true, 10000000);

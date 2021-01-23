@@ -37,13 +37,16 @@ const Position NEIGHBORS_RELATIVE_POS[]
 };
 #pragma endregion
 
-int main()
+int main(int argc, char** argv)
 {
     std::cout << "Day 24 - Lobby Layout" << endl;
     //Tests();
-    
-    string fileName = "input.txt";
-    map<Position, bool> tilePositions;
+
+    const char* fileName = "input.txt";
+    if (argc >= 2)
+    {
+        fileName = argv[1];
+    }
 
     ifstream file;
     file.open(fileName);
@@ -53,6 +56,7 @@ int main()
         exit(-1);
     }
 
+    map<Position, bool> tilePositions;
     string line;
     while (getline(file, line))
     {

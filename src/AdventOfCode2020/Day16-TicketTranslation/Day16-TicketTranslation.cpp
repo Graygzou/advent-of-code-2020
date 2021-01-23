@@ -16,11 +16,15 @@ vector<vector<int>> GatherAllOtherTickets(ifstream* file);
 vector<vector<bool>> FindPossibilitiesWithOtherTickets(vector<vector<pair<int, int>>> rules, vector<vector<int>> tickets, vector<int>* errors);
 map<int, int> MapPossibilitiesLeft(vector<vector<bool>> possibilitiesPerSpot);
 
-int main()
+int main(int argc, char** argv)
 {
     cout << "Day 16 - Ticket Translation" << endl;
 
-    string fileName = "input.txt";
+    const char* fileName = "input.txt";
+    if (argc >= 2)
+    {
+        fileName = argv[1];
+    }
 
     ifstream file;
     file.open(fileName);

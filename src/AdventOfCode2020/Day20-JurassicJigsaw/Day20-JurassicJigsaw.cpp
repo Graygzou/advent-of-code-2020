@@ -21,10 +21,17 @@ Tile* CreateMergedImage(map<pair<int, int>, Tile*> grid);
 int CountDialsInPicture(Tile* fullImage, char dialPattern);
 int CountSeaMonsters(Tile* fullImage);
 
-int main()
+int main(int argc, char** argv)
 {
     cout << "Jurassic Jigsaw " << endl;
-    map<pair<int, int>, Tile*> finalGrid = ConstructFullGrid("input.txt");
+
+    const char* fileName = "input.txt";
+    if (argc >= 2)
+    {
+        fileName = argv[1];
+    }
+
+    map<pair<int, int>, Tile*> finalGrid = ConstructFullGrid(fileName);
 
     // Part 1
     unsigned long long part1Result = MultiplyCornerIds(finalGrid);

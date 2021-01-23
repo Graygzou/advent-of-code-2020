@@ -99,11 +99,16 @@ struct Node
 vector<Node> SimulateConwayCycles(string fileName, int dimensions, int nbCycles);
 Node MoveToNextCandidate(Node currentCandidate, vector<pair<int, int>> boundsCoordinates, int nbDimensions);
 
-int main()
+int main(int argc, char** argv)
 {
     std::cout << "Day 17 - Conway Cubes" << endl;
 
-    string fileName = "input.txt";
+    const char* fileName = "input.txt";
+    if (argc >= 2)
+    {
+        fileName = argv[1];
+    }
+
     int dimensions = 3;
     vector<Node> activeCubes = SimulateConwayCycles(fileName, dimensions, 6);
     cout << "Result for part 1 is " << activeCubes.size() << endl;

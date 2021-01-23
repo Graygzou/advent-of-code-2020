@@ -12,11 +12,17 @@ using namespace std;
 
 void RunDay21(string fileName);
 
-int main()
+int main(int argc, char** argv)
 {
     cout << "Day 21 - Allergen Assessment" << endl;
     //Tests();
-    RunDay21("input.txt");
+    const char* fileName = "input.txt";
+    if (argc >= 2)
+    {
+        fileName = argv[1];
+    }
+
+    RunDay21(fileName);
 }
 
 vector<string> RemoveFromFirstVector(vector<string> vec1, vector<string> vec2)

@@ -12,11 +12,16 @@ using namespace std;
 vector<int> SplitWithDelimiter(string str, string delimiter);
 int RunMemoryGame(vector<int> numbers, map<int, pair<int, int>> wordsSpokenCount, int nbTurns);
 
-int main()
+int main(int argc, char** argv)
 {
     cout << "Day 15 - Rambunctious Recitation" << endl;
 
     const char* fileName = "input.txt";
+    if (argc >= 2)
+    {
+        fileName = argv[1];
+    }
+
     ifstream file;
     file.open(fileName);
     if (!file.is_open())

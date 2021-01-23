@@ -18,14 +18,22 @@ int CountMessageMatchingRuleZero(string fileName);
 /// Basically, adding regexp pattern directy or pattern to be able to add some later on.
 /// Take a look at inputModified.txt and the two line specified in the problem statement to know the modification needed.
 /// </summary>
-int main()
+int main(int argc, char** argv)
 {
     cout << "Day 19 - Monster Messages" << endl;
 
-    int result = CountMessageMatchingRuleZero("input.txt");
+    const char* fileName = "input.txt";
+    const char* fileNameModified = "inputModified.txt";
+    if (argc >= 3)
+    {
+        fileName = argv[1];
+        fileNameModified = argv[2];
+    }
+
+    int result = CountMessageMatchingRuleZero(fileName);
     std::cout << "Result for part 1 is " << result << std::endl;
 
-    result = CountMessageMatchingRuleZero("inputModified.txt");
+    result = CountMessageMatchingRuleZero(fileNameModified);
     std::cout << "Result for part 2 is " << result << std::endl;
 }
 

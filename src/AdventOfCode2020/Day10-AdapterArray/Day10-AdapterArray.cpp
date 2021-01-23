@@ -23,8 +23,6 @@ int main(int argc, char** argv)
     {
         fileName = argv[1];
     }
-    cout << fileName << endl;
-    cout << argc << endl;
 
     vector<int> adapters = RetrieveAdapterVoltageFromFile(fileName);
     map<int, int> numberOfSameJoltDiff = map<int, int>

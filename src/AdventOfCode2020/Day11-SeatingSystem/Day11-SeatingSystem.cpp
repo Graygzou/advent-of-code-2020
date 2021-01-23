@@ -13,12 +13,18 @@ vector<vector<char>> RetrieveInputs(string fileName);
 void DisplaySeats(vector<vector<char>> seatLayout);
 int ApplyRulesToSeats(vector<vector<char>> seatLayout, int nbSeatOccupiedBeforeEmpty);
 
-int main()
+int main(int argc, char** argv)
 {
     cout << "Day 11 - Seating System" << endl;
 
+    const char* fileName = "input.txt";
+    if (argc >= 2)
+    {
+        fileName = argv[1];
+    }
+
     // Use of vector<char> instead of string because easier to iterate over neighbors in any directions.
-    vector<vector<char>> seatLayout = RetrieveInputs("input.txt");
+    vector<vector<char>> seatLayout = RetrieveInputs(fileName);
     DisplaySeats(seatLayout);
 
     int nbOccupiedSeatsPart1 = ApplyRulesToSeats(seatLayout, 4);

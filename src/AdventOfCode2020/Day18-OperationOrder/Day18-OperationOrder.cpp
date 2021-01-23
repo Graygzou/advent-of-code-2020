@@ -12,11 +12,15 @@ enum CurrentOperation { NONE, ADD, MULT };
 unsigned long long EvaluateExpression(std::string expression, int* offset);
 std::string AddParenthesis(std::string expression, char ope);
 
-int main()
+int main(int argc, char** argv)
 {
     std::cout << "Day 18 - Operation Order" << std::endl;
 
-    std::string fileName = "input.txt";
+    const char* fileName = "input.txt";
+    if (argc >= 2)
+    {
+        fileName = argv[1];
+    }
 
     std::ifstream file;
     file.open(fileName);

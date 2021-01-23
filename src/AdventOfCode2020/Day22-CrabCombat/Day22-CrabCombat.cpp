@@ -11,13 +11,20 @@ using namespace std;
 
 int PlayCombatGame(string fileName, bool allowRecursion);
 
-int main()
+int main(int argc, char** argv)
 {
     std::cout << "Crab Combat" << endl;
-    int resultPart1 = PlayCombatGame("input.txt", false);
+
+    const char* fileName = "input.txt";
+    if (argc >= 2)
+    {
+        fileName = argv[1];
+    }
+
+    int resultPart1 = PlayCombatGame(fileName, false);
     std::cout << "Part 1 result is " << resultPart1 << endl;
 
-    int resultPart2 = PlayCombatGame("input.txt", true);
+    int resultPart2 = PlayCombatGame(fileName, true);
     std::cout << "Part 2 result is " << resultPart2 << endl;
 }
 

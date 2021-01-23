@@ -17,11 +17,16 @@ const int BITMASK_SIZE = 36;
 vector<string> CompleteProgram(string fileName, map<string, unsigned long long>* adresses, int decoderVersion);
 unsigned long long SumValuesInMemory(vector<string> memory, map<string, unsigned long long> adresses);
 
-int main()
+int main(int argc, char** argv)
 {
     cout << "Day 14 - Docking Data" << endl;
 
-    string fileName = "input.txt";
+    const char* fileName = "input.txt";
+    if (argc >= 2)
+    {
+        fileName = argv[1];
+    }
+
     map<string, unsigned long long> adresses = map<string, unsigned long long>();
 
     vector<string> memory = CompleteProgram(fileName, &adresses, 1);

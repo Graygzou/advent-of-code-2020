@@ -6,6 +6,43 @@
 
 using namespace std;
 
+int FindFirstNumberInListNotSumOfPrevious(vector<long long> numbers, int preambuleLength);
+int FindEncryptionWeakness(vector<long long> numbers, int numberToDecomposed);
+
+int main(int argc, char** argv)
+{
+    cout << "Day 9 - Encoding Error" << endl;
+
+    const char* fileName = "input.txt";
+    if (argc >= 2)
+    {
+        fileName = argv[1];
+    }
+
+    ifstream  myfile;
+    myfile.open(fileName);
+    if (!myfile.is_open())
+    {
+        std::cout << "Can't open the file: " << fileName << std::endl;
+        exit(-1);
+    }
+
+    vector<long long> lines = vector<long long>();
+    string line;
+    while (getline(myfile, line))
+    {
+        lines.push_back(_atoi64(line.c_str()));
+    }
+    myfile.close();
+
+    int preambuleLength = 25;
+    int part1Result = FindFirstNumberInListNotSumOfPrevious(lines, preambuleLength);
+    cout << "Result for part 1 is : " << part1Result << endl;
+
+    int part2Result = FindEncryptionWeakness(lines, part1Result);
+    cout << "Result for part 2 is : " << part2Result << endl;
+}
+
 /// <summary>
 /// Warning: preambule is expected to be sorted here.
 /// </summary>
@@ -126,34 +163,4 @@ int FindEncryptionWeakness(vector<long long> numbers, int numberToDecomposed)
     }
 
     return result;
-}
-
-int main()
-{
-    cout << "Day 9 - Encoding Error" << endl;
-    
-    const char* fileName = "input.txt";
-
-    ifstream  myfile;
-    myfile.open(fileName);
-    if (!myfile.is_open())
-    {
-        std::cout << "Can't open the file: " << fileName << std::endl;
-        exit(-1);
-    }
-
-    vector<long long> lines = vector<long long>();
-    string line;
-    while (getline(myfile, line))
-    {
-        lines.push_back(_atoi64(line.c_str()));
-    }
-    myfile.close();
-    
-    int preambuleLength = 25;
-    int part1Result = FindFirstNumberInListNotSumOfPrevious(lines, preambuleLength);
-    cout << "Result for part 1 is : " << part1Result << endl;
-
-    int part2Result = FindEncryptionWeakness(lines, part1Result);
-    cout << "Result for part 2 is : " << part2Result << endl;
 }
