@@ -24,9 +24,13 @@ int main(int argc, char** argv)
 
     const char* fileName = "input.txt";
     const char* fileNameModified = "inputModified.txt";
-    if (argc >= 3)
+    if (argc >= 2)
     {
         fileName = argv[1];
+    }
+
+    if (argc >= 3)
+    {
         fileNameModified = argv[2];
     }
 

@@ -10,6 +10,10 @@ inputs:
     description: "Directory where to .exe is located at"
     required: true
     default: './'
+  extra-params:
+    description: "Parameters needed to make the program run completely."
+    required: false
+    default: ""
 runs:
   using: "composite"
   steps:
@@ -18,7 +22,7 @@ runs:
       shell: pwsh
 
     - name: run build with input
-      run: ./${{ inputs.exe-folder }} .${{ inputs.input-path }}
+      run: ./${{ inputs.exe-folder }} .${{ inputs.input-path }} ${{ inputs.extra-params }}
       shell: pwsh
 
     - name: try display the start time
