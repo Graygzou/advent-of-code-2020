@@ -41,6 +41,8 @@ jobs:
   deploy:
     name: Deploy to GitHub releases
     runs-on: ubuntu-latest
+    outputs:
+      url: ${{ steps.create_release.outputs.upload_url }}
 
     steps:
       - name: Checkout repository
@@ -61,12 +63,6 @@ jobs:
       - name: Test
         run: echo "${{ steps.create_release.outputs.upload_url }}"
 
-      - name: Store release ID for asset upload
-        uses: actions/upload-artifact@v2
-        with:
-          name: assetID
-          path: ${{ steps.create_release.outputs.upload_url }}
-
 #===================================#
   upload:
     name: Deploy to GitHub releases
@@ -74,12 +70,6 @@ jobs:
     needs: [build, deploy]
 
     steps:
-      - name: Download the upload url
-        uses: actions/download-artifact@v2
-        with:
-          name: assetID
-          path: uploadURL/
-
       - name: Download the build asset to upload
         uses: actions/download-artifact@v2
         with:
@@ -97,7 +87,7 @@ jobs:
           curl \
           -X PATCH \
           -H "Accept: application/vnd.github.v3+json" \
-          "https://api.github.com/repos/${{env.OWNER}}/${{env.REPO_NAME}}/releases/assets/${{echo "./uploadURL/assetID"}}" \
+          "https://api.github.com/repos/${{env.OWNER}}/${{env.REPO_NAME}}/releases/assets/${{needs.deploy.outputs.url}}" \
           -d '{"name":"./build/my-artifact.zip"}'
            
         #uses: actions/upload-release-asset@v1
