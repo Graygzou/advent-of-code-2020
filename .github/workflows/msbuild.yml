@@ -412,7 +412,7 @@ jobs:
         with:
           input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
           exe-folder: ${{env.BUILD_CONFIGURATION}}/${{ env.DAY_NAME }}.exe
-          extra-params: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/inputModified.txt
+          extra-params: .${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/inputModified.txt
           
   run-day-20:
     runs-on: windows-latest
