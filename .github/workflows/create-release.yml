@@ -97,8 +97,8 @@ jobs:
           curl \
           -X PATCH \
           -H "Accept: application/vnd.github.v3+json" \
-          "https://api.github.com/repos/${{env.OWNER}}/${{env.REPO_NAME}}/releases/assets/${{./uploadURL/assetID}}" \
-          -d '{"name":"${{./build/my-artifact.zip}}"}'
+          "https://api.github.com/repos/${{env.OWNER}}/${{env.REPO_NAME}}/releases/assets/${{echo "./uploadURL/assetID"}}" \
+          -d '{"name":"./build/my-artifact.zip"}'
            
         #uses: actions/upload-release-asset@v1
         #with:
