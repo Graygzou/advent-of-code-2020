@@ -30,7 +30,7 @@ jobs:
         run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
 
       - name: zip build
-        run: zip --junk-paths my-artifact ${{env.SOLUTION_FILE_PATH}}${{env.PLATFORM}}/${{env.BUILD_CONFIGURATION}}
+        run: 7z a "my-artifact" -t7z "${{env.SOLUTION_FILE_PATH}}${{env.PLATFORM}}/${{env.BUILD_CONFIGURATION}}"
         
       - name: Upload builds
         uses: actions/upload-artifact@v2
