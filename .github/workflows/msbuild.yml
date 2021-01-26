@@ -72,7 +72,7 @@ jobs:
         run: $start = Get-Date
 
       - name: Test
-        run: Write-Output "Starting time is: $start"
+        run: Write-Output "Starting time is $start"
 
       - name: test-custom-action
         uses: ./.github/actions/run-day-program
