@@ -56,19 +56,37 @@ jobs:
     needs: [build]
     env:
       DAY_NAME: Day1-ReportRepair
+    outputs:
+      total_time: ${{ steps.get_execution_time.outputs.total_time }}
+
     steps:
       - uses: actions/checkout@v2
+
       - name: Download a single artifact
         uses: actions/download-artifact@v2
         with:
           name: builds
           path: ${{env.BUILD_CONFIGURATION}}/
 
+      - name: Start clock
+        run: $start = Get-Date
+
+      - name: Test
+        run: Write-Output "Starting time is: $start"
+
       - name: test-custom-action
         uses: ./.github/actions/run-day-program
         with:
           input-path: "${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt"
           exe-folder: "${{env.BUILD_CONFIGURATION}}/${{ env.DAY_NAME }}.exe"
+
+      - name: Compute time
+        id: get_execution_time
+        run: |
+           $end= Get-Date
+           $diff= New-TimeSpan -Start $start -End $end
+           Write-Output "Time difference is: $diff"
+           echo "::set-output name=total_time::$diff"
 
   run-day-2:
     runs-on: windows-latest
@@ -527,5 +545,13 @@ jobs:
         with:
           input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
           exe-folder: ${{env.BUILD_CONFIGURATION}}/${{ env.DAY_NAME }}.exe
+
+  update-graphic:
+    runs-on: windows-latest
+    needs: [run-day-1,run-day-2,run-day-3,run-day-4,run-day-5,run-day-6]
+    steps:
+      - name: Test
+        run: echo ${{needs.deploy.run-day-1.total_time}}
+    
           
 
