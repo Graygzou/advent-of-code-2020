@@ -87,7 +87,7 @@ jobs:
         id: get_execution_time
         run: |
            $END=Get-Date
-           $DIFF= New-TimeSpan -Start ${{ steps.start-timer.outputs.START }} -End $END
+           $DIFF= New-TimeSpan -Start "${{ steps.start-timer.outputs.START }}" -End "$END"
            Write-Output "Time difference is: $DIFF"
            echo "::set-output name=total_time::$DIFF"
 
