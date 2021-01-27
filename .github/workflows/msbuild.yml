@@ -577,6 +577,10 @@ jobs:
           axisLabelStyles="chxs=0"$commaHexa"000000"$commaHexa"0"$commaHexa"0"$commaHexa"_"
           title="chtt=Title"
           echo $prefix$and$colors$and$data$and$bounds$and$textmarkers$and$margins$and$size$and$type$and$axisLabelStyles$and$title$and$
+
+      - name: Test
+        run: |
+          echo -n "chma=0,0,10,10&t:50,100&_" | od -A n -t x1
     
           
 
