@@ -559,7 +559,7 @@ jobs:
         run: |
           echo ${{needs.run-day-1.outputs.total_time}}
           sed -n "s/\[\!\[chart\]\(.*\)" README.md
-          sed -i "s/\[\!\[chart\]\(.*\)/\[\!\[chart\]\(This is a test\)/g" README.md
+          sed -i "s/\[\!\[chart\]\(.*\)/\[\!\[chart\]\(This\ is\ a\ test\)/g" README.md
 
       - name: Construct graph string
         run: |
