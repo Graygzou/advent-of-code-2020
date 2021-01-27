@@ -550,11 +550,33 @@ jobs:
           exe-folder: ${{env.BUILD_CONFIGURATION}}/${{ env.DAY_NAME }}.exe
 
   update-graphic:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     needs: [run-day-1,run-day-2,run-day-3,run-day-4,run-day-5,run-day-6]
     steps:
+      - uses: actions/checkout@v2
+
       - name: Test
-        run: echo ${{needs.run-day-1.outputs.total_time}}
+        run: |
+          echo ${{needs.run-day-1.outputs.total_time}}
+          sed -i -n 's/[![chart](.*) README.md
+          sed -i -n 's/\[\!\[chart\]\(.*\)/\[\!\[chart\]\(This is a test\)/g' README.md
+
+      - name: Construct graph string
+        run: |
+          and="&"
+          commaHexa="%2C"
+          prefix="https://image-charts.com/chart?chbh=a&chbr=5&"
+          colors="chco=fdb45c"$commaHexa"27c9c2"$commaHexa"1869b7"
+          echo $colors
+          data="chd=t%3A50"$commaHexa"5"$commaHexa"5%7C10"$commaHexa"10"$commaHexa"10%7C15"$commaHexa"15"$commaHexa"15"
+          bounds="chds=0"$commaHexa"120"
+          textmarkers="chm=N"$commaHexa"000000"$commaHexa"0"$commaHexa$commaHexa"10%7CN"$commaHexa"000000"$commaHexa"1"$commaHexa$commaHexa"10%7CN"$commaHexa"000000"$commaHexa"2"$commaHexa$commaHexa"10"
+          margins="chma=0"$commaHexa"0"$commaHexa"10"$commaHexa"10"
+          size="chs=700x150"
+          type="cht=bhg"
+          axisLabelStyles="chxs=0"$commaHexa"000000"$commaHexa"0"$commaHexa"0"$commaHexa"_"
+          title="chtt=Title"
+          echo $prefix$and$colors$and$data$and$bounds$and$textmarkers$and$margins$and$size$and$type$and$axisLabelStyles$and$title$and$
     
           
 
