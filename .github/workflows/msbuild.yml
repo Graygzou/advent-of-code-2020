@@ -69,10 +69,12 @@ jobs:
           path: ${{env.BUILD_CONFIGURATION}}/
 
       - name: Start clock
-        run: $start = Get-Date
+        run: |
+          $START=Get-Date
+          echo "::set-env name=START::$START"
 
       - name: Test
-        run: Write-Output "Starting time is $start"
+        run: Write-Output "Starting time is $START"
 
       - name: test-custom-action
         uses: ./.github/actions/run-day-program
@@ -83,10 +85,10 @@ jobs:
       - name: Compute time
         id: get_execution_time
         run: |
-           $end= Get-Date
-           $diff= New-TimeSpan -Start $start -End $end
-           Write-Output "Time difference is: $diff"
-           echo "::set-output name=total_time::$diff"
+           $END=Get-Date
+           $DIFF= New-TimeSpan -Start $START -End $END
+           Write-Output "Time difference is: $DIFF"
+           echo "::set-output name=total_time::$DIFF"
 
   run-day-2:
     runs-on: windows-latest
