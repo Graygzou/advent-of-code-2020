@@ -580,6 +580,10 @@ jobs:
       - name: Test
         run: |
           echo -n "chma=0,0,10,10&t:50,100&_" | od -A n -t x1
+          alias urldecode='sed "s@+@ @g;s@%@\\\\x@g" | xargs -0 printf "%b"'
+          echo "http%3A%2F%2Fwww%2C%2Cbla%3Ablo" | urldecode
+          alias urldecode2='sed "s@%@\\\\x@g;s@+@ @g" | xargs -0 printf "%b"'
+          echo "http://www.bla,blo:tttt" | urldecode2
     
           
 
