@@ -554,7 +554,7 @@ jobs:
     needs: [run-day-1,run-day-2,run-day-3,run-day-4,run-day-5,run-day-6]
     steps:
       - name: Test
-        run: echo ${{needs.deploy.run-day-1.total_time}}
+        run: echo ${{needs.run-day-1.outputs.total_time}}
     
           
 
