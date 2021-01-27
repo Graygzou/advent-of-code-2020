@@ -582,6 +582,7 @@ jobs:
           echo -n "chma=0,0,10,10&t:50,100&_" | od -A n -t x1
           echo "http%3A%2F%2Fwww%2C%2Cbla%3Ablo" | sed "s@+@ @g;s@%@\\\\x@g" | xargs -0 printf "%b"
           echo "http://www.bla,blo:tttt" | sed "s@%@\\\\x@g;s@+@ @g" | xargs -0 printf "%b"
+          printf %s 'http://www.bla,blo:tttt' | jq -sRr @uri
     
           
 
