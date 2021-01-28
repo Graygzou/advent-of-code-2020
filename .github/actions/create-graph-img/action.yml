@@ -46,14 +46,14 @@ runs:
         axisLabelStyles="chxs=0,000000,0,0,_"
         title="chtt=Title"
         visibleAxes="chxt=y"
-        url=printf %s "$bounds&$textmarkers&$margins&$size&$type&$axisLabelStyles&$title&$visibleAxes" | jq -sRr @uri
+        url=${{ printf %s "$bounds&$textmarkers&$margins&$size&$type&$axisLabelStyles&$title&$visibleAxes" | jq -sRr @uri }}
         echo "::set-output name=URL::$url"
       shell: bash
       
     - name: Build data parameters
       id: url-data
       run: |
-        data=join(${{ fromJSON(inputs.data) }}.*.time, ',')
+        data=${{ join(inputs.data.*.time, ',') }}
         echo $data
         echo "::set-output name=URL::$data"
       shell: bash
