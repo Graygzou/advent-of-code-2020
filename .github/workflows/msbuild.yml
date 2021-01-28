@@ -57,7 +57,7 @@ jobs:
     env:
       DAY_NAME: Day1-ReportRepair
     outputs:
-      total_time: ${{ steps.test-custom-action.outputs.execution-time }}
+      total_time: ${{ steps.run-program.outputs.execution-time }}
 
     steps:
       - uses: actions/checkout@v2
@@ -68,7 +68,8 @@ jobs:
           name: builds
           path: ${{env.BUILD_CONFIGURATION}}/
 
-      - name: test-custom-action
+      - name: Run program
+        id: run-program
         uses: ./.github/actions/run-day-program
         with:
           input-path: "${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt"
