@@ -543,30 +543,13 @@ jobs:
         run: |
           echo ${{needs.run-day-1.outputs.total_time}}
           sed -i "s/\[\!\[chart\]\(.*\)/\[\!\[chart\]\(This\ is\ a\ test\)/g" README.md
+          cat README.md
 
-      - name: Construct graph string
-        run: |
-          prefix="https://image-charts.com/chart?chbh=a&chbr=5&"
-          colors="chco=fdb45c,27c9c2,1869b7"
-          data=$(printf %s "chd=t:50,5,5|10,10,10|15,15,15" | jq -sRr @uri)
-          echo $data
-          bounds="chds=0,120"
-          textmarkers="chm=N,000000,0,,10|N,000000,1,,10|N,000000,2,,10"
-          margins="chma=0,0,10,10"
-          size="chs=700x150"
-          type="cht=bhg"
-          axisLabelStyles="chxs=0,000000,0,0,_"
-          title="chtt=Title"
-          visibleAxes="chxt=y"
-          echo $prefix"&"$colors"&"$data"&"$bounds"&"$textmarkers"&"$margins"&"$size"&"$type"&"$axisLabelStyles"&"$title"&"$visibleAxes
-          printf %s '$prefix"&"$colors"&"$data"&"$bounds"&"$textmarkers"&"$margins"&"$size"&"$type"&"$axisLabelStyles"&"$title"&"$visibleAxes' | jq -sRr @uri
+      - name: Create graph url
+        id: create-graph-url
+        uses: ./.github/actions/create-graph-img
+        with:
+          data: [{"name": "apple", "time": ${{needs.run-day-1.outputs.total_time}}}, {"name": "test", "time": 5}]
 
-      - name: Test
-        run: |
-          echo -n "chma=0,0,10,10&t:50,100&_" | od -A n -t x1
-          echo "http%3A%2F%2Fwww%2C%2Cbla%3Ablo" | sed "s@+@ @g;s@%@\\\\x@g" | xargs -0 printf "%b"
-          echo "http://www.bla,blo:tttt" | sed "s@%@\\\\x@g;s@+@ @g" | xargs -0 printf "%b"
-          printf %s 'http://www.bla,blo:tttt' | jq -sRr @uri
-    
-          
-
+      - name: Output final url
+        run: echo ${{steps.create-graph-url.outputs.chart-url}}
