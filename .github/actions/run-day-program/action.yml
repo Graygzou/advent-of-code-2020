@@ -34,7 +34,7 @@ runs:
       id: get-execution-time
       run: |
         $END=Get-Date
-        $DIFF= New-TimeSpan -Start "${{ steps.start-timer.outputs.START }}" -End "$END"
+        $DIFF=(New-TimeSpan -Start "${{ steps.start-timer.outputs.START }}" -End "$END").TotalMilliseconds
         Write-Output "Time difference is: $DIFF"
         echo "::set-output name=total-time::$DIFF"
       shell: pwsh
