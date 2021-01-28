@@ -19,8 +19,8 @@ runs:
         echo "here"
         echo ${{ fromJSON(inputs.data) }}
         echo ${{ fromJSON(inputs.data) }}.*.name
-        echo ${{ fromJSON(inputs.data) }}.*.time
-        echo join(${{ fromJSON(inputs.data) }}.*.time, ',')
+        times=${{ fromJSON(inputs.data) }}.*.time
+        echo ${{ join($times, ',') }}
       shell: bash
       
     - name: Build URL prefix
