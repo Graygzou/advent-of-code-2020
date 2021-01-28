@@ -13,16 +13,49 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - name: TODO
-      id: todo
-      run: echo "here"
+    - name: TEST
+      id: test
+      run: |
+        echo "here"
+        echo ${{ inputs.data }}.*.name
+        echo ${{ inputs.data }}.*.time
+        echo join(${{ inputs.data }}.*.time, ',')
       shell: bash
+      
+    - name: Build URL prefix
+      id: url-prefix
+      run: |
+        prefix="https://image-charts.com/chart?chbh=a&chbr=5&"
+        colors=printf %s "chco=fdb45c,27c9c2,1869b7" | jq -sRr @uri
+        echo "::set-output name=URL::$($prefix$colors)"
+        
+    - name: Build rendering parameters
+      id: url-rendering
+      run: |
+        bounds="chds=0,120"
+        textmarkers="chm=N,000000,0,,10|N,000000,1,,10|N,000000,2,,10"
+        margins="chma=0,0,10,10"
+        size="chs=700x150"
+        type="cht=bhg"
+        axisLabelStyles="chxs=0,000000,0,0,_"
+        title="chtt=Title"
+        visibleAxes="chxt=y"
+        url=printf %s "$bounds&$textmarkers&$margins&$size&$type&$axisLabelStyles&$title&$visibleAxes" | jq -sRr @uri
+        echo "::set-output name=URL::$url"
+      
+    - name: Build data parameters
+      id: url-data
+      run: |
+        data=join(${{ inputs.data }}.*.time, ',')
+        echo $data
+        echo "::set-output name=URL::$data"
 
     - name: Compose the final URL
       id: compose-url
       run: |
-        echo "final"
-        echo "::set-output name=total-time::$DIFF"
+        finalurl=${{ steps.url-prefix.outputs.URL }}${{ steps.start-timer.outputs.URL }}${{ steps.url-rendering.outputs.URL }}
+        echo $finalurl
+        echo "::set-output name=full-url::$finalurl"
       shell: bash
 
 branding:
