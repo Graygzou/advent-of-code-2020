@@ -14,11 +14,16 @@ inputs:
     description: "Parameters needed to make the program run completely."
     required: false
     default: ""
+outputs:
+  execution-time:
+    description: "Total time in seconds of the program execution"
+    value: ${{ steps.get-execution-time.outputs.total-time }}
 runs:
   using: "composite"
   steps:
     - name: save-the-current-time
-      run: echo "::set-output name=start_time::strawberry"
+      id: start-timer
+      run: echo "::set-output name=START::$(Get-Date)"
       shell: pwsh
 
     - name: run build with input
@@ -26,7 +31,12 @@ runs:
       shell: pwsh
 
     - name: try display the start time
-      run: echo "${{ steps.save-the-current-time.outputs.start_time }}"
+      id: get-execution-time
+      run: |
+        $END=Get-Date
+        $DIFF= New-TimeSpan -Start "${{ steps.start-timer.outputs.START }}" -End "$END"
+        Write-Output "Time difference is: $DIFF"
+        echo "::set-output name=total-time::$DIFF"
       shell: pwsh
 
 branding:
