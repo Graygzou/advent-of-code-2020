@@ -57,7 +57,7 @@ jobs:
     env:
       DAY_NAME: Day1-ReportRepair
     outputs:
-      total_time: ${{ steps.get_execution_time.outputs.total_time }}
+      total_time: ${{ steps.test-custom-action.outputs.execution-time }}
 
     steps:
       - uses: actions/checkout@v2
@@ -68,28 +68,11 @@ jobs:
           name: builds
           path: ${{env.BUILD_CONFIGURATION}}/
 
-      - name: Start clock
-        id: start-timer
-        run: |
-          $START=Get-Date
-          echo "::set-output name=START::$START"
-
-      - name: Test
-        run: Write-Output "Starting time is ${{ steps.start-timer.outputs.START }}"
-
       - name: test-custom-action
         uses: ./.github/actions/run-day-program
         with:
           input-path: "${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt"
           exe-folder: "${{env.BUILD_CONFIGURATION}}/${{ env.DAY_NAME }}.exe"
-
-      - name: Compute time
-        id: get_execution_time
-        run: |
-           $END=Get-Date
-           $DIFF= New-TimeSpan -Start "${{ steps.start-timer.outputs.START }}" -End "$END"
-           Write-Output "Time difference is: $DIFF"
-           echo "::set-output name=total_time::$DIFF"
 
   run-day-2:
     runs-on: windows-latest
