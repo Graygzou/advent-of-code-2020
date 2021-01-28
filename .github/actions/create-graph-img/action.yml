@@ -13,14 +13,18 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - name: TEST
-      id: test
+    - name: TEST 1
+      id: test1
       run: |
-        echo "here"
         echo ${{ fromJSON(inputs.data) }}
         echo ${{ fromJSON(inputs.data) }}.*.name
-        times=${{ fromJSON(inputs.data) }}.*.time
-        echo ${{ join($times, ',') }}
+        echo ${{ fromJSON(inputs.data) }}.*.time
+      shell: bash
+
+    - name: TEST 2
+      id: test2
+      run: |
+        echo ${{ join(inputs.data.*.time, ',') }}
       shell: bash
       
     - name: Build URL prefix
