@@ -1,0 +1,30 @@
+name: create-image-chart-url
+author: Grégoire Boiron (Graygzou)
+description: 
+inputs:
+  data:
+    description: "Array of JSON object containing same properties to display and compare easily."
+    required: true
+    default: '[]'
+outputs:
+  chart-url:
+    description: "Full url using the image-chart API"
+    value: ${{ steps.compose-url.outputs.full-url }}
+runs:
+  using: "composite"
+  steps:
+    - name: TODO
+      id: todo
+      run: echo "here"
+      shell: bash
+
+    - name: Compose the final URL
+      id: compose-url
+      run: |
+        echo "final"
+        echo "::set-output name=total-time::$DIFF"
+      shell: bash
+
+branding:
+  icon: play
+  color: blue
