@@ -549,7 +549,7 @@ jobs:
         id: create-graph-url
         uses: ./.github/actions/create-graph-img
         with:
-          data: [{"name": "apple", "time": ${{needs.run-day-1.outputs.total_time}}}, {"name": "test", "time": 5}]
+          data: "[{\"name\": \"apple\", \"time\": ${{needs.run-day-1.outputs.total_time}}}, {\"name\": \"test\", \"time\": 5}]"
 
       - name: Output final url
         run: echo ${{steps.create-graph-url.outputs.chart-url}}

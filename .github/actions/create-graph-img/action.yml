@@ -17,9 +17,10 @@ runs:
       id: test
       run: |
         echo "here"
-        echo ${{ inputs.data }}.*.name
-        echo ${{ inputs.data }}.*.time
-        echo join(${{ inputs.data }}.*.time, ',')
+        echo ${{ fromJSON(inputs.data) }}
+        echo ${{ fromJSON(inputs.data) }}.*.name
+        echo ${{ fromJSON(inputs.data) }}.*.time
+        echo join(${{ fromJSON(inputs.data) }}.*.time, ',')
       shell: bash
       
     - name: Build URL prefix
@@ -46,7 +47,7 @@ runs:
     - name: Build data parameters
       id: url-data
       run: |
-        data=join(${{ inputs.data }}.*.time, ',')
+        data=join(${{ fromJSON(inputs.data) }}.*.time, ',')
         echo $data
         echo "::set-output name=URL::$data"
 
