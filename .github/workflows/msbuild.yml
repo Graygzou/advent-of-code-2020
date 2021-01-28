@@ -562,20 +562,20 @@ jobs:
 
       - name: Construct graph string
         run: |
-          and="&"
-          commaHexa="%2C"
           prefix="https://image-charts.com/chart?chbh=a&chbr=5&"
-          colors="chco=fdb45c"$commaHexa"27c9c2"$commaHexa"1869b7"
-          echo $colors
-          data="chd=t%3A50"$commaHexa"5"$commaHexa"5%7C10"$commaHexa"10"$commaHexa"10%7C15"$commaHexa"15"$commaHexa"15"
-          bounds="chds=0"$commaHexa"120"
-          textmarkers="chm=N"$commaHexa"000000"$commaHexa"0"$commaHexa$commaHexa"10%7CN"$commaHexa"000000"$commaHexa"1"$commaHexa$commaHexa"10%7CN"$commaHexa"000000"$commaHexa"2"$commaHexa$commaHexa"10"
-          margins="chma=0"$commaHexa"0"$commaHexa"10"$commaHexa"10"
+          colors="chco=fdb45c,27c9c2,1869b7"
+          data=$(printf %s "chd=t:50,5,5|10,10,10|15,15,15" | jq -sRr @uri)
+          echo $data
+          bounds="chds=0,120"
+          textmarkers="chm=N,000000,0,,10|N,000000,1,,10|N,000000,2,,10"
+          margins="chma=0,0,10,10"
           size="chs=700x150"
           type="cht=bhg"
-          axisLabelStyles="chxs=0"$commaHexa"000000"$commaHexa"0"$commaHexa"0"$commaHexa"_"
+          axisLabelStyles="chxs=0,000000,0,0,_"
           title="chtt=Title"
-          echo $prefix$and$colors$and$data$and$bounds$and$textmarkers$and$margins$and$size$and$type$and$axisLabelStyles$and$title$and$
+          visibleAxes="chxt=y"
+          echo $prefix"&"$colors"&"$data"&"$bounds"&"$textmarkers"&"$margins"&"$size"&"$type"&"$axisLabelStyles"&"$title"&"$visibleAxes
+          printf %s '$prefix"&"$colors"&"$data"&"$bounds"&"$textmarkers"&"$margins"&"$size"&"$type"&"$axisLabelStyles"&"$title"&"$visibleAxes' | jq -sRr @uri
 
       - name: Test
         run: |
