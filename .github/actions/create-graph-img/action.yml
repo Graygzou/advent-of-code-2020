@@ -31,7 +31,7 @@ runs:
       id: url-prefix
       run: |
         prefix="https://image-charts.com/chart?chbh=a&chbr=5&"
-        colors=printf %s "chco=fdb45c,27c9c2,1869b7" | jq -sRr @uri
+        colors=$( printf %s "chco=fdb45c,27c9c2,1869b7" | jq -sRr @uri )
         echo "::set-output name=URL::$($prefix$colors)"
       shell: bash
         
