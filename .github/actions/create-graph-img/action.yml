@@ -17,8 +17,8 @@ runs:
       id: test1
       run: |
         echo ${{ fromJSON(inputs.data) }}
-        echo ${{ fromJSON(inputs.data) }}.*.name
-        echo ${{ fromJSON(inputs.data) }}.*.time
+        echo ${{ inputs.data.*.name }}
+        echo ${{ inputs.data.*.time }}
       shell: bash
 
     - name: TEST 2
@@ -32,6 +32,7 @@ runs:
       run: |
         prefix="https://image-charts.com/chart?chbh=a&chbr=5&"
         colors="chco="$( printf %s "fdb45c,27c9c2,1869b7" | jq -sRr @uri )
+        echo $prefix$colors
         echo "::set-output name=URL::$prefix$colors"
       shell: bash
         
@@ -47,6 +48,7 @@ runs:
         title="chtt="$(printf %s "Title" | jq -sRr @uri )
         visibleAxes="chxt="$(printf %s "y" | jq -sRr @uri )
         url="$bounds&$textmarkers&$margins&$size&$type&$axisLabelStyles&$title&$visibleAxes"
+        echo $url
         echo "::set-output name=URL::$url"
       shell: bash
       
@@ -61,7 +63,7 @@ runs:
     - name: Compose the final URL
       id: compose-url
       run: |
-        finalurl=${{ steps.url-prefix.outputs.URL }}${{ steps.start-timer.outputs.URL }}${{ steps.url-rendering.outputs.URL }}
+        finalurl=${{ steps.url-prefix.outputs.URL }}${{ steps.url-data.outputs.URL }}${{ steps.url-rendering.outputs.URL }}
         echo $finalurl
         echo "::set-output name=full-url::$finalurl"
       shell: bash
