@@ -17,8 +17,8 @@ runs:
       id: test1
       run: |
         echo ${{ fromJSON(inputs.data) }}
-        echo ${{ inputs.data.*.name }}
-        echo ${{ inputs.data.*.time }}
+        echo ${{ toJSON(inputs.data.*.name) }}
+        echo ${{ toJSON(inputs.data.*.time) }}
       shell: bash
 
     - name: TEST 2
