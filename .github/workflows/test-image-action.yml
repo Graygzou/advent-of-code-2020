@@ -1,0 +1,33 @@
+name: MSBuild
+
+on: [push]
+
+env:
+  # Path to the solution file relative to the root of the project.
+  SOLUTION_FILE_PATH: src/AdventOfCode2020/
+
+  # Configuration type to build.
+  # You can convert this to a build matrix if you need coverage of multiple configuration types.
+  # https://docs.github.com/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+  BUILD_CONFIGURATION: Release
+  
+  # Platform used to run msbuild command
+  PLATFORM: x64
+
+  REPOSITORY_NAME: advent-of-code-2020
+
+jobs:
+
+  update-graphic:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Create graph url 1
+        id: create-graph-url
+        uses: ./.github/actions/create-graph-img
+        with:
+          data: '[{"name": "apple", "time": 5}, {"name": "test", "time": 10}]'
+
+      - name: Output final url 1
+        run: echo ${{steps.create-graph-url.outputs.chart-url}}
