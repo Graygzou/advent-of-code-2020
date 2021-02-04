@@ -1,6 +1,6 @@
 name: create-image-chart-url
 author: Grégoire Boiron (Graygzou)
-description: 
+description: Create a path of an image based on given data
 inputs:
   data:
     description: "Array of JSON object containing same properties to display and compare easily."
@@ -17,6 +17,9 @@ runs:
       id: test1
       run: |
         echo ${{ fromJSON(inputs.data) }}
+        fruits=${{ toJSON("[{\"name\": \"apple\"}, {\"name\": \"test\"}]") }}
+        fruits=${{ toJSON('[{"name": "apple"}, {"name": "orange"}]') }}
+        echo ${{ toJSON(fruits.*.name) }}
         echo ${{ toJSON(inputs.data.*.name) }}
         echo ${{ toJSON(inputs.data.*.time) }}
       shell: bash
