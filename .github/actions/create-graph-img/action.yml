@@ -18,8 +18,6 @@ runs:
       run: |
         echo ${{ toJSON(inputs.data) }}
         echo ${{ toJSON(inputs.data.*.name) }}
-        echo ${{ toJSON(fromJSON(inputs.data)) }}
-        echo ${{ toJSON(fromJSON(inputs.data.*.name)) }}
         fruits=${{ toJSON('[{"name": "apple"}, {"name": "orange"}]') }}
         echo ${{ toJSON(inputs.data.*.name) }}
         echo ${{ toJSON(inputs.data.*.time) }}
