@@ -1,0 +1,23 @@
+name: test-image-creation
+
+on:
+  push:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Create graph url 1
+        id: create-graph-url
+        uses: ./.github/actions/create-graph-img
+        with:
+          data: '[{"name": "apple", "time": 5}, {"name": "test", "time": 10}]'
+
+      - name: Output final url 1
+        run: echo ${{steps.create-graph-url.outputs.chart-url}}
