@@ -5,7 +5,7 @@ inputs:
   data:
     description: "Array of JSON object containing same properties to display and compare easily."
     required: true
-    default: '[]'
+    default: []
 outputs:
   chart-url:
     description: "Full url using the image-chart API"
@@ -16,6 +16,8 @@ runs:
     - name: TEST 1
       id: test1
       run: |
+        echo ${{ inputs.data }}
+        echo ${{ inputs.data.*.name }}
         echo ${{ fromJSON(inputs.data) }}
         fruits=${{ toJSON('[{"name": "apple"}, {"name": "orange"}]') }}
         echo ${{ toJSON(inputs.data.*.name) }}
