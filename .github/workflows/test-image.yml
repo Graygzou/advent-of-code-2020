@@ -26,11 +26,12 @@ jobs:
 
       - name: Test
         run: |
-          urlRegex="\[\!\[chart\]\(.*\)"
-          urlReplacement="\[\!\[chart\]\(${{ steps.create-graph-url.outputs.chart-url }}\)"
+          urlRegex="\[\!\[chart\]\(.*\)\]"
+          urlReplacement="\[\!\[chart\]\(${{ steps.create-graph-url.outputs.chart-url }}\)\]"
           escapedUrlReplacement=$(printf '%s\n' "$urlReplacement" | sed -e 's/[\/&]/\\&/g')
           echo $urlReplacement
-          sed -e "s/$urlRegex/$escapedUrlReplacement/g" README.md
+          echo $escapedUrlReplacement
+          sed -i "s/$urlRegex/$escapedUrlReplacement/g" README.md
           cat README.md'
 
       - name: Git
