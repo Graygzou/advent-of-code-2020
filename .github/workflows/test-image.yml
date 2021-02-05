@@ -28,8 +28,9 @@ jobs:
         run: |
           urlRegex="\[\!\[chart\]\(.*\)"
           urlReplacement="\[\!\[chart\]\(${{ steps.create-graph-url.outputs.chart-url }}\)"
+          escapedUrlReplacement=$(printf '%s\n' "$urlReplacement" | sed -e 's/[\/&]/\\&/g')
           echo $urlReplacement
-          sed -i "s/$urlRegex/$urlReplacement/g" README.md
+          sed -e "s/$urlRegex/$escapedUrlReplacement/g" README.md
           cat README.md'
 
       - name: Git
