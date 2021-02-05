@@ -6,6 +6,10 @@ inputs:
     description: "Array of JSON object containing same properties to display and compare easily."
     required: true
     default: '[]'
+  array:
+    description: "Test"
+    required: true
+    default: '[]'
 outputs:
   chart-url:
     description: "Full url using the image-chart API"
@@ -28,6 +32,8 @@ runs:
       id: test2
       run: |
         echo ${{ join(inputs.data.*.time, ',') }}
+        echo "here"
+        echo ${{ join(inputs.array, ',') }}
       shell: bash
       
     - name: Build URL prefix
