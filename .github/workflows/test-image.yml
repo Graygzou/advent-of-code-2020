@@ -27,7 +27,7 @@ jobs:
       - name: Test
         run: |
           urlRegex="\[\!\[chart\]\(.*\)\]"
-          urlReplacement="\[\!\[chart\]\(${{ steps.create-graph-url.outputs.chart-url }}\)\]"
+          urlReplacement="[![chart](${{ steps.create-graph-url.outputs.chart-url }})]"
           escapedUrlReplacement=$(printf '%s\n' "$urlReplacement" | sed -e 's/[\/&]/\\&/g')
           echo $urlReplacement
           echo $escapedUrlReplacement
