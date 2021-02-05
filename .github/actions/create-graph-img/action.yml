@@ -13,27 +13,6 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - name: TEST 1
-      id: test1
-      run: |
-        echo ${{ toJSON(inputs.data) }}
-        echo ${{ toJSON(toJSON(inputs.data).*.time) }}
-        echo ${{ toJSON(inputs.data.*.name) }}
-        fruits=${{ toJSON('[{"name": "apple"}, {"name": "orange"}]') }}
-        echo ${{ toJSON(inputs.data.*.name) }}
-        echo ${{ toJSON(inputs.data.*.time) }}
-      shell: bash
-
-    - name: TEST 2
-      id: test2
-      run: |
-        echo ${{ join(fromJSON(inputs.data.*.name), ',') }}
-        echo ${{ join(fromJSON(inputs.data.*.time), ',') }}
-        echo "here"
-        echo ${{ join(inputs.array, ',') }}
-        
-      shell: bash
-      
     - name: Build URL prefix
       id: url-prefix
       run: |
