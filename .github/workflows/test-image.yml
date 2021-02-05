@@ -21,22 +21,16 @@ jobs:
         with:
           data-array: "[5, 10, 7, 13]"
 
-      - name: Output final url 1
-        run: |
-          echo '${{steps.create-graph-url.outputs.chart-url}}'
-          echo ${{ toJSON(steps.create-graph-url.outputs.chart-url) }}
-
       - name: Test
         run: |
           urlRegex="\[\!\[chart\]\(.*\)\]"
           urlReplacement="[![chart](${{ steps.create-graph-url.outputs.chart-url }})]"
           escapedUrlReplacement=$(printf '%s\n' "$urlReplacement" | sed -e 's/[\/&]/\\&/g')
-          echo $urlReplacement
-          echo $escapedUrlReplacement
           sed -i "s/$urlRegex/$escapedUrlReplacement/g" README.md
-          cat README.md
-          ls -l
-          git status
 
       - name: Git
-        run: git status
+        run: |
+          git status
+          git add README.md
+          git commit -m "= Update README graph with new data"
+          git push
