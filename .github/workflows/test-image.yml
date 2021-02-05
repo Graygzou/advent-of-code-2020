@@ -20,11 +20,16 @@ jobs:
           data-array: "[5, 10, 7, 13]"
 
       - name: Output final url 1
-        run: echo '${{steps.create-graph-url.outputs.chart-url}}'
+        run: |
+          echo '${{steps.create-graph-url.outputs.chart-url}}'
+          echo ${{ toJSON(steps.create-graph-url.outputs.chart-url) }}
 
       - name: Test
         run: |
-          sed -i "s/\[\!\[chart\]\(.*\)/\[\!\[chart\]\('${{steps.create-graph-url.outputs.chart-url}}')/g" README.md
+          urlRegex="\[\!\[chart\]\(.*\)"
+          urlReplacement="\[\!\[chart\]\(${{ steps.create-graph-url.outputs.chart-url }}\)"
+          echo $urlReplacement
+          sed -i "s/$urlRegex/$urlReplacement/g" README.md
           cat README.md'
 
       - name: Git
