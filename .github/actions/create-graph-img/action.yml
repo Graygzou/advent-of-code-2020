@@ -34,6 +34,7 @@ runs:
         echo ${{ join(inputs.data.*.time, ',') }}
         echo "here"
         echo ${{ join(inputs.array, ',') }}
+        echo ${{ join(fromJSON(inputs.array), ',') }}
       shell: bash
       
     - name: Build URL prefix
