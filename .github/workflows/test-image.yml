@@ -33,6 +33,7 @@ jobs:
           echo $escapedUrlReplacement
           sed -e "s/$urlRegex/$escapedUrlReplacement/g" README.md
           cat README.md
+          git status
 
       - name: Git
         run: git status
