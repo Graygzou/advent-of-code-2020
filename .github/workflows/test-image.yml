@@ -21,3 +21,12 @@ jobs:
 
       - name: Output final url 1
         run: echo ${{steps.create-graph-url.outputs.chart-url}}
+
+      - name: Test
+        run: |
+          echo ${{needs.run-day-1.outputs.total_time}}
+          sed -i "s/\[\!\[chart\]\(.*\)/\[\!\[chart\]\(${{steps.create-graph-url.outputs.chart-url}})/g" README.md
+          cat README.md'
+
+      - name: Git
+        run: git status
