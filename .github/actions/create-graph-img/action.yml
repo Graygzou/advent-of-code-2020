@@ -2,12 +2,8 @@ name: create-image-chart-url
 author: Grégoire Boiron (Graygzou)
 description: Create a path of an image based on given data
 inputs:
-  data:
-    description: "Array of JSON object containing same properties to display and compare easily."
-    required: true
-    default: '[]'
-  array:
-    description: "Test"
+  data-array:
+    description: "Array of values to display."
     required: true
     default: '[]'
 outputs:
@@ -31,10 +27,11 @@ runs:
     - name: TEST 2
       id: test2
       run: |
-        echo ${{ join(inputs.data.*.time, ',') }}
+        echo ${{ join(fromJSON(inputs.data.*.name), ',') }}
+        echo ${{ join(fromJSON(inputs.data.*.time), ',') }}
         echo "here"
         echo ${{ join(inputs.array, ',') }}
-        echo ${{ join(fromJSON(inputs.array), ',') }}
+        
       shell: bash
       
     - name: Build URL prefix
@@ -65,7 +62,7 @@ runs:
     - name: Build data parameters
       id: url-data
       run: |
-        data=${{ join(inputs.data.*.time, ',') }}
+        data="chd="${{ join(fromJSON(inputs.data-array), ',') }}
         echo $data
         echo "::set-output name=URL::$data"
       shell: bash
