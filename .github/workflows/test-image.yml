@@ -35,6 +35,7 @@ jobs:
           echo $escapedUrlReplacement
           sed -e "s/$urlRegex/$escapedUrlReplacement/g" README.md
           cat README.md
+          ls -l
           git status
 
       - name: Git
