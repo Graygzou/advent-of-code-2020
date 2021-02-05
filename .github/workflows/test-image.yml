@@ -17,8 +17,7 @@ jobs:
         id: create-graph-url
         uses: ./.github/actions/create-graph-img
         with:
-          data: '[{"name": "apple", "time": 5}, {"name": "test", "time": 10}]'
-          array: "[5, 10, 7, 13]"
+          data-aray: "[5, 10, 7, 13]"
 
       - name: Output final url 1
         run: echo ${{steps.create-graph-url.outputs.chart-url}}
