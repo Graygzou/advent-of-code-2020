@@ -30,8 +30,8 @@ jobs:
 
       - name: Config bot
         run: |
-          git config user.email ${{ BOT_ACCOUNT_MAIL }}
-          git config user.name ${{ BOT_ACCOUNT_NAME }}
+          git config user.email ${{ secrets.BOT_ACCOUNT_MAIL }}
+          git config user.name ${{ secrets.BOT_ACCOUNT_NAME }}
 
       - name: Git
         run: |
