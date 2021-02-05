@@ -33,7 +33,7 @@ jobs:
           escapedUrlReplacement=$(printf '%s\n' "$urlReplacement" | sed -e 's/[\/&]/\\&/g')
           echo $urlReplacement
           echo $escapedUrlReplacement
-          sed -e "s/$urlRegex/$escapedUrlReplacement/g" README.md
+          sed -i "s/$urlRegex/$escapedUrlReplacement/g" README.md
           cat README.md
           ls -l
           git status
