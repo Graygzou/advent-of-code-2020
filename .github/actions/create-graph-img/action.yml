@@ -49,7 +49,7 @@ runs:
     - name: Compose the final URL
       id: compose-url
       run: |
-        finalurl="${{ steps.url-prefix.outputs.URL }}${{ steps.url-data.outputs.URL }}${{ steps.url-rendering.outputs.URL }}"
+        finalurl="${{ steps.url-prefix.outputs.URL }}&${{ steps.url-data.outputs.URL }}&${{ steps.url-rendering.outputs.URL }}"
         echo $finalurl
         echo "::set-output name=full-url::$finalurl"
       shell: bash
