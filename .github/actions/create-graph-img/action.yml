@@ -45,7 +45,7 @@ runs:
         data="chd="$(printf %s "t:${{ join(fromJSON(inputs.data-array), ',') }}" | jq -sRr @uri )
         echo $data
         legends="chdl="$(printf %s "Time (ms)" | jq -sRr @uri )
-        echo &legends
+        echo $legends
 
         url="$data&$legends"
         echo "::set-output name=URL::$url"
