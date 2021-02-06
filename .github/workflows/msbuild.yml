@@ -2,9 +2,12 @@ name: MSBuild
 
 on:
   push:
-    # TEMP: Allow to ignore always
+    # Allow to ignore always
     branches-ignore: 
       - '**'
+
+# Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
 
 env:
   # Path to the solution file relative to the root of the project.
@@ -542,18 +545,30 @@ jobs:
     needs: [run-day-1,run-day-2,run-day-3,run-day-4,run-day-5,run-day-6]
     steps:
       - uses: actions/checkout@v2
-
-      - name: Test
-        run: |
-          echo ${{needs.run-day-1.outputs.total_time}}
-          sed -i "s/\[\!\[chart\]\(.*\)/\[\!\[chart\]\(This\ is\ a\ test\)/g" README.md
-          cat README.md
+        with:
+          token: ${{ secrets.ACCESS_TOKEN }}
 
       - name: Create graph url
         id: create-graph-url
         uses: ./.github/actions/create-graph-img
         with:
-          data: '[{"name": "apple", "time": ${{ needs.run-day-1.outputs.total_time }}}, {"name": "test", "time": 5}]'
+          data-array: "[5, 10, 7, 13]"
 
-      - name: Output final url
-        run: echo ${{steps.create-graph-url.outputs.chart-url}}
+      - name: Update README.md
+        run: |
+          urlRegex="\[\!\[chart\]\(.*\)\]"
+          urlReplacement="[![chart](${{ steps.create-graph-url.outputs.chart-url }})]"
+          escapedUrlReplacement=$(printf '%s\n' "$urlReplacement" | sed -e 's/[\/&]/\\&/g')
+          sed -i "s/$urlRegex/$escapedUrlReplacement/g" README.md
+
+      - name: Config bot
+        run: |
+          git config user.email ${{ secrets.BOT_ACCOUNT_MAIL }}
+          git config user.name ${{ secrets.BOT_ACCOUNT_NAME }}
+
+      - name: Push file
+        run: |
+          git status
+          git add README.md
+          git commit -m "= Update README graph with new data"
+          git push
