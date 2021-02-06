@@ -20,7 +20,7 @@ Here are some overall details about each solution.
 
 :warning: Work In Progress
 
-[![chart](https://image-charts.com/chart?chbh=a&chbr=5&chco=fdb45c%2C27c9c2%2C1869b7&chxl=0%3A%7CDay%201%7CDay%202%7CDay%203%7CDay%204%7CDay%205&chd=t%3A1000%2C1000%2C2000%2C2000&chdl=Time%20(ms)&chds=a&chm=N%2C000000%2C0%2C%2C10%7CN%2C000000%2C1%2C%2C10%7CN%2C000000%2C2%2C%2C10&chma=0%2C0%2C10%2C10&chs=900x150&cht=bhg&&chtt=Metrics%20for%20each%20solution&chxt=y)](https://github.com/Graygzou/advent-of-code-2020/actions/runs/510088424)
+[![chart](https://image-charts.com/chart?chbh=a&chbr=5&chco=fdb45c%2C27c9c2%2C1869b7&chxl=0%3A%7CReportRepair%7CPasswordPhilosophy%7CTobogganTrajectory%7CPassportProcessing%7CBinaryBoarding%7CCustomCustoms%7CHandyHaversacks%7CHandheldHalting%7CEncodingError%7CAdapterArray%7CSeatingSystem%7CRainRisk%7CShuttleSearch%7CDockingData%7CRambunctiousRecitation%7CTicketTranslation%7CConwayCubes%7COperationOrder%7CMonsterMessages%7CJurassicJigsaw%7CAllergenAssessment%7CCrabCombat%7CCrabCups%7CLobbyLayout%7CComboBreaker&chd=t%3A3000%2C1000%2C2000%2C2000%2C1000%2C1000%2C2000%2C1000%2C2000%2C2000%2C118000%2C2000%2C2000%2C2000%2C25000%2C1000%2C2000%2C1000%2C5000%2C2000%2C1000%2C2000%2C7000%2C169000%2C2000&chdl=Time%20(ms)&chds=a&chm=N%2C000000%2C0%2C%2C10%7CN%2C000000%2C1%2C%2C10%7CN%2C000000%2C2%2C%2C10&chma=0%2C0%2C10%2C10&chs=900x150&cht=bhg&chtt=Metrics%20for%20each%20solution&chxt=y)](https://github.com/Graygzou/advent-of-code-2020/actions/runs/510088424)
 
 ## License
 
