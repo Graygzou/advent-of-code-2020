@@ -37,7 +37,7 @@ runs:
         title="chtt="$(printf %s "Metrics for each solution" | jq -sRr @uri )
         visibleAxes="chxt="$(printf %s "y" | jq -sRr @uri )
         
-        url="$bounds&$textmarkers&$margins&$size&$type&$axisLabelStyles&$title&$visibleAxes"
+        url="$bounds&$textmarkers&$margins&$size&$type&$title&$visibleAxes"
         echo $url
         echo "::set-output name=URL::$url"
       shell: bash
