@@ -623,11 +623,60 @@ jobs:
         id: create-graph-url
         uses: ./.github/actions/create-graph-img
         with:
+          name-array: "[
+            ReportRepair,
+            PasswordPhilosophy,
+            TobogganTrajectory,
+            PassportProcessing,
+            BinaryBoarding,
+            CustomCustoms,
+            HandyHaversacks,
+            HandheldHalting,
+            EncodingError,
+            AdapterArray,
+            SeatingSystem,
+            RainRisk,
+            ShuttleSearch,
+            DockingData,
+            RambunctiousRecitation,
+            TicketTranslation,
+            ConwayCubes,
+            OperationOrder,
+            MonsterMessages,
+            JurassicJigsaw,
+            AllergenAssessment,
+            CrabCombat,
+            CrabCups,
+            LobbyLayout,
+            ComboBreaker
+          ]"
           data-array: "[
             ${{needs.run-day-1.outputs.total_time}},
             ${{needs.run-day-2.outputs.total_time}},
             ${{needs.run-day-3.outputs.total_time}},
-            ${{needs.run-day-4.outputs.total_time}}]"
+            ${{needs.run-day-4.outputs.total_time}},
+            ${{needs.run-day-5.outputs.total_time}},
+            ${{needs.run-day-6.outputs.total_time}},
+            ${{needs.run-day-7.outputs.total_time}},
+            ${{needs.run-day-8.outputs.total_time}},
+            ${{needs.run-day-9.outputs.total_time}},
+            ${{needs.run-day-10.outputs.total_time}},
+            ${{needs.run-day-11.outputs.total_time}},
+            ${{needs.run-day-12.outputs.total_time}},
+            ${{needs.run-day-13.outputs.total_time}},
+            ${{needs.run-day-14.outputs.total_time}},
+            ${{needs.run-day-15.outputs.total_time}},
+            ${{needs.run-day-16.outputs.total_time}},
+            ${{needs.run-day-17.outputs.total_time}},
+            ${{needs.run-day-18.outputs.total_time}},
+            ${{needs.run-day-19.outputs.total_time}},
+            ${{needs.run-day-20.outputs.total_time}},
+            ${{needs.run-day-21.outputs.total_time}},
+            ${{needs.run-day-22.outputs.total_time}},
+            ${{needs.run-day-23.outputs.total_time}},
+            ${{needs.run-day-24.outputs.total_time}},
+            ${{needs.run-day-25.outputs.total_time}}
+          ]"
 
       - name: Update README.md
         run: |
