@@ -1,4 +1,4 @@
-name: MSBuild
+name: Build and update chart
 
 on:
   push:
@@ -552,7 +552,11 @@ jobs:
         id: create-graph-url
         uses: ./.github/actions/create-graph-img
         with:
-          data-array: "[5, 10, 7, 13]"
+          data-array: "[
+            ${{needs.run-day-1.outputs.total_time}},
+            ${{needs.run-day-2.outputs.total_time}},
+            ${{needs.run-day-3.outputs.total_time}},
+            ${{needs.run-day-4.outputs.total_time}}]"
 
       - name: Update README.md
         run: |
