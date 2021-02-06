@@ -65,7 +65,6 @@ jobs:
       DAY_NAME: Day1-ReportRepair
     outputs:
       total_time: ${{ steps.run-program.outputs.execution-time }}
-
     steps:
       - uses: actions/checkout@v2
 
@@ -87,6 +86,8 @@ jobs:
     needs: [build]
     env:
       DAY_NAME: Day2-PasswordPhilosophy
+    outputs:
+      total_time: ${{ steps.run-program.outputs.execution-time }}
     steps:
       - uses: actions/checkout@v2
       - name: Download a single artifact
@@ -106,6 +107,8 @@ jobs:
     needs: [build]
     env:
       DAY_NAME: Day3-TobogganTrajectory
+    outputs:
+      total_time: ${{ steps.run-program.outputs.execution-time }}
     steps:
       - uses: actions/checkout@v2
       - name: Download a single artifact
@@ -125,6 +128,8 @@ jobs:
     needs: [build]
     env:
       DAY_NAME: Day4-PassportProcessing
+    outputs:
+      total_time: ${{ steps.run-program.outputs.execution-time }}
     steps:
       - uses: actions/checkout@v2
       - name: Download a single artifact
@@ -144,6 +149,8 @@ jobs:
     needs: [build]
     env:
       DAY_NAME: Day5-BinaryBoarding
+    outputs:
+      total_time: ${{ steps.run-program.outputs.execution-time }}
     steps:
       - uses: actions/checkout@v2
       - name: Download a single artifact
@@ -163,6 +170,8 @@ jobs:
     needs: [build]
     env:
       DAY_NAME: Day6-CustomCustoms
+    outputs:
+      total_time: ${{ steps.run-program.outputs.execution-time }}
     steps:
       - uses: actions/checkout@v2
       - name: Download a single artifact
@@ -182,6 +191,8 @@ jobs:
     needs: [build]
     env:
       DAY_NAME: Day7-HandyHaversacks
+    outputs:
+      total_time: ${{ steps.run-program.outputs.execution-time }}
     steps:
       - uses: actions/checkout@v2
       - name: Download a single artifact
@@ -201,6 +212,8 @@ jobs:
     needs: [build]
     env:
       DAY_NAME: Day8-HandheldHalting
+    outputs:
+      total_time: ${{ steps.run-program.outputs.execution-time }}
     steps:
       - uses: actions/checkout@v2
       - name: Download a single artifact
@@ -220,6 +233,8 @@ jobs:
     needs: [build]
     env:
       DAY_NAME: Day9-EncodingError
+    outputs:
+      total_time: ${{ steps.run-program.outputs.execution-time }}
     steps:
       - uses: actions/checkout@v2
       - name: Download a single artifact
@@ -240,6 +255,8 @@ jobs:
     needs: [build]
     env:
       DAY_NAME: Day10-AdapterArray
+    outputs:
+      total_time: ${{ steps.run-program.outputs.execution-time }}
     steps:
       - uses: actions/checkout@v2
       - name: Download a single artifact
@@ -259,6 +276,8 @@ jobs:
     needs: [build]
     env:
       DAY_NAME: Day11-SeatingSystem
+    outputs:
+      total_time: ${{ steps.run-program.outputs.execution-time }}
     steps:
       - uses: actions/checkout@v2
       - name: Download a single artifact
@@ -278,6 +297,8 @@ jobs:
     needs: [build]
     env:
       DAY_NAME: Day12-RainRisk
+    outputs:
+      total_time: ${{ steps.run-program.outputs.execution-time }}
     steps:
       - uses: actions/checkout@v2
       - name: Download a single artifact
@@ -297,6 +318,8 @@ jobs:
     needs: [build]
     env:
       DAY_NAME: Day13-ShuttleSearch
+    outputs:
+      total_time: ${{ steps.run-program.outputs.execution-time }}
     steps:
       - uses: actions/checkout@v2
       - name: Download a single artifact
@@ -316,6 +339,8 @@ jobs:
     needs: [build]
     env:
       DAY_NAME: Day14-DockingData
+    outputs:
+      total_time: ${{ steps.run-program.outputs.execution-time }}
     steps:
       - uses: actions/checkout@v2
       - name: Download a single artifact
@@ -335,6 +360,8 @@ jobs:
     needs: [build]
     env:
       DAY_NAME: Day15-RambunctiousRecitation
+    outputs:
+      total_time: ${{ steps.run-program.outputs.execution-time }}
     steps:
       - uses: actions/checkout@v2
       - name: Download a single artifact
@@ -354,6 +381,8 @@ jobs:
     needs: [build]
     env:
       DAY_NAME: Day16-TicketTranslation
+    outputs:
+      total_time: ${{ steps.run-program.outputs.execution-time }}
     steps:
       - uses: actions/checkout@v2
       - name: Download a single artifact
@@ -373,6 +402,8 @@ jobs:
     needs: [build]
     env:
       DAY_NAME: Day17-ConwayCubes
+    outputs:
+      total_time: ${{ steps.run-program.outputs.execution-time }}
     steps:
       - uses: actions/checkout@v2
       - name: Download a single artifact
@@ -392,6 +423,8 @@ jobs:
     needs: [build]
     env:
       DAY_NAME: Day18-OperationOrder
+    outputs:
+      total_time: ${{ steps.run-program.outputs.execution-time }}
     steps:
       - uses: actions/checkout@v2
       - name: Download a single artifact
@@ -411,6 +444,8 @@ jobs:
     needs: [build]
     env:
       DAY_NAME: Day19-MonsterMessages
+    outputs:
+      total_time: ${{ steps.run-program.outputs.execution-time }}
     steps:
       - uses: actions/checkout@v2
       - name: Download a single artifact
@@ -431,6 +466,8 @@ jobs:
     needs: [build]
     env:
       DAY_NAME: Day20-JurassicJigsaw
+    outputs:
+      total_time: ${{ steps.run-program.outputs.execution-time }}
     steps:
       - uses: actions/checkout@v2
       - name: Download a single artifact
@@ -450,6 +487,8 @@ jobs:
     needs: [build]
     env:
       DAY_NAME: Day21-AllergenAssessment
+    outputs:
+      total_time: ${{ steps.run-program.outputs.execution-time }}
     steps:
       - uses: actions/checkout@v2
       - name: Download a single artifact
@@ -469,6 +508,8 @@ jobs:
     needs: [build]
     env:
       DAY_NAME: Day22-CrabCombat
+    outputs:
+      total_time: ${{ steps.run-program.outputs.execution-time }}
     steps:
       - uses: actions/checkout@v2
       - name: Download a single artifact
@@ -488,6 +529,8 @@ jobs:
     needs: [build]
     env:
       DAY_NAME: Day23-CrabCups
+    outputs:
+      total_time: ${{ steps.run-program.outputs.execution-time }}
     steps:
       - uses: actions/checkout@v2
       - name: Download a single artifact
@@ -507,6 +550,8 @@ jobs:
     needs: [build]
     env:
       DAY_NAME: Day24-LobbyLayout
+    outputs:
+      total_time: ${{ steps.run-program.outputs.execution-time }}
     steps:
       - uses: actions/checkout@v2
       - name: Download a single artifact
@@ -526,6 +571,8 @@ jobs:
     needs: [build]
     env:
       DAY_NAME: Day25-ComboBreaker
+    outputs:
+      total_time: ${{ steps.run-program.outputs.execution-time }}
     steps:
       - uses: actions/checkout@v2
       - name: Download a single artifact
