@@ -45,6 +45,7 @@ runs:
         axisLabels="chxl="$(printf %s "0:|Day 1|Day 2|Day 3|Day 4|Day 5" | jq -sRr @uri )
         echo $axisLabels
         echo "::set-output name=URL::$axisLabels"
+      shell: bash
       
     - name: Build data parameters
       id: url-data
