@@ -30,7 +30,6 @@ runs:
         margins="chma="$(printf %s "0,0,10,10" | jq -sRr @uri )
         size="chs="$(printf %s "900x150" | jq -sRr @uri )
         type="cht="$(printf %s "bhg" | jq -sRr @uri )
-        axisLabelStyles="chxs="$(printf %s "0,000000,0,0,_" | jq -sRr @uri )
         title="chtt="$(printf %s "Metrics for each solution" | jq -sRr @uri )
         visibleAxes="chxt="$(printf %s "y" | jq -sRr @uri )
         
