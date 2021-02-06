@@ -96,7 +96,8 @@ jobs:
           name: builds
           path: ${{env.BUILD_CONFIGURATION}}/
 
-      - name: test-custom-action
+      - name: Run program
+        id: run-program
         uses: ./.github/actions/run-day-program
         with:
           input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
@@ -117,7 +118,8 @@ jobs:
           name: builds
           path: ${{env.BUILD_CONFIGURATION}}/
 
-      - name: test-custom-action
+      - name: Run program
+        id: run-program
         uses: ./.github/actions/run-day-program
         with:
           input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
@@ -138,7 +140,8 @@ jobs:
           name: builds
           path: ${{env.BUILD_CONFIGURATION}}/
 
-      - name: test-custom-action
+      - name: Run program
+        id: run-program
         uses: ./.github/actions/run-day-program
         with:
           input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
@@ -159,7 +162,8 @@ jobs:
           name: builds
           path: ${{env.BUILD_CONFIGURATION}}/
 
-      - name: test-custom-action
+      - name: Run program
+        id: run-program
         uses: ./.github/actions/run-day-program
         with:
           input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
@@ -180,7 +184,8 @@ jobs:
           name: builds
           path: ${{env.BUILD_CONFIGURATION}}/
 
-      - name: test-custom-action
+      - name: Run program
+        id: run-program
         uses: ./.github/actions/run-day-program
         with:
           input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
@@ -201,7 +206,8 @@ jobs:
           name: builds
           path: ${{env.BUILD_CONFIGURATION}}/
 
-      - name: test-custom-action
+      - name: Run program
+        id: run-program
         uses: ./.github/actions/run-day-program
         with:
           input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
@@ -222,7 +228,8 @@ jobs:
           name: builds
           path: ${{env.BUILD_CONFIGURATION}}/
 
-      - name: test-custom-action
+      - name: Run program
+        id: run-program
         uses: ./.github/actions/run-day-program
         with:
           input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
@@ -243,7 +250,8 @@ jobs:
           name: builds
           path: ${{env.BUILD_CONFIGURATION}}/
 
-      - name: test-custom-action
+      - name: Run program
+        id: run-program
         uses: ./.github/actions/run-day-program
         with:
           input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
@@ -265,7 +273,8 @@ jobs:
           name: builds
           path: ${{env.BUILD_CONFIGURATION}}/
 
-      - name: test-custom-action
+      - name: Run program
+        id: run-program
         uses: ./.github/actions/run-day-program
         with:
           input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
@@ -286,7 +295,8 @@ jobs:
           name: builds
           path: ${{env.BUILD_CONFIGURATION}}/
 
-      - name: test-custom-action
+      - name: Run program
+        id: run-program
         uses: ./.github/actions/run-day-program
         with:
           input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
@@ -307,7 +317,8 @@ jobs:
           name: builds
           path: ${{env.BUILD_CONFIGURATION}}/
 
-      - name: test-custom-action
+      - name: Run program
+        id: run-program
         uses: ./.github/actions/run-day-program
         with:
           input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
@@ -328,7 +339,8 @@ jobs:
           name: builds
           path: ${{env.BUILD_CONFIGURATION}}/
 
-      - name: test-custom-action
+      - name: Run program
+        id: run-program
         uses: ./.github/actions/run-day-program
         with:
           input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
@@ -349,7 +361,8 @@ jobs:
           name: builds
           path: ${{env.BUILD_CONFIGURATION}}/
 
-      - name: test-custom-action
+      - name: Run program
+        id: run-program
         uses: ./.github/actions/run-day-program
         with:
           input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
@@ -370,7 +383,8 @@ jobs:
           name: builds
           path: ${{env.BUILD_CONFIGURATION}}/
 
-      - name: test-custom-action
+      - name: Run program
+        id: run-program
         uses: ./.github/actions/run-day-program
         with:
           input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
@@ -391,7 +405,8 @@ jobs:
           name: builds
           path: ${{env.BUILD_CONFIGURATION}}/
 
-      - name: test-custom-action
+      - name: Run program
+        id: run-program
         uses: ./.github/actions/run-day-program
         with:
           input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
@@ -412,7 +427,8 @@ jobs:
           name: builds
           path: ${{env.BUILD_CONFIGURATION}}/
 
-      - name: test-custom-action
+      - name: Run program
+        id: run-program
         uses: ./.github/actions/run-day-program
         with:
           input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
@@ -433,7 +449,8 @@ jobs:
           name: builds
           path: ${{env.BUILD_CONFIGURATION}}/
 
-      - name: test-custom-action
+      - name: Run program
+        id: run-program
         uses: ./.github/actions/run-day-program
         with:
           input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
@@ -454,7 +471,8 @@ jobs:
           name: builds
           path: ${{env.BUILD_CONFIGURATION}}/
 
-      - name: test-custom-action
+      - name: Run program
+        id: run-program
         uses: ./.github/actions/run-day-program
         with:
           input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
@@ -476,7 +494,8 @@ jobs:
           name: builds
           path: ${{env.BUILD_CONFIGURATION}}/
 
-      - name: test-custom-action
+      - name: Run program
+        id: run-program
         uses: ./.github/actions/run-day-program
         with:
           input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
@@ -497,7 +516,8 @@ jobs:
           name: builds
           path: ${{env.BUILD_CONFIGURATION}}/
 
-      - name: test-custom-action
+      - name: Run program
+        id: run-program
         uses: ./.github/actions/run-day-program
         with:
           input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
@@ -518,7 +538,8 @@ jobs:
           name: builds
           path: ${{env.BUILD_CONFIGURATION}}/
 
-      - name: test-custom-action
+      - name: Run program
+        id: run-program
         uses: ./.github/actions/run-day-program
         with:
           input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
@@ -539,7 +560,8 @@ jobs:
           name: builds
           path: ${{env.BUILD_CONFIGURATION}}/
 
-      - name: test-custom-action
+      - name: Run program
+        id: run-program
         uses: ./.github/actions/run-day-program
         with:
           input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
@@ -560,7 +582,8 @@ jobs:
           name: builds
           path: ${{env.BUILD_CONFIGURATION}}/
 
-      - name: test-custom-action
+      - name: Run program
+        id: run-program
         uses: ./.github/actions/run-day-program
         with:
           input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
@@ -581,7 +604,8 @@ jobs:
           name: builds
           path: ${{env.BUILD_CONFIGURATION}}/
 
-      - name: test-custom-action
+      - name: Run program
+        id: run-program
         uses: ./.github/actions/run-day-program
         with:
           input-path: ${{env.GITHUB_WORKSPACE}}/${{ env.SOLUTION_FILE_PATH }}${{ env.DAY_NAME }}/input.txt
