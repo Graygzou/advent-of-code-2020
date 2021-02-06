@@ -613,7 +613,33 @@ jobs:
 
   update-graphic:
     runs-on: ubuntu-latest
-    needs: [run-day-1,run-day-2,run-day-3,run-day-4,run-day-5,run-day-6]
+    needs: [
+      run-day-1,
+      run-day-2,
+      run-day-3,
+      run-day-4,
+      run-day-5,
+      run-day-6,
+      run-day-7,
+      run-day-8,
+      run-day-9,
+      run-day-10,
+      run-day-11,
+      run-day-12,
+      run-day-13,
+      run-day-14,
+      run-day-15,
+      run-day-16,
+      run-day-17,
+      run-day-18,
+      run-day-19,
+      run-day-20,
+      run-day-21,
+      run-day-22,
+      run-day-23,
+      run-day-24,
+      run-day-25
+    ]
     steps:
       - uses: actions/checkout@v2
         with:
