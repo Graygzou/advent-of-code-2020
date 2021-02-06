@@ -25,7 +25,7 @@ runs:
     - name: Build rendering parameters
       id: url-rendering
       run: |
-        bounds="chds="$(printf %s "0,120" | jq -sRr @uri )
+        bounds="chds=a"
         textmarkers="chm="$(printf %s "N,000000,0,,10|N,000000,1,,10|N,000000,2,,10" | jq -sRr @uri )
         margins="chma="$(printf %s "0,0,10,10" | jq -sRr @uri )
         size="chs="$(printf %s "900x150" | jq -sRr @uri )
