@@ -20,7 +20,7 @@ Here are some overall details about each solution.
 
 :warning: Work In Progress
 
-[![chart](https://image-charts.com/chart?chbh=a&chbr=5&chco=fdb45c%2C27c9c2%2C1869b7&chd=t%3A2000%7C%7C&chds=0%2C120&chm=N%2C000000%2C0%2C%2C10%7CN%2C000000%2C1%2C%2C10%7CN%2C000000%2C2%2C%2C10&chma=0%2C0%2C10%2C10&chs=700x150&cht=bhg&chxs=0%2C000000%2C0%2C0%2C_&chtt=Title&chxt=y)](https://github.com/Graygzou/advent-of-code-2020/actions/runs/510088424)
+[![chart](https://image-charts.com/chart?chbh=a&chbr=5&chco=fdb45c%2C27c9c2%2C1869b7&chd=t%3A2000%7C2000%7C1000%7C2000&chds=0%2C120&chm=N%2C000000%2C0%2C%2C10%7CN%2C000000%2C1%2C%2C10%7CN%2C000000%2C2%2C%2C10&chma=0%2C0%2C10%2C10&chs=700x150&cht=bhg&chxs=0%2C000000%2C0%2C0%2C_&chtt=Title&chxt=y)](https://github.com/Graygzou/advent-of-code-2020/actions/runs/510088424)
 
 ## License
 
