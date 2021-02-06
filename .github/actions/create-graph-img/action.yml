@@ -45,7 +45,7 @@ runs:
     - name: Build axis labels
       id: url-axis
       run: |
-        axisLabels="chxl="$(printf %s "0:|${{ join(fromJSON(inputs.name-array), '|')" | jq -sRr @uri )
+        axisLabels="chxl="$(printf %s "0:|${{ join(fromJSON(inputs.name-array), '|') }}" | jq -sRr @uri )
         echo $axisLabels
         echo "::set-output name=URL::$axisLabels"
       shell: bash
