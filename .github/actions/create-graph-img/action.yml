@@ -28,11 +28,12 @@ runs:
         bounds="chds="$(printf %s "0,120" | jq -sRr @uri )
         textmarkers="chm="$(printf %s "N,000000,0,,10|N,000000,1,,10|N,000000,2,,10" | jq -sRr @uri )
         margins="chma="$(printf %s "0,0,10,10" | jq -sRr @uri )
-        size="chs="$(printf %s "700x150" | jq -sRr @uri )
+        size="chs="$(printf %s "900x150" | jq -sRr @uri )
         type="cht="$(printf %s "bhg" | jq -sRr @uri )
         axisLabelStyles="chxs="$(printf %s "0,000000,0,0,_" | jq -sRr @uri )
-        title="chtt="$(printf %s "Title" | jq -sRr @uri )
+        title="chtt="$(printf %s "Metrics for each solution" | jq -sRr @uri )
         visibleAxes="chxt="$(printf %s "y" | jq -sRr @uri )
+        
         url="$bounds&$textmarkers&$margins&$size&$type&$axisLabelStyles&$title&$visibleAxes"
         echo $url
         echo "::set-output name=URL::$url"
@@ -41,9 +42,13 @@ runs:
     - name: Build data parameters
       id: url-data
       run: |
-        data="chd="$(printf %s "t:${{ join(fromJSON(inputs.data-array), '|') }}" | jq -sRr @uri )
+        data="chd="$(printf %s "t:${{ join(fromJSON(inputs.data-array), ',') }}" | jq -sRr @uri )
         echo $data
-        echo "::set-output name=URL::$data"
+        legends="chdl="$(printf %s "Time (ms)" | jq -sRr @uri )
+        echo &legends
+
+        url="$data&$legends"
+        echo "::set-output name=URL::$url"
       shell: bash
 
     - name: Compose the final URL
