@@ -650,7 +650,7 @@ jobs:
         uses: ./.github/actions/create-graph-img
         with:
           name-array: '[
-            "ComboBreaker"
+            "ComboBreaker",
             "LobbyLayout",
             "CrabCups",
             "CrabCombat",
@@ -674,7 +674,7 @@ jobs:
             "PassportProcessing",
             "TobogganTrajectory",
             "PasswordPhilosophy",
-            "ReportRepair",
+            "ReportRepair"
           ]'
           data-array: "[
             ${{needs.run-day-1.outputs.total_time}},
