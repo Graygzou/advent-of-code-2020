@@ -706,8 +706,8 @@ jobs:
 
       - name: Update README.md
         run: |
-          urlRegex="\[\!\[chart\]\(.*\)\]"
-          urlReplacement="[![chart](${{ steps.create-graph-url.outputs.chart-url }})]"
+          urlRegex="\[\!\[chart\]\(.*\)\]\(.*\)"
+          urlReplacement="[![chart](${{ steps.create-graph-url.outputs.chart-url }})](${{ steps.create-graph-url.outputs.chart-url }})"
           escapedUrlReplacement=$(printf '%s\n' "$urlReplacement" | sed -e 's/[\/&]/\\&/g')
           sed -i "s/$urlRegex/$escapedUrlReplacement/g" README.md
 
